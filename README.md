@@ -1,0 +1,2 @@
+# varapproxr
+Variational approximate inference
