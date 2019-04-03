@@ -15,6 +15,8 @@ double mvn_entropy(arma::mat& S) {
   return 0.5*(d*(1 + log(2*M_PI)) + real(log_det(S)));
 }
 
+//' Normal parametric variational Bayes for Exponential PH Model.
+//' 
 //' Perform Normal approximation variational inference for 
 //' proportional-hazards model with exponential base.
 //' 
@@ -23,7 +25,15 @@ double mvn_entropy(arma::mat& S) {
 //' @param v The censoring vector
 //' @param mu0 The prior mean for beta
 //' @param Sigma0 The prior covariance for beta
-//' @return v A list of relevant outputs
+//' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
+//' @return A list containing:
+//' \describe{
+//'   \item{converged}{Indicator for algorithm convergence.}
+//'   \item{elbo}{Vector of the ELBO sequence.} 
+//'   \item{mu}{The optimised value of mu.}
+//'   \item{Sigma}{The optimised value of Sigma.}
+//' }
+//' 
 //' @export
 // [[Rcpp::export]]
 List ph_exponential(
@@ -32,7 +42,8 @@ List ph_exponential(
     const arma::vec& v,
     const arma::vec& mu0,
     const arma::mat& Sigma0,
-    double tol = 1e-8, int maxiter = 100) {
+    double tol = 1e-8, int maxiter = 100,
+    bool verbose = false) {
   
   int N = X.n_rows;
   int P = X.n_cols;
@@ -55,6 +66,9 @@ List ph_exponential(
       0.5*as_scalar(trans(mu - mu0) * invSig0 * (mu - mu0)) -
       0.5*trace( invSig0 * Sigma ) +
       dot(v, X*mu) - dot(y, exp(X*mu + diagvec(X*Sigma*trans(X))/2));
+    
+    if(verbose)
+      Rcout << "Iteration: " << i << ", ELBO(q) = " << elbo[i] << std::endl;
     
     // Check for convergence
     if(i > 0 && fabs(elbo(i) - elbo(i - 1)) < tol) {

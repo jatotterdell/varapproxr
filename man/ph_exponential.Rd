@@ -2,10 +2,10 @@
 % Please edit documentation in R/RcppExports.R
 \name{ph_exponential}
 \alias{ph_exponential}
-\title{Perform Normal approximation variational inference for 
-proportional-hazards model with exponential base.}
+\title{Normal parametric variational Bayes for Exponential PH Model.}
 \usage{
-ph_exponential(X, y, v, mu0, Sigma0, tol = 1e-08, maxiter = 100L)
+ph_exponential(X, y, v, mu0, Sigma0, tol = 1e-08, maxiter = 100L,
+  verbose = FALSE)
 }
 \arguments{
 \item{X}{The design matrix}
@@ -17,9 +17,17 @@ ph_exponential(X, y, v, mu0, Sigma0, tol = 1e-08, maxiter = 100L)
 \item{mu0}{The prior mean for beta}
 
 \item{Sigma0}{The prior covariance for beta}
+
+\item{verbose}{Print trace of the lower bound to console. Default is \code{FALSE}.}
 }
 \value{
-v A list of relevant outputs
+A list containing:
+\describe{
+  \item{converged}{Indicator for algorithm convergence.}
+  \item{elbo}{Vector of the ELBO sequence.} 
+  \item{mu}{The optimised value of mu.}
+  \item{Sigma}{The optimised value of Sigma.}
+}
 }
 \description{
 Perform Normal approximation variational inference for 

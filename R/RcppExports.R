@@ -139,6 +139,8 @@ mvn_entropy <- function(S) {
     .Call('_varapproxr_mvn_entropy', PACKAGE = 'varapproxr', S)
 }
 
+#' Normal parametric variational Bayes for Exponential PH Model.
+#' 
 #' Perform Normal approximation variational inference for 
 #' proportional-hazards model with exponential base.
 #' 
@@ -147,9 +149,18 @@ mvn_entropy <- function(S) {
 #' @param v The censoring vector
 #' @param mu0 The prior mean for beta
 #' @param Sigma0 The prior covariance for beta
-#' @return v A list of relevant outputs
+#' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
+#' @return A list containing:
+#' \describe{
+#'   \item{converged}{Indicator for algorithm convergence.}
+#'   \item{elbo}{Vector of the ELBO sequence.} 
+#'   \item{mu}{The optimised value of mu.}
+#'   \item{Sigma}{The optimised value of Sigma.}
+#' }
+#' 
+#' @useDynLib
 #' @export
-ph_exponential <- function(X, y, v, mu0, Sigma0, tol = 1e-8, maxiter = 100L) {
-    .Call('_varapproxr_ph_exponential', PACKAGE = 'varapproxr', X, y, v, mu0, Sigma0, tol, maxiter)
+ph_exponential <- function(X, y, v, mu0, Sigma0, tol = 1e-8, maxiter = 100L, verbose = FALSE) {
+    .Call('_varapproxr_ph_exponential', PACKAGE = 'varapproxr', X, y, v, mu0, Sigma0, tol, maxiter, verbose)
 }
 
