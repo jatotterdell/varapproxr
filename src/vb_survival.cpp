@@ -12,7 +12,7 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 double mvn_entropy(arma::mat& S) {
   int d = S.n_rows;
-  return 0.5*d*(1 + log(2*M_PI)) + 0.5*real(log_det(S));
+  return 0.5*(d*(1 + log(2*M_PI)) + real(log_det(S)));
 }
 
 //' Perform Normal approximation variational inference for 
@@ -52,7 +52,8 @@ List ph_exponential(
     mu += Sigma * (trans(X) * (v - omega) - invSig0 * (mu - mu0));
     elbo[i] = mvn_entropy(Sigma) - 
       0.5*P*real(log_det(Sigma0)) - 
-      0.5*trace( inv(Sigma0) * (Sigma + (mu - mu0) * trans(mu - mu0)) ) +
+      0.5*as_scalar(trans(mu - mu0) * invSig0 * (mu - mu0)) -
+      0.5*trace( invSig0 * Sigma ) +
       dot(v, X*mu) - dot(y, exp(X*mu + diagvec(X*Sigma*trans(X))/2));
     
     // Check for convergence
