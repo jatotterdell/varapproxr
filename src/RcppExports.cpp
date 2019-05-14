@@ -182,8 +182,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // ph_exponential
-List ph_exponential(const arma::mat& X, const arma::vec& y, const arma::vec& v, const arma::vec& mu0, const arma::mat& Sigma0, double tol, int maxiter);
-RcppExport SEXP _varapproxr_ph_exponential(SEXP XSEXP, SEXP ySEXP, SEXP vSEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP tolSEXP, SEXP maxiterSEXP) {
+List ph_exponential(const arma::mat& X, const arma::vec& y, const arma::vec& v, const arma::vec& mu0, const arma::mat& Sigma0, double tol, int maxiter, bool verbose);
+RcppExport SEXP _varapproxr_ph_exponential(SEXP XSEXP, SEXP ySEXP, SEXP vSEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -194,7 +194,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::mat& >::type Sigma0(Sigma0SEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
-    rcpp_result_gen = Rcpp::wrap(ph_exponential(X, y, v, mu0, Sigma0, tol, maxiter));
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(ph_exponential(X, y, v, mu0, Sigma0, tol, maxiter, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -211,7 +212,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_vb_logistic", (DL_FUNC) &_varapproxr_vb_logistic, 8},
     {"_varapproxr_vb_logistic_n", (DL_FUNC) &_varapproxr_vb_logistic_n, 9},
     {"_varapproxr_mvn_entropy", (DL_FUNC) &_varapproxr_mvn_entropy, 1},
-    {"_varapproxr_ph_exponential", (DL_FUNC) &_varapproxr_ph_exponential, 7},
+    {"_varapproxr_ph_exponential", (DL_FUNC) &_varapproxr_ph_exponential, 8},
     {NULL, NULL, 0}
 };
 
