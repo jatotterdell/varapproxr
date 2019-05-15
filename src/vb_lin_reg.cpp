@@ -17,20 +17,15 @@ double mvn_entropy(arma::mat& S) {
 
 //' Return the entropy of inverse gamma density
 //' 
-//' @param shape
-//' @param scale
+//' @param a shape
+//' @param b scale
 // [[Rcpp::export]]
-double ig_entropy(double shape, double scale) {
-  return shape + log(scale) + lgamma(shape) - (1 + shape)*R::digamma(shape);
+double ig_entropy(double a, double b) {
+  return a + log(b) + lgamma(a) - (a + 1)*R::digamma(a);
 }
 
 //' Perform mean-field variational inference for 
 //' basic linear regression model.
-//' 
-//' y | beta, sigma ~ N(X*beta, sigma^2*I)
-//' beta ~ N(mu0, Sigma0)
-//' sigma^2 | a ~ IG(1/2, 1/a)
-//' a ~ IG(1/2, 1/A^2)
 //' 
 //' @param X The design matrix
 //' @param y The response vector
@@ -42,9 +37,10 @@ double ig_entropy(double shape, double scale) {
 List lin_reg(
     const arma::mat& X, 
     const arma::vec& y,
-    const double sigmasq0,
-    const double A,
-    const double B,
+    const arma::vec& mu0,
+    const arma::mat& Sigma0,
+    const double a0,
+    const double b0,
     double tol = 1e-8, int maxiter = 100) {
   
   int N = X.n_rows;
@@ -57,26 +53,28 @@ List lin_reg(
   arma::mat I = arma::eye<arma::mat>(P, P);
   arma::mat XtX = trans(X) * X;
   arma::vec Xty = trans(X) * y;
-  double yty = dot(y, y);
-  double trXtX = trace(XtX);
+  arma::mat invSigma0 = inv(Sigma0);
+  arma::vec invSigma0_mu0 = invSigma0 * mu0;
+  double ldetSigma0 = real(log_det(Sigma0));
+  arma::vec y_m_Xmu;
   
   arma::mat mu;
   arma::mat Sigma;
-  double alpha = A + N / 2;
-  double beta = 1.;
+  double a = a0 + N / 2;
+  double b = b0;
   
   for(int i = 0; i < maxiter && !converged; i++) {
     // Update variational parameters
-    Sigma = inv(alpha / beta * XtX + (1 / sigmasq0)*I);
-    mu = alpha / beta * Sigma * Xty;
-    beta = B + 0.5*(dot(y - X*mu, y - X*mu) + trace(Sigma * XtX));
+    Sigma = inv(a/b * XtX + invSigma0);
+    mu = Sigma * (a/b * Xty + invSigma0_mu0);
+    y_m_Xmu = y - X*mu;
+    b = b0 + 0.5*(dot(y_m_Xmu, y_m_Xmu) + trace(Sigma * XtX));
     
     // Update ELBO
-    elbo[i] = -N/2*(log(2*M_PI*beta) - R::digamma(alpha)) - 
-      0.5*alpha/beta * (dot(y - X*mu, y - X*mu) + trace(Sigma*XtX)) -
-      log(2*M_PI*sigmasq0) - (dot(mu, mu) + trace(Sigma)) / (2 * sigmasq0) +
-      A*log(B) - lgamma(A) - (A + 1)*(log(beta) - R::digamma(alpha)) - B*alpha/beta +
-      mvn_entropy(Sigma) + ig_entropy(alpha, beta);
+    elbo[i] = -0.5*(P * log(2*M_PI) + ldetSigma0 + dot(mu - mu0, Sigma0 * (mu - mu0)) + trace(invSigma0 * Sigma)) -
+      0.5*(N * log(2*M_PI) + log(b) - R::digamma(a) + a/b * (dot(y_m_Xmu, y_m_Xmu) + trace(XtX * Sigma))) +
+      a0*log(b0) - lgamma(a0) - (a0 + 1)*(log(b) - R::digamma(a)) - b0*a/b +
+      mvn_entropy(Sigma) + ig_entropy(a, b);
 
     // Check for convergence
     if(i > 0 && fabs(elbo(i) - elbo(i - 1)) < tol) {
@@ -89,6 +87,6 @@ List lin_reg(
                       Named("elbo") = elbo.subvec(0, iterations),
                       Named("mu") = mu,
                       Named("Sigma") = Sigma,
-                      Named("alpha") = alpha,
-                      Named("beta") = beta);
+                      Named("a") = a,
+                      Named("b") = b);
 }
