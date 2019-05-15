@@ -1,28 +1,10 @@
 // [[Rcpp::depends(RcppArmadillo)]]
-
+#include "helpers.h"
 #include <RcppArmadillo.h>
 #include <Rmath.h>
 
 using namespace Rcpp;
 
-//' Return the entropy of multivariate normal density
-//' 
-//' @param S The covariate matrix
-//' @return value The entropy
-// [[Rcpp::export]]
-double mvn_entropy(arma::mat& S) {
-  int d = S.n_rows;
-  return 0.5*d*(1 + log(2*M_PI)) + 0.5*real(log_det(S));
-}
-
-//' Return the entropy of inverse gamma density
-//' 
-//' @param a shape
-//' @param b scale
-// [[Rcpp::export]]
-double ig_entropy(double a, double b) {
-  return a + log(b) + lgamma(a) - (a + 1)*R::digamma(a);
-}
 
 //' Perform mean-field variational inference for 
 //' basic linear regression model.
@@ -31,7 +13,12 @@ double ig_entropy(double a, double b) {
 //' @param y The response vector
 //' @param mu0 The prior mean for beta
 //' @param Sigma0 The prior covariance for beta
+//' @param a0 The scale hyperparameter
+//' @param b0 The shape hyperparameter
+//' @param tol Tolerance for convergence of the elbo
+//' @oaram maxiter Maximum number of iterations allowed
 //' @return v A list of relevant outputs
+//' 
 //' @export
 // [[Rcpp::export]]
 List vb_lin_reg(

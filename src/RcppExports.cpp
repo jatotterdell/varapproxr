@@ -6,6 +6,24 @@
 
 using namespace Rcpp;
 
+// vb_lin_reg
+List vb_lin_reg(const arma::mat& X, const arma::vec& y, const arma::vec& mu0, const arma::mat& Sigma0, const double a0, const double b0, double tol, int maxiter);
+RcppExport SEXP _varapproxr_vb_lin_reg(SEXP XSEXP, SEXP ySEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP a0SEXP, SEXP b0SEXP, SEXP tolSEXP, SEXP maxiterSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type mu0(mu0SEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Sigma0(Sigma0SEXP);
+    Rcpp::traits::input_parameter< const double >::type a0(a0SEXP);
+    Rcpp::traits::input_parameter< const double >::type b0(b0SEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
+    rcpp_result_gen = Rcpp::wrap(vb_lin_reg(X, y, mu0, Sigma0, a0, b0, tol, maxiter));
+    return rcpp_result_gen;
+END_RCPP
+}
 // pnorm_mat
 arma::mat pnorm_mat(arma::mat& m);
 RcppExport SEXP _varapproxr_pnorm_mat(SEXP mSEXP) {
@@ -170,17 +188,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// mvn_entropy
-double mvn_entropy(arma::mat& S);
-RcppExport SEXP _varapproxr_mvn_entropy(SEXP SSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type S(SSEXP);
-    rcpp_result_gen = Rcpp::wrap(mvn_entropy(S));
-    return rcpp_result_gen;
-END_RCPP
-}
 // ph_exponential
 List ph_exponential(const arma::mat& X, const arma::vec& y, const arma::vec& v, const arma::vec& mu0, const arma::mat& Sigma0, double tol, int maxiter, bool verbose);
 RcppExport SEXP _varapproxr_ph_exponential(SEXP XSEXP, SEXP ySEXP, SEXP vSEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP) {
@@ -201,6 +208,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_varapproxr_vb_lin_reg", (DL_FUNC) &_varapproxr_vb_lin_reg, 8},
     {"_varapproxr_pnorm_mat", (DL_FUNC) &_varapproxr_pnorm_mat, 1},
     {"_varapproxr_dnorm_mat", (DL_FUNC) &_varapproxr_dnorm_mat, 1},
     {"_varapproxr_jaakkola_jordan", (DL_FUNC) &_varapproxr_jaakkola_jordan, 6},
@@ -211,7 +219,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_knowles_minka_wand_n", (DL_FUNC) &_varapproxr_knowles_minka_wand_n, 9},
     {"_varapproxr_vb_logistic", (DL_FUNC) &_varapproxr_vb_logistic, 8},
     {"_varapproxr_vb_logistic_n", (DL_FUNC) &_varapproxr_vb_logistic_n, 9},
-    {"_varapproxr_mvn_entropy", (DL_FUNC) &_varapproxr_mvn_entropy, 1},
     {"_varapproxr_ph_exponential", (DL_FUNC) &_varapproxr_ph_exponential, 8},
     {NULL, NULL, 0}
 };

@@ -1,19 +1,9 @@
 // [[Rcpp::depends(RcppArmadillo)]]
-
+#include "helpers.h"
 #include <RcppArmadillo.h>
 #include <Rmath.h>
 
 using namespace Rcpp;
-
-//' Return the entropy of multivariate normal density
-//' 
-//' @param S The covariate matrix
-//' @return value The entropy
-// [[Rcpp::export]]
-double mvn_entropy(arma::mat& S) {
-  int d = S.n_rows;
-  return 0.5*(d*(1 + log(2*M_PI)) + real(log_det(S)));
-}
 
 //' Normal parametric variational Bayes for Exponential PH Model.
 //' 
