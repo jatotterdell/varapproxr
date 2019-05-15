@@ -34,7 +34,7 @@ double ig_entropy(double a, double b) {
 //' @return v A list of relevant outputs
 //' @export
 // [[Rcpp::export]]
-List lin_reg(
+List vb_lin_reg(
     const arma::mat& X, 
     const arma::vec& y,
     const arma::vec& mu0,
