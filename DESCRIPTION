@@ -5,8 +5,8 @@ Version: 1.0
 Date: 2019-02-23
 Author: James Totterdell
 Maintainer: James Totterdell <jatotterdell@gmail.com>
-Description: Repository for variational approximation implementations
-License: What license is it under?
+Description: Repository for variational approximation implementations. Currently only focuses on deterministic semiparametric approaches.
+License: GPL-3
 Imports: Rcpp (>= 1.0.0)
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 6.1.1

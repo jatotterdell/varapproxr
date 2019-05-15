@@ -1,2 +1,3 @@
 # varapproxr
-Variational approximate inference
+
+A repository for implementations of variational approximate inference.

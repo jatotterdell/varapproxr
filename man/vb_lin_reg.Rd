@@ -3,7 +3,7 @@
 \name{vb_lin_reg}
 \alias{vb_lin_reg}
 \title{Perform mean-field variational inference for 
-basic linear regression model.}
+a basic linear regression model.}
 \usage{
 vb_lin_reg(X, y, mu0, Sigma0, a0, b0, tol = 1e-08, maxiter = 100L)
 }
@@ -15,11 +15,19 @@ vb_lin_reg(X, y, mu0, Sigma0, a0, b0, tol = 1e-08, maxiter = 100L)
 \item{mu0}{The prior mean for beta}
 
 \item{Sigma0}{The prior covariance for beta}
+
+\item{a0}{The scale hyperparameter}
+
+\item{b0}{The shape hyperparameter}
+
+\item{tol}{Tolerance for convergence of the elbo}
+
+\item{maxiter}{Maximum number of iterations allowed}
 }
 \value{
 v A list of relevant outputs
 }
 \description{
 Perform mean-field variational inference for 
-basic linear regression model.
+a basic linear regression model.
 }

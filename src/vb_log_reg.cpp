@@ -1,43 +1,9 @@
 // [[Rcpp::depends(RcppArmadillo)]]
-
+#include "helpers.h"
 #include <RcppArmadillo.h>
 #include <Rmath.h>
 
 using namespace Rcpp;
-
-//' Evaluate standard normal cdf for matrix of variates
-//' 
-//' @param m A matrix of variates 
-// [[Rcpp::export]]
-arma::mat pnorm_mat(arma::mat& m) {
-  int p = m.n_cols;
-  int n = m.n_rows;
-  arma::mat out(n, p);
-  
-  for (int i = 0; i < n; i++) {
-    for(int j = 0; j < p; j++) {
-      out(i, j) = R::pnorm(m(i, j), 0.0, 1.0, 1, 0);
-    }
-  }
-  return out;
-}
-
-//' Evaluate standard normal density for matrix of variates
-//' 
-//' @param m A matrix of variates 
-// [[Rcpp::export]]
-arma::mat dnorm_mat(arma::mat& m) {
-  int p = m.n_cols;
-  int n = m.n_rows;
-  arma::mat out(n, p);
-  
-  for (int i = 0; i < n; i++) {
-    for(int j = 0; j < p; j++) {
-      out(i, j) = R::dnorm(m(i, j), 0.0, 1.0, 0);
-    }
-  }
-  return out;
-}
 
 //' Perform Jaakkola-Jordan update of variational parameters
 //' 

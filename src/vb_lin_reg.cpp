@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 
 //' Perform mean-field variational inference for 
-//' basic linear regression model.
+//' a basic linear regression model.
 //' 
 //' @param X The design matrix
 //' @param y The response vector
@@ -16,7 +16,7 @@ using namespace Rcpp;
 //' @param a0 The scale hyperparameter
 //' @param b0 The shape hyperparameter
 //' @param tol Tolerance for convergence of the elbo
-//' @oaram maxiter Maximum number of iterations allowed
+//' @param maxiter Maximum number of iterations allowed
 //' @return v A list of relevant outputs
 //' 
 //' @export
