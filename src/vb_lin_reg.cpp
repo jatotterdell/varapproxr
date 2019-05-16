@@ -59,7 +59,7 @@ List vb_lin_reg(
     
     // Update ELBO
     elbo[i] = -0.5*(P * log(2*M_PI) + ldetSigma0 + dot(mu - mu0, Sigma0 * (mu - mu0)) + trace(invSigma0 * Sigma)) -
-      0.5*(N * log(2*M_PI) + log(b) - R::digamma(a) + a/b * (dot(y_m_Xmu, y_m_Xmu) + trace(XtX * Sigma))) +
+      0.5*(N * log(2*M_PI) - log(b) + R::digamma(a) + a/b * (dot(y_m_Xmu, y_m_Xmu) + trace(XtX * Sigma))) +
       a0*log(b0) - lgamma(a0) - (a0 + 1)*(log(b) - R::digamma(a)) - b0*a/b +
       mvn_entropy(Sigma) + ig_entropy(a, b);
 
