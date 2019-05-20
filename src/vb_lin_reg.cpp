@@ -2,6 +2,8 @@
 #include "helpers.h"
 #include <RcppArmadillo.h>
 #include <Rmath.h>
+#include <iostream>
+#include <iomanip>
 
 using namespace Rcpp;
 
@@ -28,12 +30,13 @@ List vb_lin_reg(
     const arma::mat& Sigma0,
     const double a0,
     const double b0,
-    double tol = 1e-8, int maxiter = 100) {
+    double tol = 1e-8, int maxiter = 100, bool verbose = false) {
   
   int N = X.n_rows;
   int P = X.n_cols;
   bool converged = 0;
   int iterations = 0;
+  Rcpp::Rcout.precision(10);
 
   arma::vec elbo(maxiter);
   
@@ -63,6 +66,8 @@ List vb_lin_reg(
       a0*log(b0) - lgamma(a0) - (a0 + 1)*(log(b) - R::digamma(a)) - b0*a/b +
       mvn_entropy(Sigma) + ig_entropy(a, b);
 
+    if(verbose)
+      Rcpp::Rcout << "Iter: " << std::setw(3) << i << "; ELBO = " << std::fixed << elbo[i] << std::endl;
     // Check for convergence
     if(i > 0 && fabs(elbo(i) - elbo(i - 1)) < tol) {
       converged = 1;

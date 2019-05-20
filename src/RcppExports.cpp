@@ -52,8 +52,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // vb_lin_reg
-List vb_lin_reg(const arma::mat& X, const arma::vec& y, const arma::vec& mu0, const arma::mat& Sigma0, const double a0, const double b0, double tol, int maxiter);
-RcppExport SEXP _varapproxr_vb_lin_reg(SEXP XSEXP, SEXP ySEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP a0SEXP, SEXP b0SEXP, SEXP tolSEXP, SEXP maxiterSEXP) {
+List vb_lin_reg(const arma::mat& X, const arma::vec& y, const arma::vec& mu0, const arma::mat& Sigma0, const double a0, const double b0, double tol, int maxiter, bool verbose);
+RcppExport SEXP _varapproxr_vb_lin_reg(SEXP XSEXP, SEXP ySEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP a0SEXP, SEXP b0SEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -65,8 +65,46 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const double >::type b0(b0SEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
-    rcpp_result_gen = Rcpp::wrap(vb_lin_reg(X, y, mu0, Sigma0, a0, b0, tol, maxiter));
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(vb_lin_reg(X, y, mu0, Sigma0, a0, b0, tol, maxiter, verbose));
     return rcpp_result_gen;
+END_RCPP
+}
+// b0
+arma::vec b0(const arma::vec& mu, const arma::vec& sigma);
+RcppExport SEXP _varapproxr_b0(SEXP muSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(b0(mu, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// b1
+arma::vec b1(const arma::vec& mu, const arma::vec& sigma);
+RcppExport SEXP _varapproxr_b1(SEXP muSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::vec& >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(b1(mu, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// B
+void B(arma::vec& b0, arma::vec& b1, const arma::vec& mu, const arma::vec& sigma);
+RcppExport SEXP _varapproxr_B(SEXP b0SEXP, SEXP b1SEXP, SEXP muSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec& >::type b0(b0SEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type b1(b1SEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type sigma(sigmaSEXP);
+    B(b0, b1, mu, sigma);
+    return R_NilValue;
 END_RCPP
 }
 // jaakkola_jordan
@@ -175,8 +213,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // vb_logistic
-List vb_logistic(const arma::mat& X, const arma::vec& y, const arma::vec& mu0, const arma::mat& Sigma0, double tol, int maxiter, int maxiter_jj, std::string alg);
-RcppExport SEXP _varapproxr_vb_logistic(SEXP XSEXP, SEXP ySEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP maxiter_jjSEXP, SEXP algSEXP) {
+List vb_logistic(const arma::mat& X, const arma::vec& y, const arma::vec& mu0, const arma::mat& Sigma0, double tol, int maxiter, int maxiter_jj, std::string alg, bool verbose);
+RcppExport SEXP _varapproxr_vb_logistic(SEXP XSEXP, SEXP ySEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP maxiter_jjSEXP, SEXP algSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -188,13 +226,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
     Rcpp::traits::input_parameter< int >::type maxiter_jj(maxiter_jjSEXP);
     Rcpp::traits::input_parameter< std::string >::type alg(algSEXP);
-    rcpp_result_gen = Rcpp::wrap(vb_logistic(X, y, mu0, Sigma0, tol, maxiter, maxiter_jj, alg));
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(vb_logistic(X, y, mu0, Sigma0, tol, maxiter, maxiter_jj, alg, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
 // vb_logistic_n
-List vb_logistic_n(const arma::mat& X, const arma::vec& y, const arma::vec& n, const arma::vec& mu0, const arma::mat& Sigma0, double tol, int maxiter, int maxiter_jj, std::string alg);
-RcppExport SEXP _varapproxr_vb_logistic_n(SEXP XSEXP, SEXP ySEXP, SEXP nSEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP maxiter_jjSEXP, SEXP algSEXP) {
+List vb_logistic_n(const arma::mat& X, const arma::vec& y, const arma::vec& n, const arma::vec& mu0, const arma::mat& Sigma0, double tol, int maxiter, int maxiter_jj, std::string alg, bool verbose);
+RcppExport SEXP _varapproxr_vb_logistic_n(SEXP XSEXP, SEXP ySEXP, SEXP nSEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP maxiter_jjSEXP, SEXP algSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -207,7 +246,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
     Rcpp::traits::input_parameter< int >::type maxiter_jj(maxiter_jjSEXP);
     Rcpp::traits::input_parameter< std::string >::type alg(algSEXP);
-    rcpp_result_gen = Rcpp::wrap(vb_logistic_n(X, y, n, mu0, Sigma0, tol, maxiter, maxiter_jj, alg));
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(vb_logistic_n(X, y, n, mu0, Sigma0, tol, maxiter, maxiter_jj, alg, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -235,15 +275,18 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_ig_entropy", (DL_FUNC) &_varapproxr_ig_entropy, 2},
     {"_varapproxr_pnorm_mat", (DL_FUNC) &_varapproxr_pnorm_mat, 1},
     {"_varapproxr_dnorm_mat", (DL_FUNC) &_varapproxr_dnorm_mat, 1},
-    {"_varapproxr_vb_lin_reg", (DL_FUNC) &_varapproxr_vb_lin_reg, 8},
+    {"_varapproxr_vb_lin_reg", (DL_FUNC) &_varapproxr_vb_lin_reg, 9},
+    {"_varapproxr_b0", (DL_FUNC) &_varapproxr_b0, 2},
+    {"_varapproxr_b1", (DL_FUNC) &_varapproxr_b1, 2},
+    {"_varapproxr_B", (DL_FUNC) &_varapproxr_B, 4},
     {"_varapproxr_jaakkola_jordan", (DL_FUNC) &_varapproxr_jaakkola_jordan, 6},
     {"_varapproxr_jaakkola_jordan_n", (DL_FUNC) &_varapproxr_jaakkola_jordan_n, 7},
     {"_varapproxr_saul_jordan", (DL_FUNC) &_varapproxr_saul_jordan, 7},
     {"_varapproxr_saul_jordan_n", (DL_FUNC) &_varapproxr_saul_jordan_n, 8},
     {"_varapproxr_knowles_minka_wand", (DL_FUNC) &_varapproxr_knowles_minka_wand, 8},
     {"_varapproxr_knowles_minka_wand_n", (DL_FUNC) &_varapproxr_knowles_minka_wand_n, 9},
-    {"_varapproxr_vb_logistic", (DL_FUNC) &_varapproxr_vb_logistic, 8},
-    {"_varapproxr_vb_logistic_n", (DL_FUNC) &_varapproxr_vb_logistic_n, 9},
+    {"_varapproxr_vb_logistic", (DL_FUNC) &_varapproxr_vb_logistic, 9},
+    {"_varapproxr_vb_logistic_n", (DL_FUNC) &_varapproxr_vb_logistic_n, 10},
     {"_varapproxr_ph_exponential", (DL_FUNC) &_varapproxr_ph_exponential, 8},
     {NULL, NULL, 0}
 };

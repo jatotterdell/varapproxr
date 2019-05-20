@@ -5,6 +5,37 @@
 
 using namespace Rcpp;
 
+const arma::vec MS_p = {0.003246343272134, 0.051517477033972,
+                        0.195077912673858, 0.315569823632818,
+                        0.274149576158423, 0.131076880695470,
+                        0.027912418727972, 0.001449567805354};
+const arma::vec MS_s = {1.365340806296348, 1.059523971016916, 
+                        0.830791313765644, 0.650732166639391,
+                        0.508135425366489, 0.396313345166341,
+                        0.308904252267995, 0.238212616409306};
+
+// [[Rcpp::export]]
+arma::vec b0(const arma::vec& mu, const arma::vec& sigma) {
+  arma::mat Omega = sqrt(1 + sigma * trans(MS_s % MS_s));
+  arma::mat tmp = (mu * trans(MS_s)) / Omega;
+  return(pnorm_mat(tmp) * MS_p);
+}
+
+// [[Rcpp::export]]
+arma::vec b1(const arma::vec& mu, const arma::vec& sigma) {
+  arma::mat Omega = sqrt(1 + sigma * trans(MS_s % MS_s));
+  arma::mat tmp = (mu * trans(MS_s)) / Omega;
+  return((dnorm_mat(tmp) / Omega) * (MS_p % MS_s));
+}
+
+// [[Rcpp::export]]
+void B(arma::vec& b0, arma::vec& b1, const arma::vec& mu, const arma::vec& sigma) {
+  arma::mat Omega = sqrt(1 + sigma * trans(MS_s % MS_s));
+  arma::mat tmp = (mu * trans(MS_s)) / Omega;
+  b0 = pnorm_mat(tmp) * MS_p;
+  b1 = (dnorm_mat(tmp) / Omega) * (MS_p % MS_s);
+}
+
 //' Perform Jaakkola-Jordan update of variational parameters
 //' 
 //' @param X The design matrix
@@ -33,8 +64,8 @@ double jaakkola_jordan(
   arma::mat Sigma = -0.5*inv(reshape(eta2 + eta2_p, p, p));
   arma::vec mu = Sigma * (eta1 + eta1_p);
 
-  double l = real(0.5*log_det(Sigma) - 0.5*log_det(Sigma0)) +
-    as_scalar(0.5*trans(mu)*inv(Sigma)*mu - 0.5*trans(mu0)*inv(Sigma0)*mu0) +
+  double l = mvn_entropy(Sigma) - real(0.5*log_det(Sigma0)) +
+    0.5*as_scalar(trans(mu)*inv(Sigma)*mu - trans(mu0)*inv(Sigma0)*mu0) +
     sum(xi / 2 - log(1 + exp(xi)) + (xi / 4) % tanh(xi / 2));
   return l;
 };
@@ -71,8 +102,8 @@ double jaakkola_jordan_n(
   arma::mat Sigma = -0.5*inv(reshape(eta2 + eta2_p, p, p));
   arma::vec mu = Sigma * (eta1 + eta1_p);
   
-  double l = real(0.5*log_det(Sigma) - 0.5*log_det(Sigma0)) +
-    as_scalar(0.5*trans(mu)*inv(Sigma)*mu - 0.5*trans(mu0)*inv(Sigma0)*mu0) +
+  double l = mvn_entropy(Sigma) - real(0.5*log_det(Sigma0)) +
+    0.5*as_scalar(trans(mu)*inv(Sigma)*mu - trans(mu0)*inv(Sigma0)*mu0) +
     as_scalar(trans(n) * (xi / 2 - log(1 + exp(xi)) + (xi / 4) % tanh(xi / 2)));
   return l;
 };
@@ -97,7 +128,7 @@ double saul_jordan(
   int p = X.n_cols;
   arma::mat Sigma0 = -0.5*inv(reshape(eta2_p, p, p));
   arma::vec mu0 = Sigma0 * eta1_p;
-  arma::mat tmp1 = -0.5*X*inv(reshape(eta2 +eta2_p, p, p));
+  arma::mat tmp1 = -0.5*X*inv(reshape(eta2 + eta2_p, p, p));
   arma::vec mu = tmp1 * (eta1 + eta1_p);
   arma::vec sigma2 = diagvec(tmp1 * trans(X));
   arma::vec omega0 = mu + 0.5 * (1 - 2 * omega1) % sigma2;
@@ -109,10 +140,10 @@ double saul_jordan(
   arma::mat Sigma = -0.5*inv(reshape(eta2 + eta2_p, p, p));
   mu = Sigma * (eta1 + eta1_p);
   
-  double l = real(0.5*log_det(Sigma) - 0.5*log_det(Sigma0)) + 0.5*p -
+  double l = mvn_entropy(Sigma) - real(0.5*log_det(Sigma0)) -
     0.5*trace( inv(Sigma0) * (Sigma + (mu - mu0) * trans(mu - mu0)) ) +
-    dot(y, X * mu) - 0.5 * dot(omega1 % omega1, sigma2) -
-    sum(log(1 + exp(X*mu + 0.5 * (1 - 2 * omega1) % sigma2)));
+    dot(y, X * mu) - 0.5 * dot(omega1 % omega1, diagvec(X*Sigma*trans(X))) -
+    sum(log(1 + exp(X*mu + 0.5 * (1 - 2 * omega1) % diagvec(X*Sigma*trans(X)))));
   return l;
 }
 
@@ -139,7 +170,7 @@ double saul_jordan_n(
   int p = X.n_cols;
   arma::mat Sigma0 = -0.5*inv(reshape(eta2_p, p, p));
   arma::vec mu0 = Sigma0 * eta1_p;
-  arma::mat tmp1 = -0.5*X*inv(reshape(eta2 +eta2_p, p, p));
+  arma::mat tmp1 = -0.5*X*inv(reshape(eta2 + eta2_p, p, p));
   arma::vec mu = tmp1 * (eta1 + eta1_p);
   arma::vec sigma2 = diagvec(tmp1 * trans(X));
   arma::vec omega0 = mu + 0.5 * (1 - 2 * omega1) % sigma2;
@@ -151,12 +182,14 @@ double saul_jordan_n(
   arma::mat Sigma = -0.5*inv(reshape(eta2 + eta2_p, p, p));
   mu = Sigma * (eta1 + eta1_p);
   
-  double l = real(0.5*log_det(Sigma) - 0.5*log_det(Sigma0)) + 0.5*p -
+  double l = mvn_entropy(Sigma) - real(0.5*log_det(Sigma0)) -
     0.5*trace( inv(Sigma0) * (Sigma + (mu - mu0) * trans(mu - mu0)) ) +
-    dot(y, X * mu) - 0.5 * dot(n % (omega1 % omega1), sigma2) -
-    as_scalar(trans(n) * log(1 + exp(X*mu + 0.5 * (1 - 2 * omega1) % sigma2)));
+    dot(y, X * mu) - 0.5 * dot(n % (omega1 % omega1), diagvec(X*Sigma*trans(X))) -
+    as_scalar(trans(n) * log(1 + exp(X*mu + 0.5 * (1 - 2 * omega1) % diagvec(X*Sigma*trans(X)))));
   return l;
 }
+
+
 
 
 //' Perform Knowles-Minka-Wand update of variational parameters
@@ -194,7 +227,11 @@ double knowles_minka_wand(
   arma::mat Sigma = -0.5*inv(reshape(eta2 + eta2_p, p, p));
   arma::vec mu = Sigma * (eta1 + eta1_p);
   
-  double l = real(0.5*log_det(Sigma) - 0.5*log_det(Sigma0)) + 0.5*p -
+  Omega = sqrt(1 + diagvec(X*Sigma*trans(X)) * trans(MS_s % MS_s));
+  tmp2 = (X*mu * trans(MS_s)) / Omega;
+  omega3 = pnorm_mat(tmp2) * MS_p;
+  
+  double l = mvn_entropy(Sigma) - real(0.5*log_det(Sigma0)) -
     0.5*trace( inv(Sigma0) * (Sigma + (mu - mu0) * trans(mu - mu0)) ) +
     dot(y, X * mu) - sum(omega3);
   return l;
@@ -239,7 +276,11 @@ double knowles_minka_wand_n(
   arma::mat Sigma = -0.5*inv(reshape(eta2 + eta2_p, p, p));
   arma::vec mu = Sigma * (eta1 + eta1_p);
   
-  double l = real(0.5*log_det(Sigma) - 0.5*log_det(Sigma0)) + 0.5*p -
+  Omega = sqrt(1 + diagvec(X*Sigma*trans(X)) * trans(MS_s % MS_s));
+  tmp2 = (X*mu * trans(MS_s)) / Omega;
+  omega3 = pnorm_mat(tmp2) * MS_p;
+  
+  double l = mvn_entropy(Sigma) - real(0.5*log_det(Sigma0)) -
     0.5*trace( inv(Sigma0) * (Sigma + (mu - mu0) * trans(mu - mu0)) ) +
     dot(y, X * mu) - sum(omega3);
   return l;
@@ -264,8 +305,10 @@ List vb_logistic(
   const arma::mat& X, const arma::vec& y,
   const arma::vec& mu0, const arma::mat& Sigma0,
   double tol = 1e-8, int maxiter = 1000, int maxiter_jj = 25,
-  std::string alg = "jj"
+  std::string alg = "jj", bool verbose = false
 ) {
+  
+  Rcpp::Rcout.precision(10);
   
   int p = X.n_cols;
   int n = X.n_rows;
@@ -315,6 +358,8 @@ List vb_logistic(
       elbo(i) = knowles_minka_wand(X, y, eta1, eta2, eta1_p, eta2_p, MS_p, MS_s);
     }
 
+    if(verbose)
+      Rcpp::Rcout << "Iter: " << std::setw(3) << i << "; ELBO = " << std::fixed << elbo[i] << std::endl;
     // check for convergence
     if(i > 0 && !jj_converged && i < maxiter_jj && fabs(elbo(i) - elbo(i - 1)) < tol) {
       jj_converged = 1;
@@ -355,8 +400,10 @@ List vb_logistic_n(
     const arma::vec& n,
     const arma::vec& mu0, const arma::mat& Sigma0,
     double tol = 1e-8, int maxiter = 1000, int maxiter_jj = 25,
-    std::string alg = "jj"
+    std::string alg = "jj", bool verbose = false
 ) {
+  
+  Rcpp::Rcout.precision(10);
   
   int p = X.n_cols;
   int N = X.n_rows;
@@ -406,6 +453,8 @@ List vb_logistic_n(
       elbo(i) = knowles_minka_wand_n(X, y, n, eta1, eta2, eta1_p, eta2_p, MS_p, MS_s);
     }
     
+    if(verbose)
+      Rcpp::Rcout << "Iter: " << std::setw(3) << i << "; ELBO = " << std::fixed << elbo[i] << std::endl;
     // check for convergence
     if(i > 0 && !jj_converged && i < maxiter_jj && fabs(elbo(i) - elbo(i - 1)) < tol) {
       jj_converged = 1;

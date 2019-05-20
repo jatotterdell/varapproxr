@@ -39,6 +39,7 @@ List ph_exponential(
   int P = X.n_cols;
   bool converged = 0;
   int iterations = 0;
+  Rcpp::Rcout.precision(10);
   arma::vec elbo(maxiter);
   
   arma::mat invSig0 = inv(Sigma0);
@@ -58,7 +59,7 @@ List ph_exponential(
       dot(v, X*mu) - dot(y, exp(X*mu + diagvec(X*Sigma*trans(X))/2));
     
     if(verbose)
-      Rcout << "Iteration: " << i << ", ELBO(q) = " << elbo[i] << std::endl;
+      Rcpp::Rcout << "Iter: " << std::setw(3) << i << "; ELBO = " << std::fixed << elbo[i] << std::endl;
     
     // Check for convergence
     if(i > 0 && fabs(elbo(i) - elbo(i - 1)) < tol) {

@@ -50,8 +50,20 @@ dnorm_mat <- function(m) {
 #' @return v A list of relevant outputs
 #' 
 #' @export
-vb_lin_reg <- function(X, y, mu0, Sigma0, a0, b0, tol = 1e-8, maxiter = 100L) {
-    .Call(`_varapproxr_vb_lin_reg`, X, y, mu0, Sigma0, a0, b0, tol, maxiter)
+vb_lin_reg <- function(X, y, mu0, Sigma0, a0, b0, tol = 1e-8, maxiter = 100L, verbose = FALSE) {
+    .Call(`_varapproxr_vb_lin_reg`, X, y, mu0, Sigma0, a0, b0, tol, maxiter, verbose)
+}
+
+b0 <- function(mu, sigma) {
+    .Call(`_varapproxr_b0`, mu, sigma)
+}
+
+b1 <- function(mu, sigma) {
+    .Call(`_varapproxr_b1`, mu, sigma)
+}
+
+B <- function(b0, b1, mu, sigma) {
+    invisible(.Call(`_varapproxr_B`, b0, b1, mu, sigma))
 }
 
 #' Perform Jaakkola-Jordan update of variational parameters
@@ -148,8 +160,8 @@ knowles_minka_wand_n <- function(X, y, n, eta1, eta2, eta1_p, eta2_p, MS_p, MS_s
 #' Must be one of "jj", "sj", "kmw".
 #' 
 #' @export
-vb_logistic <- function(X, y, mu0, Sigma0, tol = 1e-8, maxiter = 1000L, maxiter_jj = 25L, alg = "jj") {
-    .Call(`_varapproxr_vb_logistic`, X, y, mu0, Sigma0, tol, maxiter, maxiter_jj, alg)
+vb_logistic <- function(X, y, mu0, Sigma0, tol = 1e-8, maxiter = 1000L, maxiter_jj = 25L, alg = "jj", verbose = FALSE) {
+    .Call(`_varapproxr_vb_logistic`, X, y, mu0, Sigma0, tol, maxiter, maxiter_jj, alg, verbose)
 }
 
 #' Perform variational inference for logistic regression model
@@ -166,8 +178,8 @@ vb_logistic <- function(X, y, mu0, Sigma0, tol = 1e-8, maxiter = 1000L, maxiter_
 #' Must be one of "jj", "sj", "kmw".
 #' 
 #' @export
-vb_logistic_n <- function(X, y, n, mu0, Sigma0, tol = 1e-8, maxiter = 1000L, maxiter_jj = 25L, alg = "jj") {
-    .Call(`_varapproxr_vb_logistic_n`, X, y, n, mu0, Sigma0, tol, maxiter, maxiter_jj, alg)
+vb_logistic_n <- function(X, y, n, mu0, Sigma0, tol = 1e-8, maxiter = 1000L, maxiter_jj = 25L, alg = "jj", verbose = FALSE) {
+    .Call(`_varapproxr_vb_logistic_n`, X, y, n, mu0, Sigma0, tol, maxiter, maxiter_jj, alg, verbose)
 }
 
 #' Normal parametric variational Bayes for Exponential PH Model.
