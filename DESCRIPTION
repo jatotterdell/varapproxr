@@ -1,7 +1,7 @@
 Package: varapproxr
 Type: Package
 Title: Repository for variational approximation implementations
-Version: 1.0
+Version: 0.0.0.9000
 Date: 2019-02-23
 Author: James Totterdell
 Maintainer: James Totterdell <jatotterdell@gmail.com>
