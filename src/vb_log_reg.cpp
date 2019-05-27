@@ -64,7 +64,7 @@ double jaakkola_jordan(
   arma::mat Sigma = -0.5*inv(reshape(eta2 + eta2_p, p, p));
   arma::vec mu = Sigma * (eta1 + eta1_p);
 
-  double l = mvn_entropy(Sigma) - real(0.5*log_det(Sigma0)) +
+  double l = real(0.5*log_det(Sigma)) - real(0.5*log_det(Sigma0)) +
     0.5*as_scalar(trans(mu)*inv(Sigma)*mu - trans(mu0)*inv(Sigma0)*mu0) +
     sum(xi / 2 - log(1 + exp(xi)) + (xi / 4) % tanh(xi / 2));
   return l;
@@ -102,7 +102,7 @@ double jaakkola_jordan_n(
   arma::mat Sigma = -0.5*inv(reshape(eta2 + eta2_p, p, p));
   arma::vec mu = Sigma * (eta1 + eta1_p);
   
-  double l = mvn_entropy(Sigma) - real(0.5*log_det(Sigma0)) +
+  double l = real(0.5*log_det(Sigma)) - real(0.5*log_det(Sigma0)) +
     0.5*as_scalar(trans(mu)*inv(Sigma)*mu - trans(mu0)*inv(Sigma0)*mu0) +
     as_scalar(trans(n) * (xi / 2 - log(1 + exp(xi)) + (xi / 4) % tanh(xi / 2)));
   return l;
@@ -140,7 +140,7 @@ double saul_jordan(
   arma::mat Sigma = -0.5*inv(reshape(eta2 + eta2_p, p, p));
   mu = Sigma * (eta1 + eta1_p);
   
-  double l = mvn_entropy(Sigma) - real(0.5*log_det(Sigma0)) -
+  double l = 0.5*p + real(0.5*log_det(Sigma)) - real(0.5*log_det(Sigma0)) -
     0.5*trace( inv(Sigma0) * (Sigma + (mu - mu0) * trans(mu - mu0)) ) +
     dot(y, X * mu) - 0.5 * dot(omega1 % omega1, diagvec(X*Sigma*trans(X))) -
     sum(log(1 + exp(X*mu + 0.5 * (1 - 2 * omega1) % diagvec(X*Sigma*trans(X)))));
