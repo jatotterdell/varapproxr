@@ -213,8 +213,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // vb_logistic
-List vb_logistic(const arma::mat& X, const arma::vec& y, const arma::vec& mu0, const arma::mat& Sigma0, double tol, int maxiter, int maxiter_jj, std::string alg, bool verbose);
-RcppExport SEXP _varapproxr_vb_logistic(SEXP XSEXP, SEXP ySEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP maxiter_jjSEXP, SEXP algSEXP, SEXP verboseSEXP) {
+List vb_logistic(const arma::mat& X, const arma::vec& y, const arma::vec& mu0, const arma::mat& Sigma0, const arma::vec& mu_init, const arma::mat& Sigma_init, double tol, int maxiter, int maxiter_jj, std::string alg, bool verbose);
+RcppExport SEXP _varapproxr_vb_logistic(SEXP XSEXP, SEXP ySEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP mu_initSEXP, SEXP Sigma_initSEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP maxiter_jjSEXP, SEXP algSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -222,18 +222,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec& >::type y(ySEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type mu0(mu0SEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type Sigma0(Sigma0SEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type mu_init(mu_initSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Sigma_init(Sigma_initSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
     Rcpp::traits::input_parameter< int >::type maxiter_jj(maxiter_jjSEXP);
     Rcpp::traits::input_parameter< std::string >::type alg(algSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(vb_logistic(X, y, mu0, Sigma0, tol, maxiter, maxiter_jj, alg, verbose));
+    rcpp_result_gen = Rcpp::wrap(vb_logistic(X, y, mu0, Sigma0, mu_init, Sigma_init, tol, maxiter, maxiter_jj, alg, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
 // vb_logistic_n
-List vb_logistic_n(const arma::mat& X, const arma::vec& y, const arma::vec& n, const arma::vec& mu0, const arma::mat& Sigma0, double tol, int maxiter, int maxiter_jj, std::string alg, bool verbose);
-RcppExport SEXP _varapproxr_vb_logistic_n(SEXP XSEXP, SEXP ySEXP, SEXP nSEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP maxiter_jjSEXP, SEXP algSEXP, SEXP verboseSEXP) {
+List vb_logistic_n(const arma::mat& X, const arma::vec& y, const arma::vec& n, const arma::vec& mu0, const arma::mat& Sigma0, const arma::vec& mu_init, const arma::mat& Sigma_init, double tol, int maxiter, int maxiter_jj, std::string alg, bool verbose);
+RcppExport SEXP _varapproxr_vb_logistic_n(SEXP XSEXP, SEXP ySEXP, SEXP nSEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP mu_initSEXP, SEXP Sigma_initSEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP maxiter_jjSEXP, SEXP algSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -242,12 +244,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::vec& >::type n(nSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type mu0(mu0SEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type Sigma0(Sigma0SEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type mu_init(mu_initSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Sigma_init(Sigma_initSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
     Rcpp::traits::input_parameter< int >::type maxiter_jj(maxiter_jjSEXP);
     Rcpp::traits::input_parameter< std::string >::type alg(algSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(vb_logistic_n(X, y, n, mu0, Sigma0, tol, maxiter, maxiter_jj, alg, verbose));
+    rcpp_result_gen = Rcpp::wrap(vb_logistic_n(X, y, n, mu0, Sigma0, mu_init, Sigma_init, tol, maxiter, maxiter_jj, alg, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -285,8 +289,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_saul_jordan_n", (DL_FUNC) &_varapproxr_saul_jordan_n, 8},
     {"_varapproxr_knowles_minka_wand", (DL_FUNC) &_varapproxr_knowles_minka_wand, 8},
     {"_varapproxr_knowles_minka_wand_n", (DL_FUNC) &_varapproxr_knowles_minka_wand_n, 9},
-    {"_varapproxr_vb_logistic", (DL_FUNC) &_varapproxr_vb_logistic, 9},
-    {"_varapproxr_vb_logistic_n", (DL_FUNC) &_varapproxr_vb_logistic_n, 10},
+    {"_varapproxr_vb_logistic", (DL_FUNC) &_varapproxr_vb_logistic, 11},
+    {"_varapproxr_vb_logistic_n", (DL_FUNC) &_varapproxr_vb_logistic_n, 12},
     {"_varapproxr_ph_exponential", (DL_FUNC) &_varapproxr_ph_exponential, 8},
     {NULL, NULL, 0}
 };

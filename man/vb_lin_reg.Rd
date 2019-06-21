@@ -5,7 +5,8 @@
 \title{Perform mean-field variational inference for 
 a basic linear regression model.}
 \usage{
-vb_lin_reg(X, y, mu0, Sigma0, a0, b0, tol = 1e-08, maxiter = 100L)
+vb_lin_reg(X, y, mu0, Sigma0, a0, b0, tol = 1e-08, maxiter = 100L,
+  verbose = FALSE)
 }
 \arguments{
 \item{X}{The design matrix}
