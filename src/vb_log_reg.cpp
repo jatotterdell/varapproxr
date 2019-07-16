@@ -304,6 +304,7 @@ double knowles_minka_wand_n(
 List vb_logistic(
   const arma::mat& X, const arma::vec& y,
   const arma::vec& mu0, const arma::mat& Sigma0,
+  const arma::vec& mu_init, const arma::mat& Sigma_init,
   double tol = 1e-8, int maxiter = 1000, int maxiter_jj = 25,
   std::string alg = "jj", bool verbose = false
 ) {
@@ -321,8 +322,8 @@ List vb_logistic(
   
   arma::vec eta2_p = -0.5*arma::vectorise(inv(Sigma0));
   arma::vec eta1_p = solve(Sigma0, mu0);
-  arma::vec eta1 = arma::zeros(p);
-  arma::vec eta2 = -0.5*arma::vectorise(arma::diagmat(arma::ones(p)));
+  arma::vec eta1 = solve(Sigma_init, mu_init);
+  arma::vec eta2 = -0.5*arma::vectorise(inv(Sigma_init));
   
   arma::vec omega1 = 0.5 + arma::zeros(n);
   
@@ -380,25 +381,45 @@ List vb_logistic(
 }
 
 
-//' Perform variational inference for logistic regression model
+//' Variational inference for binomial logistic regression model
+//' 
+//' This is an experimental function to perform variational inference
+//' for binomial logistic regression models.
 //' 
 //' @param X The design matrix
 //' @param y The response vector
 //' @param n The trial vector
 //' @param mu0 The prior mean for beta paramter
 //' @param Sigma0 The prior variance for beta parameter
+//' @param mu_init Initial value for \code{mu} for optimisation.
+//' @param Sigma_init Initial value for \code{Sigma} for optimisation.
 //' @param tol The tolerance level to assess convergence
 //' @param maxiter The maximum number of iterations
-//' @param maxiter_jj The maximum number of Jaakkola-Jordan iterations to initialise estimation
-//' @param alg The algorithm used for final estimation of variational parameters. 
-//' Must be one of "jj", "sj", "kmw".
+//' @param maxiter_jj The maximum number of Jaakkola-Jordan 
+//'   iterations to initialise estimation
+//' @param alg The algorithm used for final estimation 
+//'   of variational parameters. 
+//'   Must be one of \code{jj}, \code{sj}, or \code{kmw}.
 //' 
+//' @section Details:
+//'   By default, the algorithm always intialises with Jaakkola-Jordan updates
+//'   until convergence or \code{maxiter_jj}.
+//' 
+//' @return A list containing:
+//' \describe{
+//'   \item{\code{converged}}{Indicator for algorithm convergence.}
+//'   \item{\code{jj_converged}}{Indicator for convergence of initial Jaakkola-Jordan iterations.}
+//'   \item{\code{elbo}}{Vector of the ELBO sequence.} 
+//'   \item{\code{mu}}{The optimised value of mu.}
+//'   \item{\code{Sigma}}{The optimised value of Sigma.}
+//' }
 //' @export
 // [[Rcpp::export]]
 List vb_logistic_n(
     const arma::mat& X, const arma::vec& y,
     const arma::vec& n,
     const arma::vec& mu0, const arma::mat& Sigma0,
+    const arma::vec& mu_init, const arma::mat& Sigma_init,
     double tol = 1e-8, int maxiter = 1000, int maxiter_jj = 25,
     std::string alg = "jj", bool verbose = false
 ) {
@@ -408,6 +429,8 @@ List vb_logistic_n(
   int p = X.n_cols;
   int N = X.n_rows;
   
+  // Check dimensions of all arguments (todo)
+  
   bool converged = 0;
   bool jj_converged = 0;
   int iterations = 0;
@@ -416,8 +439,8 @@ List vb_logistic_n(
   
   arma::vec eta2_p = -0.5*arma::vectorise(inv(Sigma0));
   arma::vec eta1_p = solve(Sigma0, mu0);
-  arma::vec eta1 = arma::zeros(p);
-  arma::vec eta2 = -0.5*arma::vectorise(arma::diagmat(arma::ones(p)));
+  arma::vec eta1 = solve(Sigma_init, mu_init);
+  arma::vec eta2 = -0.5*arma::vectorise(inv(Sigma_init));
   
   arma::vec omega1 = 0.5 + arma::zeros(N);
   

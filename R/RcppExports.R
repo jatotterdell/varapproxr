@@ -160,11 +160,14 @@ knowles_minka_wand_n <- function(X, y, n, eta1, eta2, eta1_p, eta2_p, MS_p, MS_s
 #' Must be one of "jj", "sj", "kmw".
 #' 
 #' @export
-vb_logistic <- function(X, y, mu0, Sigma0, tol = 1e-8, maxiter = 1000L, maxiter_jj = 25L, alg = "jj", verbose = FALSE) {
-    .Call(`_varapproxr_vb_logistic`, X, y, mu0, Sigma0, tol, maxiter, maxiter_jj, alg, verbose)
+vb_logistic <- function(X, y, mu0, Sigma0, mu_init, Sigma_init, tol = 1e-8, maxiter = 1000L, maxiter_jj = 25L, alg = "jj", verbose = FALSE) {
+    .Call(`_varapproxr_vb_logistic`, X, y, mu0, Sigma0, mu_init, Sigma_init, tol, maxiter, maxiter_jj, alg, verbose)
 }
 
-#' Perform variational inference for logistic regression model
+#' Variational inference for binomial logistic regression model
+#' 
+#' This is an experimental function to perform variational inference
+#' for binomial logistic regression models.
 #' 
 #' @param X The design matrix
 #' @param y The response vector
@@ -173,13 +176,27 @@ vb_logistic <- function(X, y, mu0, Sigma0, tol = 1e-8, maxiter = 1000L, maxiter_
 #' @param Sigma0 The prior variance for beta parameter
 #' @param tol The tolerance level to assess convergence
 #' @param maxiter The maximum number of iterations
-#' @param maxiter_jj The maximum number of Jaakkola-Jordan iterations to initialise estimation
-#' @param alg The algorithm used for final estimation of variational parameters. 
-#' Must be one of "jj", "sj", "kmw".
+#' @param maxiter_jj The maximum number of Jaakkola-Jordan 
+#'   iterations to initialise estimation
+#' @param alg The algorithm used for final estimation 
+#'   of variational parameters. 
+#'   Must be one of \code{jj}, \code{sj}, or \code{kmw}.
 #' 
+#' @section Details:
+#'   By default, the algorithm always intialises with Jaakkola-Jordan updates
+#'   until convergence or \code{maxiter_jj}.
+#' 
+#' @return A list containing:
+#' \describe{
+#'   \item{\code{converged}}{Indicator for algorithm convergence.}
+#'   \item{\code{jj_converged}}{Indicator for convergence of initial Jaakkola-Jordan iterations.}
+#'   \item{\code{elbo}}{Vector of the ELBO sequence.} 
+#'   \item{\code{mu}}{The optimised value of mu.}
+#'   \item{\code{Sigma}}{The optimised value of Sigma.}
+#' }
 #' @export
-vb_logistic_n <- function(X, y, n, mu0, Sigma0, tol = 1e-8, maxiter = 1000L, maxiter_jj = 25L, alg = "jj", verbose = FALSE) {
-    .Call(`_varapproxr_vb_logistic_n`, X, y, n, mu0, Sigma0, tol, maxiter, maxiter_jj, alg, verbose)
+vb_logistic_n <- function(X, y, n, mu0, Sigma0, mu_init, Sigma_init, tol = 1e-8, maxiter = 1000L, maxiter_jj = 25L, alg = "jj", verbose = FALSE) {
+    .Call(`_varapproxr_vb_logistic_n`, X, y, n, mu0, Sigma0, mu_init, Sigma_init, tol, maxiter, maxiter_jj, alg, verbose)
 }
 
 #' Normal parametric variational Bayes for Exponential PH Model.

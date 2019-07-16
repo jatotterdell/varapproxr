@@ -4,8 +4,8 @@
 \alias{vb_logistic}
 \title{Perform variational inference for logistic regression model}
 \usage{
-vb_logistic(X, y, mu0, Sigma0, tol = 1e-08, maxiter = 1000L,
-  maxiter_jj = 25L, alg = "jj")
+vb_logistic(X, y, mu0, Sigma0, mu_init, Sigma_init, tol = 1e-08,
+  maxiter = 1000L, maxiter_jj = 25L, alg = "jj", verbose = FALSE)
 }
 \arguments{
 \item{X}{The design matrix}

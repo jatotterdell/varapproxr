@@ -2,10 +2,10 @@
 % Please edit documentation in R/RcppExports.R
 \name{vb_logistic_n}
 \alias{vb_logistic_n}
-\title{Perform variational inference for logistic regression model}
+\title{Variational inference for binomial logistic regression model}
 \usage{
-vb_logistic_n(X, y, n, mu0, Sigma0, tol = 1e-08, maxiter = 1000L,
-  maxiter_jj = 25L, alg = "jj")
+vb_logistic_n(X, y, n, mu0, Sigma0, mu_init, Sigma_init, tol = 1e-08,
+  maxiter = 1000L, maxiter_jj = 25L, alg = "jj", verbose = FALSE)
 }
 \arguments{
 \item{X}{The design matrix}
@@ -22,11 +22,30 @@ vb_logistic_n(X, y, n, mu0, Sigma0, tol = 1e-08, maxiter = 1000L,
 
 \item{maxiter}{The maximum number of iterations}
 
-\item{maxiter_jj}{The maximum number of Jaakkola-Jordan iterations to initialise estimation}
+\item{maxiter_jj}{The maximum number of Jaakkola-Jordan 
+iterations to initialise estimation}
 
-\item{alg}{The algorithm used for final estimation of variational parameters. 
-Must be one of "jj", "sj", "kmw".}
+\item{alg}{The algorithm used for final estimation 
+of variational parameters. 
+Must be one of \code{jj}, \code{sj}, or \code{kmw}.}
+}
+\value{
+A list containing:
+\describe{
+  \item{\code{converged}}{Indicator for algorithm convergence.}
+  \item{\code{jj_converged}}{Indicator for convergence of initial Jaakkola-Jordan iterations.}
+  \item{\code{elbo}}{Vector of the ELBO sequence.} 
+  \item{\code{mu}}{The optimised value of mu.}
+  \item{\code{Sigma}}{The optimised value of Sigma.}
+}
 }
 \description{
-Perform variational inference for logistic regression model
+This is an experimental function to perform variational inference
+for binomial logistic regression models.
 }
+\section{Details}{
+
+  By default, the algorithm always intialises with Jaakkola-Jordan updates
+  until convergence or \code{maxiter_jj}.
+}
+
