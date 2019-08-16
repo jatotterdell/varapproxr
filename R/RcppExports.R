@@ -174,6 +174,8 @@ vb_logistic <- function(X, y, mu0, Sigma0, mu_init, Sigma_init, tol = 1e-8, maxi
 #' @param n The trial vector
 #' @param mu0 The prior mean for beta paramter
 #' @param Sigma0 The prior variance for beta parameter
+#' @param mu_init Initial value for \code{mu} for optimisation.
+#' @param Sigma_init Initial value for \code{Sigma} for optimisation.
 #' @param tol The tolerance level to assess convergence
 #' @param maxiter The maximum number of iterations
 #' @param maxiter_jj The maximum number of Jaakkola-Jordan 
@@ -197,6 +199,35 @@ vb_logistic <- function(X, y, mu0, Sigma0, mu_init, Sigma_init, tol = 1e-8, maxi
 #' @export
 vb_logistic_n <- function(X, y, n, mu0, Sigma0, mu_init, Sigma_init, tol = 1e-8, maxiter = 1000L, maxiter_jj = 25L, alg = "jj", verbose = FALSE) {
     .Call(`_varapproxr_vb_logistic_n`, X, y, n, mu0, Sigma0, mu_init, Sigma_init, tol, maxiter, maxiter_jj, alg, verbose)
+}
+
+#' Variational Bayes for logistic mixed model.
+#' 
+#' 
+#' @param X The design matrix
+#' @param Z Group design matrix
+#' @param y The response vector
+#' @param mu_beta The prior mean for beta
+#' @param sigma_beta The prior covariance for beta
+#' @param mu Initial value for mu
+#' @param sigma Initial value for sigma
+#' @param A Initial value for A
+#' @param E_inv_sigsq Initial value for E(1/sigma^2)
+#' @param E_inv_a Initial value for E(1/a)
+#' @param tol Tolerance level
+#' @param maxiter Maximum iterations
+#' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
+#' @return A list containing:
+#' \describe{
+#'   \item{converged}{Indicator for algorithm convergence.}
+#'   \item{elbo}{Vector of the ELBO sequence.} 
+#'   \item{mu}{The optimised value of mu.}
+#'   \item{Sigma}{The optimised value of Sigma.}
+#' }
+#' 
+#' @export
+jj_logistic_mixed <- function(X, Z, y, mu_beta, sigma_beta, mu, sigma, A = 1.0, E_inv_sigsq = 1.0, E_inv_a = 1.0, tol = 1e-8, maxiter = 100L, verbose = FALSE) {
+    .Call(`_varapproxr_jj_logistic_mixed`, X, Z, y, mu_beta, sigma_beta, mu, sigma, A, E_inv_sigsq, E_inv_a, tol, maxiter, verbose)
 }
 
 #' Normal parametric variational Bayes for Exponential PH Model.

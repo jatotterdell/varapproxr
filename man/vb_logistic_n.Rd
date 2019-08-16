@@ -18,6 +18,10 @@ vb_logistic_n(X, y, n, mu0, Sigma0, mu_init, Sigma_init, tol = 1e-08,
 
 \item{Sigma0}{The prior variance for beta parameter}
 
+\item{mu_init}{Initial value for \code{mu} for optimisation.}
+
+\item{Sigma_init}{Initial value for \code{Sigma} for optimisation.}
+
 \item{tol}{The tolerance level to assess convergence}
 
 \item{maxiter}{The maximum number of iterations}
