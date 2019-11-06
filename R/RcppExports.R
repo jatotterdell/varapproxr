@@ -254,9 +254,9 @@ vb_logistic_n <- function(X, y, n, mu0, Sigma0, mu_init, Sigma_init, tol = 1e-8,
 #' @param sigma_beta The prior covariance for beta
 #' @param mu Initial value for mu
 #' @param sigma Initial value for sigma
-#' @param A Initial value for A
-#' @param E_inv_sigsq Initial value for E(1/sigma^2)
-#' @param E_inv_a Initial value for E(1/a)
+#' @param Au The prior shape for u
+#' @param Bu The prior scale for u
+#' @param Aqu The initial value for Aqu
 #' @param tol Tolerance level
 #' @param maxiter Maximum iterations
 #' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
@@ -265,12 +265,12 @@ vb_logistic_n <- function(X, y, n, mu0, Sigma0, mu_init, Sigma_init, tol = 1e-8,
 #'   \item{converged}{Indicator for algorithm convergence.}
 #'   \item{elbo}{Vector of the ELBO sequence.} 
 #'   \item{mu}{The optimised value of mu.}
-#'   \item{Sigma}{The optimised value of Sigma.}
+#'   \item{sigma}{The optimised value of sigma.}
 #' }
 #' 
 #' @export
-jj_logistic_mixed <- function(X, Z, y, mu_beta, sigma_beta, mu, sigma, A = 1.0, E_inv_sigsq = 1.0, E_inv_a = 1.0, tol = 1e-8, maxiter = 100L, verbose = FALSE) {
-    .Call(`_varapproxr_jj_logistic_mixed`, X, Z, y, mu_beta, sigma_beta, mu, sigma, A, E_inv_sigsq, E_inv_a, tol, maxiter, verbose)
+vb_glmm <- function(X, Z, y, mu_beta, sigma_beta, mu, sigma, Au = 1.0, Bu = 1.0, Bqu = 1.0, tol = 1e-8, maxiter = 100L, verbose = FALSE) {
+    .Call(`_varapproxr_vb_glmm`, X, Z, y, mu_beta, sigma_beta, mu, sigma, Au, Bu, Bqu, tol, maxiter, verbose)
 }
 
 #' Normal parametric variational Bayes for Exponential PH Model.

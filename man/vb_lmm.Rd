@@ -23,6 +23,14 @@ vb_lmm(X, Z, y, mu_beta, sigma_beta, mu, sigma, Aeps = 1, Beps = 1,
 
 \item{sigma}{Initial value for sigma}
 
+\item{Aeps}{The prior shape for sigma_eps}
+
+\item{Beps}{The prior scale for sigma_eps}
+
+\item{Au}{The prior shape for sigma_u}
+
+\item{Bu}{The prior scale for sigma_u}
+
 \item{tol}{Tolerance level}
 
 \item{maxiter}{Maximum iterations}

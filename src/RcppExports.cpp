@@ -282,9 +282,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// jj_logistic_mixed
-List jj_logistic_mixed(const arma::mat& X, const arma::mat& Z, const arma::vec& y, const arma::vec& mu_beta, const arma::mat& sigma_beta, arma::vec& mu, arma::mat& sigma, double A, double E_inv_sigsq, double E_inv_a, double tol, int maxiter, bool verbose);
-RcppExport SEXP _varapproxr_jj_logistic_mixed(SEXP XSEXP, SEXP ZSEXP, SEXP ySEXP, SEXP mu_betaSEXP, SEXP sigma_betaSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP ASEXP, SEXP E_inv_sigsqSEXP, SEXP E_inv_aSEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP) {
+// vb_glmm
+List vb_glmm(const arma::mat& X, const arma::mat& Z, const arma::vec& y, const arma::vec& mu_beta, const arma::mat& sigma_beta, arma::vec& mu, arma::mat& sigma, double Au, double Bu, double Bqu, double tol, int maxiter, bool verbose);
+RcppExport SEXP _varapproxr_vb_glmm(SEXP XSEXP, SEXP ZSEXP, SEXP ySEXP, SEXP mu_betaSEXP, SEXP sigma_betaSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP AuSEXP, SEXP BuSEXP, SEXP BquSEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -295,13 +295,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::mat& >::type sigma_beta(sigma_betaSEXP);
     Rcpp::traits::input_parameter< arma::vec& >::type mu(muSEXP);
     Rcpp::traits::input_parameter< arma::mat& >::type sigma(sigmaSEXP);
-    Rcpp::traits::input_parameter< double >::type A(ASEXP);
-    Rcpp::traits::input_parameter< double >::type E_inv_sigsq(E_inv_sigsqSEXP);
-    Rcpp::traits::input_parameter< double >::type E_inv_a(E_inv_aSEXP);
+    Rcpp::traits::input_parameter< double >::type Au(AuSEXP);
+    Rcpp::traits::input_parameter< double >::type Bu(BuSEXP);
+    Rcpp::traits::input_parameter< double >::type Bqu(BquSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(jj_logistic_mixed(X, Z, y, mu_beta, sigma_beta, mu, sigma, A, E_inv_sigsq, E_inv_a, tol, maxiter, verbose));
+    rcpp_result_gen = Rcpp::wrap(vb_glmm(X, Z, y, mu_beta, sigma_beta, mu, sigma, Au, Bu, Bqu, tol, maxiter, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -342,7 +342,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_knowles_minka_wand_n", (DL_FUNC) &_varapproxr_knowles_minka_wand_n, 9},
     {"_varapproxr_vb_logistic", (DL_FUNC) &_varapproxr_vb_logistic, 11},
     {"_varapproxr_vb_logistic_n", (DL_FUNC) &_varapproxr_vb_logistic_n, 12},
-    {"_varapproxr_jj_logistic_mixed", (DL_FUNC) &_varapproxr_jj_logistic_mixed, 13},
+    {"_varapproxr_vb_glmm", (DL_FUNC) &_varapproxr_vb_glmm, 13},
     {"_varapproxr_ph_exponential", (DL_FUNC) &_varapproxr_ph_exponential, 8},
     {NULL, NULL, 0}
 };

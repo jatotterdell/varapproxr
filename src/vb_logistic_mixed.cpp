@@ -15,9 +15,9 @@ using namespace Rcpp;
 //' @param sigma_beta The prior covariance for beta
 //' @param mu Initial value for mu
 //' @param sigma Initial value for sigma
-//' @param A Initial value for A
-//' @param E_inv_sigsq Initial value for E(1/sigma^2)
-//' @param E_inv_a Initial value for E(1/a)
+//' @param Au The prior shape for u
+//' @param Bu The prior scale for u
+//' @param Aqu The initial value for Aqu
 //' @param tol Tolerance level
 //' @param maxiter Maximum iterations
 //' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
@@ -26,12 +26,12 @@ using namespace Rcpp;
 //'   \item{converged}{Indicator for algorithm convergence.}
 //'   \item{elbo}{Vector of the ELBO sequence.} 
 //'   \item{mu}{The optimised value of mu.}
-//'   \item{Sigma}{The optimised value of Sigma.}
+//'   \item{sigma}{The optimised value of sigma.}
 //' }
 //' 
 //' @export
 //[[Rcpp::export]]
-List jj_logistic_mixed(
+List vb_glmm(
     const arma::mat& X, 
     const arma::mat& Z,
     const arma::vec& y,
@@ -39,9 +39,9 @@ List jj_logistic_mixed(
     const arma::mat& sigma_beta, 
     arma::vec& mu, 
     arma::mat& sigma,
-    double A = 1.0,
-    double E_inv_sigsq = 1.0, 
-    double E_inv_a = 1.0,
+    double Au = 1.0,
+    double Bu = 1.0,
+    double Bqu = 1.0,
     double tol = 1e-8, 
     int maxiter = 100,
     bool verbose = false
@@ -51,26 +51,31 @@ List jj_logistic_mixed(
   int P = X.n_cols;
   int N = X.n_rows;
   
+
+  
+  // pre-compute
+  double Aqu   = Au + 0.5*K;
   arma::mat Ik = arma::eye<arma::mat>(K, K);
   arma::mat Xi(P + K, P + K);
   arma::vec xi = y;
-  arma::vec mu_gamma(K);
-  arma::mat sigma_gamma(K,K);
-  double E_gammatgamma = 0.0;
-  
-  // pre-compute
-  double inv_Asq = 1 / (A*A);
+  arma::vec lam = xi;
+  arma::mat inv_G = Aqu / Bqu * Ik;
   arma::mat C = arma::join_rows(X, Z);
+  arma::mat CtC = trans(C)*C;
   arma::vec Cty = trans(C) * (y - 0.5);
   arma::mat inv_sigma_beta =  inv(sigma_beta);
   arma::mat inv_sigma_beta_x_mu_beta = inv_sigma_beta * mu_beta;
   arma::mat inv_sigma_0 = arma::join_rows(
     arma::join_cols(inv_sigma_beta, arma::zeros(K, P)),
-    arma::join_cols(arma::zeros(P, K), E_inv_sigsq * Ik));
+    arma::join_cols(arma::zeros(P, K), inv_G));
   arma::vec mu_0 = arma::join_cols(mu_beta, arma::zeros(K));
   arma::mat sigma_0 = inv(inv_sigma_0);
   arma::vec inv_sigma_0_x_mu_0 = inv_sigma_0 * mu_0;
   arma::vec Cty_p_inv_sigma_0_x_mu_0 = Cty + inv_sigma_0_x_mu_0;
+  arma::vec mu_u(K);
+  arma::vec mu_b(P);
+  arma::mat sigma_u(K,K);
+  arma::mat sigma_b(P,P);
   
   bool converged = 0;
   int iterations = 0;
@@ -78,22 +83,34 @@ List jj_logistic_mixed(
   arma::vec elbo(maxiter);
   
   for(int i = 0; i < maxiter && !converged; i++) {
+    
+    // Update variational parameters
     Xi = sigma + mu * trans(mu);
     xi = sqrt(diagvec(C * Xi * trans(C)));
-    inv_sigma_0.submat(P, P, P + K - 1, P + K - 1) = E_inv_sigsq * Ik;
-    sigma = inv(trans(C) * diagmat(tanh(xi/2)/(2*xi)) * C + inv_sigma_0);
-    mu = sigma * Cty_p_inv_sigma_0_x_mu_0;
-    mu_gamma = mu.subvec(P, P + K - 1);
-    sigma_gamma = sigma.submat(P, P, P + K - 1, P + K - 1);
-    E_gammatgamma = as_scalar(trans(mu_gamma) * mu_gamma) + arma::trace(sigma_gamma);
-    E_inv_a = 1 / (inv_Asq + E_inv_sigsq);
-    E_inv_sigsq = (K + 1) / (2 * E_inv_a + E_gammatgamma);
+    lam = tanh(xi/2)/(2*xi);
     
-    elbo(i) = as_scalar(ig_entropy(1, inv_Asq + E_inv_sigsq) + 
-      ig_entropy(0.5*(K + 1), E_inv_a + 0.5*E_gammatgamma) +
-      0.5*real(log_det(sigma)) + 0.5*real(log_det(inv_sigma_0)) +
-      0.5*trans(mu) * inv(sigma) * mu - 0.5*trans(mu_0) * inv_sigma_0_x_mu_0 +
-      sum(0.5*xi - log(1 + exp(xi)) + (xi/4) % tanh(xi/2)));
+    // Update parameters of q(b, u)
+    inv_sigma_0.submat(P, P, P + K - 1, P + K - 1) = inv_G;
+    sigma = inv(trans(C) * diagmat(lam) * C + inv_sigma_0);
+    inv_sigma_0_x_mu_0 = inv_sigma_0 * mu_0;
+    Cty_p_inv_sigma_0_x_mu_0 = Cty + inv_sigma_0_x_mu_0;
+    mu = sigma * Cty_p_inv_sigma_0_x_mu_0;
+    
+    // Update parameters of q(sigma_u)
+    mu_u  = mu.subvec(P, P + K - 1);
+    sigma_u = sigma.submat(P, P, P + K - 1, P + K - 1);
+    mu_b  = mu.subvec(0, P - 1);
+    sigma_b = sigma.submat(0, 0, P - 1, P - 1);
+    Bqu   = Bu + 0.5*(dot(mu_u, mu_u) + arma::trace(sigma_u));
+    inv_G = Aqu / Bqu * Ik;
+    
+    elbo(i) = 
+      mvn_entropy(sigma) + ig_entropy(Aqu, Bqu) +
+      Au*log(Bu) - lgamma(Au) - (Au + 1)*(log(Bqu) - R::digamma(Aqu)) - Bu*Aqu/Bqu -
+      0.5*(P * log(2*M_PI) + real(log_det(sigma_beta)) + dot(mu_b - mu_beta, inv_sigma_beta * (mu_b - mu_beta)) + arma::trace(inv_sigma_beta * sigma_b)) -
+      0.5*(K * log(2*M_PI) + log(K) - log(Bqu) + R::digamma(Aqu) + Aqu/Bqu * (dot(mu_u, mu_u) + arma::trace(sigma_u))) +
+      dot(y - 0.5, C*mu) + arma::trace(trans(C) * diagmat(lam) * C * sigma + mu*trans(mu)) +
+      sum(0.5*xi - log(1 + exp(xi)) + (xi/4) % tanh(xi/2));
     
     if(verbose)
       Rcpp::Rcout << "Iter: " << std::setw(3) << i + 1 << "; ELBO = " << std::fixed << elbo(i) << std::endl;
@@ -108,7 +125,7 @@ List jj_logistic_mixed(
                       Named("elbo") = elbo.subvec(0, iterations),
                       Named("mu") = mu,
                       Named("sigma") = sigma,
-                      Named("lambda_sigsq") = E_inv_sigsq,
-                      Named("lambda_a") = E_inv_a,
+                      Named("Aqu") = Aqu,
+                      Named("Bqu") = Bqu,
                       Named("xi") = xi);
 }
