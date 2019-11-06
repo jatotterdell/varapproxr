@@ -73,14 +73,14 @@ List vb_lmm(
   double Aqeps = Aeps + 0.5*N;
   double Aqu   = Au + 0.5*K;
   arma::mat Ik = arma::eye<arma::mat>(K, K);
-  arma::mat G = Aqu / Bqu * Ik;
+  arma::mat inv_G = Aqu / Bqu * Ik;
   arma::mat C = arma::join_rows(X, Z);
   arma::mat CtC = trans(C)*C;
   arma::vec Cty = trans(C)*y;
   arma::mat inv_sigma_beta =  inv(sigma_beta);
   arma::mat inv_sigma_0 = arma::join_rows(
     arma::join_cols(inv_sigma_beta, arma::zeros(K, P)),
-    arma::join_cols(arma::zeros(P, K), G));
+    arma::join_cols(arma::zeros(P, K), inv_G));
   arma::vec mu_0 = arma::join_cols(mu_beta, arma::zeros(K));
   arma::vec ymCmu = y - C*mu;
   arma::vec mu_u(K);
@@ -97,7 +97,7 @@ List vb_lmm(
   for(int i = 0; i < maxiter && !converged; i++) {
     
     // Update parameters of q(beta,u)
-    inv_sigma_0.submat(P, P, P + K - 1, P + K - 1) = G;
+    inv_sigma_0.submat(P, P, P + K - 1, P + K - 1) = inv_G;
     sigma = inv(Aqeps / Bqeps * CtC + inv_sigma_0);
     mu    = sigma * (Aqeps / Bqeps * Cty + inv_sigma_0 * mu_0);
     
@@ -110,8 +110,8 @@ List vb_lmm(
     sigma_u = sigma.submat(P, P, P + K - 1, P + K - 1);
     mu_b  = mu.subvec(0, P - 1);
     sigma_b = sigma.submat(0, 0, P - 1, P - 1);
-    Bqu   = Bu + 0.5*(dot(mu_u, mu_u) + arma::trace(G));
-    G = Aqu / Bqu * Ik;
+    Bqu   = Bu + 0.5*(dot(mu_u, mu_u) + arma::trace(sigma_u));
+    inv_G = Aqu / Bqu * Ik;
     
     // Update ELBO
     elbo(i) =
