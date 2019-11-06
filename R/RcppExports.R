@@ -54,6 +54,49 @@ vb_lin_reg <- function(X, y, mu0, Sigma0, a0, b0, tol = 1e-8, maxiter = 100L, ve
     .Call(`_varapproxr_vb_lin_reg`, X, y, mu0, Sigma0, a0, b0, tol, maxiter, verbose)
 }
 
+#' Variational Bayes for linear mixed model.
+#' 
+#' 
+#' @param X The design matrix
+#' @param Z Group design matrix
+#' @param y The response vector
+#' @param mu_beta The prior mean for beta
+#' @param sigma_beta The prior covariance for beta
+#' @param mu Initial value for mu
+#' @param sigma Initial value for sigma
+#' @param Aeps The prior shape for sigma_eps
+#' @param Beps The prior scale for sigma_eps
+#' @param Au The prior shape for sigma_u
+#' @param Bu The prior scale for sigma_u
+#' @param tol Tolerance level
+#' @param maxiter Maximum iterations
+#' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
+#' @return A list containing:
+#' \describe{
+#'   \item{converged}{Indicator for algorithm convergence.}
+#'   \item{elbo}{Vector of the ELBO sequence.} 
+#'   \item{mu}{The optimised value of mu.}
+#'   \item{Sigma}{The optimised value of Sigma.}
+#' }
+#' 
+#' @examples
+#' library(nlme)
+#' X <- model.matrix( ~ age + factor(Sex, levels = c("Female", "Male")), data = Orthodont)
+#' Z <- kronecker(diag(1, 27), rep(1, 4))
+#' y <- Orthodont$distance
+#' mu0 <- rep(0, ncol(X))
+#' S0 <- diag(1e8, ncol(X))
+#' mu <- rep(0, ncol(X) + ncol(Z))
+#' S <- diag(1, ncol(X) + ncol(Z))
+#' A <- 1/100
+#' B <- 1/100
+#' fit <- vb_lmm(X, Z, y, mu0, S0, mu, S, A, B, A, B, verbose = T)
+#' 
+#' @export
+vb_lmm <- function(X, Z, y, mu_beta, sigma_beta, mu, sigma, Aeps = 1.0, Beps = 1.0, Au = 1.0, Bu = 1.0, Bqeps = 1.0, Bqu = 1.0, tol = 1e-8, maxiter = 100L, verbose = FALSE, trace = FALSE) {
+    .Call(`_varapproxr_vb_lmm`, X, Z, y, mu_beta, sigma_beta, mu, sigma, Aeps, Beps, Au, Bu, Bqeps, Bqu, tol, maxiter, verbose, trace)
+}
+
 b0 <- function(mu, sigma) {
     .Call(`_varapproxr_b0`, mu, sigma)
 }

@@ -3,6 +3,7 @@
 export(jj_logistic_mixed)
 export(ph_exponential)
 export(vb_lin_reg)
+export(vb_lmm)
 export(vb_logistic)
 export(vb_logistic_n)
 importFrom(Rcpp,sourceCpp)

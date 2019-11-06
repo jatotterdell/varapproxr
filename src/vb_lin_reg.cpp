@@ -30,16 +30,19 @@ List vb_lin_reg(
     const arma::mat& Sigma0,
     const double a0,
     const double b0,
-    double tol = 1e-8, int maxiter = 100, bool verbose = false) {
+    double tol = 1e-8, 
+    int maxiter = 100, 
+    bool verbose = false) {
   
-  int N = X.n_rows;
-  int P = X.n_cols;
+  double N = X.n_rows;
+  double P = X.n_cols;
   bool converged = 0;
   int iterations = 0;
   Rcpp::Rcout.precision(10);
 
   arma::vec elbo(maxiter);
   
+  double a_div_b = 0.0;
   arma::mat I = arma::eye<arma::mat>(P, P);
   arma::mat XtX = trans(X) * X;
   arma::vec Xty = trans(X) * y;
@@ -54,21 +57,24 @@ List vb_lin_reg(
   double b = b0;
   
   for(int i = 0; i < maxiter && !converged; i++) {
+    
     // Update variational parameters
-    Sigma = inv(a/b * XtX + invSigma0);
-    mu = Sigma * (a/b * Xty + invSigma0_mu0);
+    a_div_b = a/b;
+    Sigma = inv(a_div_b * XtX + invSigma0);
+    mu = Sigma * (a_div_b * Xty + invSigma0_mu0);
     y_m_Xmu = y - X*mu;
-    b = b0 + 0.5*(dot(y_m_Xmu, y_m_Xmu) + trace(Sigma * XtX));
+    b = b0 + 0.5*(dot(y_m_Xmu, y_m_Xmu) + arma::trace(XtX * Sigma));
     
     // Update ELBO
-    elbo[i] = -0.5*(P * log(2*M_PI) + ldetSigma0 + dot(mu - mu0, Sigma0 * (mu - mu0)) + trace(invSigma0 * Sigma)) -
-      0.5*(N * log(2*M_PI) - log(b) + R::digamma(a) + a/b * (dot(y_m_Xmu, y_m_Xmu) + trace(XtX * Sigma))) +
-      a0*log(b0) - lgamma(a0) - (a0 + 1)*(log(b) - R::digamma(a)) - b0*a/b +
-      mvn_entropy(Sigma) + ig_entropy(a, b);
+    elbo(i) = 
+      mvn_entropy(Sigma) + ig_entropy(a, b) + 
+      a0*log(b0) - lgamma(a0) - (a0 + 1)*(log(b) - R::digamma(a)) - b0*a_div_b -
+      0.5*(P * log(2*M_PI) + ldetSigma0 + dot(mu - mu0, invSigma0 * (mu - mu0)) + trace(invSigma0 * Sigma)) -
+      0.5*(N * log(2*M_PI) - log(b) + R::digamma(a) + a_div_b * (dot(y_m_Xmu, y_m_Xmu) + trace(XtX * Sigma)));
 
+    // Check for convergence
     if(verbose)
       Rcpp::Rcout << "Iter: " << std::setw(3) << i << "; ELBO = " << std::fixed << elbo[i] << std::endl;
-    // Check for convergence
     if(i > 0 && fabs(elbo(i) - elbo(i - 1)) < tol) {
       converged = 1;
       iterations = i;

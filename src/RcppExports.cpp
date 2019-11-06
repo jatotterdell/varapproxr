@@ -70,6 +70,33 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// vb_lmm
+List vb_lmm(const arma::mat& X, const arma::mat& Z, const arma::vec& y, const arma::vec& mu_beta, const arma::mat& sigma_beta, arma::vec& mu, arma::mat& sigma, double Aeps, double Beps, double Au, double Bu, double Bqeps, double Bqu, double tol, int maxiter, bool verbose, bool trace);
+RcppExport SEXP _varapproxr_vb_lmm(SEXP XSEXP, SEXP ZSEXP, SEXP ySEXP, SEXP mu_betaSEXP, SEXP sigma_betaSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP AepsSEXP, SEXP BepsSEXP, SEXP AuSEXP, SEXP BuSEXP, SEXP BqepsSEXP, SEXP BquSEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP, SEXP traceSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Z(ZSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type mu_beta(mu_betaSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type sigma_beta(sigma_betaSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< double >::type Aeps(AepsSEXP);
+    Rcpp::traits::input_parameter< double >::type Beps(BepsSEXP);
+    Rcpp::traits::input_parameter< double >::type Au(AuSEXP);
+    Rcpp::traits::input_parameter< double >::type Bu(BuSEXP);
+    Rcpp::traits::input_parameter< double >::type Bqeps(BqepsSEXP);
+    Rcpp::traits::input_parameter< double >::type Bqu(BquSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    Rcpp::traits::input_parameter< bool >::type trace(traceSEXP);
+    rcpp_result_gen = Rcpp::wrap(vb_lmm(X, Z, y, mu_beta, sigma_beta, mu, sigma, Aeps, Beps, Au, Bu, Bqeps, Bqu, tol, maxiter, verbose, trace));
+    return rcpp_result_gen;
+END_RCPP
+}
 // b0
 arma::vec b0(const arma::vec& mu, const arma::vec& sigma);
 RcppExport SEXP _varapproxr_b0(SEXP muSEXP, SEXP sigmaSEXP) {
@@ -303,6 +330,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_pnorm_mat", (DL_FUNC) &_varapproxr_pnorm_mat, 1},
     {"_varapproxr_dnorm_mat", (DL_FUNC) &_varapproxr_dnorm_mat, 1},
     {"_varapproxr_vb_lin_reg", (DL_FUNC) &_varapproxr_vb_lin_reg, 9},
+    {"_varapproxr_vb_lmm", (DL_FUNC) &_varapproxr_vb_lmm, 17},
     {"_varapproxr_b0", (DL_FUNC) &_varapproxr_b0, 2},
     {"_varapproxr_b1", (DL_FUNC) &_varapproxr_b1, 2},
     {"_varapproxr_B", (DL_FUNC) &_varapproxr_B, 4},
