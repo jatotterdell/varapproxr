@@ -119,8 +119,8 @@ List vb_lmm(
       Aeps*log(Beps) - lgamma(Aeps) - (Aeps + 1)*(log(Bqeps) - R::digamma(Aqeps)) - Beps*Aqeps/Bqeps +
       Au*log(Bu) - lgamma(Au) - (Au + 1)*(log(Bqu) - R::digamma(Aqu)) - Bu*Aqu/Bqu -
       0.5*(P * log(2*M_PI) + real(log_det(sigma_beta)) + dot(mu_b - mu_beta, inv_sigma_beta * (mu_b - mu_beta)) + arma::trace(inv_sigma_beta * sigma_b)) -
-      0.5*(K * log(2*M_PI) + log(K) - log(Bqu) + R::digamma(Aqu) + Aqu/Bqu * (dot(mu_u, mu_u) + arma::trace(sigma_u))) -
-      0.5*(N * log(2*M_PI) + log(N) - log(Bqeps) + R::digamma(Aqeps) + Aqeps/Bqeps * (dot(ymCmu, ymCmu) + arma::trace(CtC * sigma)));
+      0.5*(K * log(2*M_PI) + K*(log(Bqu) - R::digamma(Aqu)) + Aqu/Bqu * (dot(mu_u, mu_u) + arma::trace(sigma_u))) -
+      0.5*(N * log(2*M_PI) + N*(log(Bqeps) - R::digamma(Aqeps)) + Aqeps/Bqeps * (dot(ymCmu, ymCmu) + arma::trace(CtC * sigma)));
 
     // Monitor convergence
     if(verbose) {

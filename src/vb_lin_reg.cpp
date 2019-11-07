@@ -70,7 +70,7 @@ List vb_lin_reg(
       mvn_entropy(Sigma) + ig_entropy(a, b) + 
       a0*log(b0) - lgamma(a0) - (a0 + 1)*(log(b) - R::digamma(a)) - b0*a_div_b -
       0.5*(P * log(2*M_PI) + ldetSigma0 + dot(mu - mu0, invSigma0 * (mu - mu0)) + trace(invSigma0 * Sigma)) -
-      0.5*(N * log(2*M_PI) - log(b) + R::digamma(a) + a_div_b * (dot(y_m_Xmu, y_m_Xmu) + trace(XtX * Sigma)));
+      0.5*(N * log(2*M_PI) + N*(log(b) - R::digamma(a)) + a_div_b * (dot(y_m_Xmu, y_m_Xmu) + trace(XtX * Sigma)));
 
     // Check for convergence
     if(verbose)

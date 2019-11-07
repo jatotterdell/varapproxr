@@ -108,7 +108,7 @@ List vb_glmm(
       mvn_entropy(sigma) + ig_entropy(Aqu, Bqu) +
       Au*log(Bu) - lgamma(Au) - (Au + 1)*(log(Bqu) - R::digamma(Aqu)) - Bu*Aqu/Bqu -
       0.5*(P * log(2*M_PI) + real(log_det(sigma_beta)) + dot(mu_b - mu_beta, inv_sigma_beta * (mu_b - mu_beta)) + arma::trace(inv_sigma_beta * sigma_b)) -
-      0.5*(K * log(2*M_PI) + log(K) - log(Bqu) + R::digamma(Aqu) + Aqu/Bqu * (dot(mu_u, mu_u) + arma::trace(sigma_u))) +
+      0.5*(K * log(2*M_PI) + K*(log(Bqu) - R::digamma(Aqu)) + Aqu/Bqu * (dot(mu_u, mu_u) + arma::trace(sigma_u))) +
       dot(y - 0.5, C*mu) + arma::trace(trans(C) * diagmat(lam) * C * sigma + mu*trans(mu)) +
       sum(0.5*xi - log(1 + exp(xi)) + (xi/4) % tanh(xi/2));
     
