@@ -91,8 +91,8 @@ List vb_lmm(
   // Monitor
   bool converged = 0;
   int iterations = 0;
-  arma::mat tr(maxiter, P);
   arma::vec elbo(maxiter);
+  arma::mat tr(P + K, maxiter);
   
   for(int i = 0; i < maxiter && !converged; i++) {
     
@@ -128,21 +128,27 @@ List vb_lmm(
         "Iter: " << std::setw(3) << i + 1 << 
         "; ELBO = " << std::fixed << elbo(i) << std::endl;
     }
-    if(trace) {
-      tr.row(i) = mu_b;
-    }
-    if(i > 0 && fabs(elbo(i) - elbo(i - 1)) < tol) {
+    
+    if(trace)
+      tr.col(i) = mu;
+    
+    if(i > 0 && fabs(elbo(i) - elbo(i - 1)) < tol)
       converged = 1;
-    }
+    
     iterations = i;
   }
-  return List::create(Named("converged") = converged,
-                      Named("elbo") = elbo.subvec(0, iterations),
-                      Named("trace") = tr.submat(0, 0, iterations, P-1),
-                      Named("mu") = mu,
-                      Named("sigma") = sigma,
-                      Named("Aqeps") = Aqeps,
-                      Named("Bqeps") = Bqeps,
-                      Named("Aqu") = Aqu,
-                      Named("Bqu") = Bqu);
+  
+  List out = List::create(
+    Named("converged") = converged,
+    Named("elbo") = elbo.subvec(0, iterations),
+    Named("mu") = mu,
+    Named("sigma") = sigma,
+    Named("Aqeps") = Aqeps,
+    Named("Bqeps") = Bqeps,
+    Named("Aqu") = Aqu,
+    Named("Bqu") = Bqu);
+  
+  if(trace) out.push_back(tr.submat(0, 0, P + K - 1, iterations), "trace");
+  
+  return out;
 }
