@@ -273,6 +273,25 @@ vb_glmm <- function(X, Z, y, mu_beta, sigma_beta, mu, sigma, Au = 1.0, Bu = 1.0,
     .Call(`_varapproxr_vb_glmm`, X, Z, y, mu_beta, sigma_beta, mu, sigma, Au, Bu, Bqu, tol, maxiter, verbose)
 }
 
+#' Perform mean-field variational inference for 
+#' a Poisson regression model.
+#' 
+#' @param X The design matrix
+#' @param y The response vector
+#' @param n The offset term
+#' @param mu0 The prior mean for beta
+#' @param Sigma0 The prior covariance for beta
+#' @param a0 The scale hyper-parameter
+#' @param b0 The shape hyper-parameter
+#' @param tol Tolerance for convergence of the elbo
+#' @param maxiter Maximum number of iterations allowed
+#' @return v A list of relevant outputs
+#' 
+#' @export
+vb_pois_reg <- function(X, y, n, mu0, Sigma0, tol = 1e-8, maxiter = 100L, verbose = FALSE) {
+    .Call(`_varapproxr_vb_pois_reg`, X, y, n, mu0, Sigma0, tol, maxiter, verbose)
+}
+
 #' Normal parametric variational Bayes for Exponential PH Model.
 #' 
 #' Perform Normal approximation variational inference for 

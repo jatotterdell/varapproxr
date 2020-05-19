@@ -4,8 +4,16 @@
 \alias{ph_exponential}
 \title{Normal parametric variational Bayes for Exponential PH Model.}
 \usage{
-ph_exponential(X, y, v, mu0, Sigma0, tol = 1e-08, maxiter = 100L,
-  verbose = FALSE)
+ph_exponential(
+  X,
+  y,
+  v,
+  mu0,
+  Sigma0,
+  tol = 1e-08,
+  maxiter = 100L,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{X}{The design matrix}

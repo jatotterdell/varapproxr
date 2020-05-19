@@ -4,8 +4,21 @@
 \alias{vb_glmm}
 \title{Variational Bayes for logistic mixed model.}
 \usage{
-vb_glmm(X, Z, y, mu_beta, sigma_beta, mu, sigma, Au = 1, Bu = 1,
-  Bqu = 1, tol = 1e-08, maxiter = 100L, verbose = FALSE)
+vb_glmm(
+  X,
+  Z,
+  y,
+  mu_beta,
+  sigma_beta,
+  mu,
+  sigma,
+  Au = 1,
+  Bu = 1,
+  Bqu = 1,
+  tol = 1e-08,
+  maxiter = 100L,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{X}{The design matrix}

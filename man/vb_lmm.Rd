@@ -4,9 +4,25 @@
 \alias{vb_lmm}
 \title{Variational Bayes for linear mixed model.}
 \usage{
-vb_lmm(X, Z, y, mu_beta, sigma_beta, mu, sigma, Aeps = 1, Beps = 1,
-  Au = 1, Bu = 1, Bqeps = 1, Bqu = 1, tol = 1e-08,
-  maxiter = 100L, verbose = FALSE, trace = FALSE)
+vb_lmm(
+  X,
+  Z,
+  y,
+  mu_beta,
+  sigma_beta,
+  mu,
+  sigma,
+  Aeps = 1,
+  Beps = 1,
+  Au = 1,
+  Bu = 1,
+  Bqeps = 1,
+  Bqu = 1,
+  tol = 1e-08,
+  maxiter = 100L,
+  verbose = FALSE,
+  trace = FALSE
+)
 }
 \arguments{
 \item{X}{The design matrix}

@@ -4,8 +4,20 @@
 \alias{vb_logistic_n}
 \title{Variational inference for binomial logistic regression model}
 \usage{
-vb_logistic_n(X, y, n, mu0, Sigma0, mu_init, Sigma_init, tol = 1e-08,
-  maxiter = 1000L, maxiter_jj = 25L, alg = "jj", verbose = FALSE)
+vb_logistic_n(
+  X,
+  y,
+  n,
+  mu0,
+  Sigma0,
+  mu_init,
+  Sigma_init,
+  tol = 1e-08,
+  maxiter = 1000L,
+  maxiter_jj = 25L,
+  alg = "jj",
+  verbose = FALSE
+)
 }
 \arguments{
 \item{X}{The design matrix}

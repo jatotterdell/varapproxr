@@ -9,7 +9,7 @@ Description: Repository for variational approximation implementations in R. Curr
 License: GPL-3
 Imports: Rcpp (>= 1.0.0)
 LinkingTo: Rcpp, RcppArmadillo
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 Encoding: UTF-8
 Suggests: 
     testthat

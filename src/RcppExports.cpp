@@ -305,6 +305,24 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// vb_pois_reg
+List vb_pois_reg(const arma::mat& X, const arma::vec& y, const arma::vec& n, const arma::vec& mu0, const arma::mat& Sigma0, double tol, int maxiter, bool verbose);
+RcppExport SEXP _varapproxr_vb_pois_reg(SEXP XSEXP, SEXP ySEXP, SEXP nSEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type n(nSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type mu0(mu0SEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Sigma0(Sigma0SEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(vb_pois_reg(X, y, n, mu0, Sigma0, tol, maxiter, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ph_exponential
 List ph_exponential(const arma::mat& X, const arma::vec& y, const arma::vec& v, const arma::vec& mu0, const arma::mat& Sigma0, double tol, int maxiter, bool verbose);
 RcppExport SEXP _varapproxr_ph_exponential(SEXP XSEXP, SEXP ySEXP, SEXP vSEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP) {
@@ -343,6 +361,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_vb_logistic", (DL_FUNC) &_varapproxr_vb_logistic, 11},
     {"_varapproxr_vb_logistic_n", (DL_FUNC) &_varapproxr_vb_logistic_n, 12},
     {"_varapproxr_vb_glmm", (DL_FUNC) &_varapproxr_vb_glmm, 13},
+    {"_varapproxr_vb_pois_reg", (DL_FUNC) &_varapproxr_vb_pois_reg, 8},
     {"_varapproxr_ph_exponential", (DL_FUNC) &_varapproxr_ph_exponential, 8},
     {NULL, NULL, 0}
 };
