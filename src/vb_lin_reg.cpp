@@ -77,8 +77,8 @@ List vb_lin_reg(
       Rcpp::Rcout << "Iter: " << std::setw(3) << i << "; ELBO = " << std::fixed << elbo[i] << std::endl;
     if(i > 0 && fabs(elbo(i) - elbo(i - 1)) < tol) {
       converged = 1;
-      iterations = i;
     }
+    iterations = i;
   }
 
   return List::create(Named("converged") = converged,

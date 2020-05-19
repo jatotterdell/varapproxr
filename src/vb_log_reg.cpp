@@ -366,8 +366,8 @@ List vb_logistic(
       jj_converged = 1;
     } else if(i > 0 && fabs(elbo(i) - elbo(i - 1)) < tol) {
       converged = 1;
-      iterations = i;
     }
+    iterations = i;
   }
   
   arma::mat Sigma = -0.5*inv(reshape(eta2 + eta2_p, p, p));
@@ -483,8 +483,8 @@ List vb_logistic_n(
       jj_converged = 1;
     } else if(i > 0 && fabs(elbo(i) - elbo(i - 1)) < tol) {
       converged = 1;
-      iterations = i;
     }
+    iterations = i;
   }
   
   arma::mat Sigma = -0.5*inv(reshape(eta2 + eta2_p, p, p));
