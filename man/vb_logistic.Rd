@@ -27,13 +27,19 @@ vb_logistic(
 
 \item{Sigma0}{The prior variance for beta parameter}
 
+\item{mu_init}{Initial value for \code{mu} for optimisation.}
+
+\item{Sigma_init}{Initial value for \code{Sigma} for optimisation.}
+
 \item{tol}{The tolerance level to assess convergence}
 
 \item{maxiter}{The maximum number of iterations}
 
 \item{maxiter_jj}{The maximum number of Jaakkola-Jordan iterations to initialise estimation}
 
-\item{alg}{The algorithm used for final estimation of variational parameters. 
+\item{alg}{The algorithm used for final estimation of variational parameters.}
+
+\item{verbose}{Print trace of the lower bound to console. Default is \code{FALSE}.
 Must be one of "jj", "sj", "kmw".}
 }
 \description{

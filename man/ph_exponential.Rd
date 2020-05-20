@@ -26,6 +26,10 @@ ph_exponential(
 
 \item{Sigma0}{The prior covariance for beta}
 
+\item{tol}{The tolerance for conergence of ELBO}
+
+\item{maxiter}{The maximum number of iterations allowed}
+
 \item{verbose}{Print trace of the lower bound to console. Default is \code{FALSE}.}
 }
 \value{

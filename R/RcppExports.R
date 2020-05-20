@@ -47,6 +47,7 @@ dnorm_mat <- function(m) {
 #' @param b0 The shape hyperparameter
 #' @param tol Tolerance for convergence of the elbo
 #' @param maxiter Maximum number of iterations allowed
+#' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
 #' @return v A list of relevant outputs
 #' 
 #' @export
@@ -68,9 +69,12 @@ vb_lin_reg <- function(X, y, mu0, Sigma0, a0, b0, tol = 1e-8, maxiter = 100L, ve
 #' @param Beps The prior scale for sigma_eps
 #' @param Au The prior shape for sigma_u
 #' @param Bu The prior scale for sigma_u
+#' @param Bqeps The intial value for Bqeps
+#' @param Bqu The initial value for Bqu
 #' @param tol Tolerance level
 #' @param maxiter Maximum iterations
 #' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
+#' @param trace Print a trace of `mu` to console.
 #' @return A list containing:
 #' \describe{
 #'   \item{converged}{Indicator for algorithm convergence.}
@@ -90,7 +94,7 @@ vb_lin_reg <- function(X, y, mu0, Sigma0, a0, b0, tol = 1e-8, maxiter = 100L, ve
 #' S <- diag(1, ncol(X) + ncol(Z))
 #' A <- 1/100
 #' B <- 1/100
-#' fit <- vb_lmm(X, Z, y, mu0, S0, mu, S, A, B, A, B, verbose = T)
+#' fit <- vb_lmm(X, Z, y, mu0, S0, mu, S, A, B, A, B, verbose = TRUE)
 #' 
 #' @export
 vb_lmm <- function(X, Z, y, mu_beta, sigma_beta, mu, sigma, Aeps = 1.0, Beps = 1.0, Au = 1.0, Bu = 1.0, Bqeps = 1.0, Bqu = 1.0, tol = 1e-8, maxiter = 100L, verbose = FALSE, trace = FALSE) {
@@ -196,10 +200,13 @@ knowles_minka_wand_n <- function(X, y, n, eta1, eta2, eta1_p, eta2_p, MS_p, MS_s
 #' @param y The response vector
 #' @param mu0 The prior mean for beta paramter
 #' @param Sigma0 The prior variance for beta parameter
+#' @param mu_init Initial value for \code{mu} for optimisation.
+#' @param Sigma_init Initial value for \code{Sigma} for optimisation.
 #' @param tol The tolerance level to assess convergence
 #' @param maxiter The maximum number of iterations
 #' @param maxiter_jj The maximum number of Jaakkola-Jordan iterations to initialise estimation
 #' @param alg The algorithm used for final estimation of variational parameters. 
+#' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
 #' Must be one of "jj", "sj", "kmw".
 #' 
 #' @export
@@ -226,6 +233,7 @@ vb_logistic <- function(X, y, mu0, Sigma0, mu_init, Sigma_init, tol = 1e-8, maxi
 #' @param alg The algorithm used for final estimation 
 #'   of variational parameters. 
 #'   Must be one of \code{jj}, \code{sj}, or \code{kmw}.
+#' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
 #' 
 #' @section Details:
 #'   By default, the algorithm always intialises with Jaakkola-Jordan updates
@@ -256,7 +264,7 @@ vb_logistic_n <- function(X, y, n, mu0, Sigma0, mu_init, Sigma_init, tol = 1e-8,
 #' @param sigma Initial value for sigma
 #' @param Au The prior shape for u
 #' @param Bu The prior scale for u
-#' @param Aqu The initial value for Aqu
+#' @param Bqu The initial value for Bqu
 #' @param tol Tolerance level
 #' @param maxiter Maximum iterations
 #' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
@@ -281,10 +289,9 @@ vb_glmm <- function(X, Z, y, mu_beta, sigma_beta, mu, sigma, Au = 1.0, Bu = 1.0,
 #' @param n The offset term
 #' @param mu0 The prior mean for beta
 #' @param Sigma0 The prior covariance for beta
-#' @param a0 The scale hyper-parameter
-#' @param b0 The shape hyper-parameter
 #' @param tol Tolerance for convergence of the elbo
 #' @param maxiter Maximum number of iterations allowed
+#' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
 #' @return v A list of relevant outputs
 #' 
 #' @export
@@ -302,6 +309,8 @@ vb_pois_reg <- function(X, y, n, mu0, Sigma0, tol = 1e-8, maxiter = 100L, verbos
 #' @param v The censoring vector
 #' @param mu0 The prior mean for beta
 #' @param Sigma0 The prior covariance for beta
+#' @param tol The tolerance for conergence of ELBO
+#' @param maxiter The maximum number of iterations allowed
 #' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
 #' @return A list containing:
 #' \describe{

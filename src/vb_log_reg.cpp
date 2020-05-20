@@ -293,10 +293,13 @@ double knowles_minka_wand_n(
 //' @param y The response vector
 //' @param mu0 The prior mean for beta paramter
 //' @param Sigma0 The prior variance for beta parameter
+//' @param mu_init Initial value for \code{mu} for optimisation.
+//' @param Sigma_init Initial value for \code{Sigma} for optimisation.
 //' @param tol The tolerance level to assess convergence
 //' @param maxiter The maximum number of iterations
 //' @param maxiter_jj The maximum number of Jaakkola-Jordan iterations to initialise estimation
 //' @param alg The algorithm used for final estimation of variational parameters. 
+//' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
 //' Must be one of "jj", "sj", "kmw".
 //' 
 //' @export
@@ -400,6 +403,7 @@ List vb_logistic(
 //' @param alg The algorithm used for final estimation 
 //'   of variational parameters. 
 //'   Must be one of \code{jj}, \code{sj}, or \code{kmw}.
+//' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
 //' 
 //' @section Details:
 //'   By default, the algorithm always intialises with Jaakkola-Jordan updates

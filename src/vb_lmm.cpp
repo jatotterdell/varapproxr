@@ -19,9 +19,12 @@ using namespace Rcpp;
 //' @param Beps The prior scale for sigma_eps
 //' @param Au The prior shape for sigma_u
 //' @param Bu The prior scale for sigma_u
+//' @param Bqeps The intial value for Bqeps
+//' @param Bqu The initial value for Bqu
 //' @param tol Tolerance level
 //' @param maxiter Maximum iterations
 //' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
+//' @param trace Print a trace of `mu` to console.
 //' @return A list containing:
 //' \describe{
 //'   \item{converged}{Indicator for algorithm convergence.}
@@ -41,7 +44,7 @@ using namespace Rcpp;
 //' S <- diag(1, ncol(X) + ncol(Z))
 //' A <- 1/100
 //' B <- 1/100
-//' fit <- vb_lmm(X, Z, y, mu0, S0, mu, S, A, B, A, B, verbose = T)
+//' fit <- vb_lmm(X, Z, y, mu0, S0, mu, S, A, B, A, B, verbose = TRUE)
 //' 
 //' @export
 //[[Rcpp::export]]

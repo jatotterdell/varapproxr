@@ -33,6 +33,8 @@ vb_lin_reg(
 \item{tol}{Tolerance for convergence of the elbo}
 
 \item{maxiter}{Maximum number of iterations allowed}
+
+\item{verbose}{Print trace of the lower bound to console. Default is \code{FALSE}.}
 }
 \value{
 v A list of relevant outputs

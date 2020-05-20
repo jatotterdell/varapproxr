@@ -6,8 +6,10 @@ Date: 2019-06-21
 Author: James Totterdell
 Maintainer: James Totterdell <jatotterdell@gmail.com>
 Description: Repository for variational approximation implementations in R. Currently only focuses on deterministic semiparametric approaches, in particular, normal approximations.
-License: GPL-3
-Imports: Rcpp (>= 1.0.0)
+License: MIT + file LICENSE
+Imports: 
+    Rcpp,
+    nlme
 LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 7.1.0
 Encoding: UTF-8

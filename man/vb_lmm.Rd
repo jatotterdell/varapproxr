@@ -47,11 +47,17 @@ vb_lmm(
 
 \item{Bu}{The prior scale for sigma_u}
 
+\item{Bqeps}{The intial value for Bqeps}
+
+\item{Bqu}{The initial value for Bqu}
+
 \item{tol}{Tolerance level}
 
 \item{maxiter}{Maximum iterations}
 
 \item{verbose}{Print trace of the lower bound to console. Default is \code{FALSE}.}
+
+\item{trace}{Print a trace of `mu` to console.}
 }
 \value{
 A list containing:
@@ -76,6 +82,6 @@ mu <- rep(0, ncol(X) + ncol(Z))
 S <- diag(1, ncol(X) + ncol(Z))
 A <- 1/100
 B <- 1/100
-fit <- vb_lmm(X, Z, y, mu0, S0, mu, S, A, B, A, B, verbose = T)
+fit <- vb_lmm(X, Z, y, mu0, S0, mu, S, A, B, A, B, verbose = TRUE)
 
 }

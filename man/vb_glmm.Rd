@@ -39,13 +39,13 @@ vb_glmm(
 
 \item{Bu}{The prior scale for u}
 
+\item{Bqu}{The initial value for Bqu}
+
 \item{tol}{Tolerance level}
 
 \item{maxiter}{Maximum iterations}
 
 \item{verbose}{Print trace of the lower bound to console. Default is \code{FALSE}.}
-
-\item{Aqu}{The initial value for Aqu}
 }
 \value{
 A list containing:

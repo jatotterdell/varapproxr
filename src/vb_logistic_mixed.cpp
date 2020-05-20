@@ -17,7 +17,7 @@ using namespace Rcpp;
 //' @param sigma Initial value for sigma
 //' @param Au The prior shape for u
 //' @param Bu The prior scale for u
-//' @param Aqu The initial value for Aqu
+//' @param Bqu The initial value for Bqu
 //' @param tol Tolerance level
 //' @param maxiter Maximum iterations
 //' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.

@@ -21,10 +21,9 @@ Rcpp::NumericVector arma2vec(const T& x) {
 //' @param n The offset term
 //' @param mu0 The prior mean for beta
 //' @param Sigma0 The prior covariance for beta
-//' @param a0 The scale hyper-parameter
-//' @param b0 The shape hyper-parameter
 //' @param tol Tolerance for convergence of the elbo
 //' @param maxiter Maximum number of iterations allowed
+//' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
 //' @return v A list of relevant outputs
 //' 
 //' @export

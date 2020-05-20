@@ -19,6 +19,7 @@ using namespace Rcpp;
 //' @param b0 The shape hyperparameter
 //' @param tol Tolerance for convergence of the elbo
 //' @param maxiter Maximum number of iterations allowed
+//' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
 //' @return v A list of relevant outputs
 //' 
 //' @export

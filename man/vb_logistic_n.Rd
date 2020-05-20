@@ -44,6 +44,8 @@ iterations to initialise estimation}
 \item{alg}{The algorithm used for final estimation 
 of variational parameters. 
 Must be one of \code{jj}, \code{sj}, or \code{kmw}.}
+
+\item{verbose}{Print trace of the lower bound to console. Default is \code{FALSE}.}
 }
 \value{
 A list containing:

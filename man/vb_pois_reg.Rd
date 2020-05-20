@@ -5,18 +5,7 @@
 \title{Perform mean-field variational inference for 
 a Poisson regression model.}
 \usage{
-vb_pois_reg(
-  X,
-  y,
-  n,
-  mu0,
-  Sigma0,
-  a0,
-  b0,
-  tol = 1e-08,
-  maxiter = 100L,
-  verbose = FALSE
-)
+vb_pois_reg(X, y, n, mu0, Sigma0, tol = 1e-08, maxiter = 100L, verbose = FALSE)
 }
 \arguments{
 \item{X}{The design matrix}
@@ -29,13 +18,11 @@ vb_pois_reg(
 
 \item{Sigma0}{The prior covariance for beta}
 
-\item{a0}{The scale hyper-parameter}
-
-\item{b0}{The shape hyper-parameter}
-
 \item{tol}{Tolerance for convergence of the elbo}
 
 \item{maxiter}{Maximum number of iterations allowed}
+
+\item{verbose}{Print trace of the lower bound to console. Default is \code{FALSE}.}
 }
 \value{
 v A list of relevant outputs
