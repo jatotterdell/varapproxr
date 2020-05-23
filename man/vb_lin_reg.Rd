@@ -12,6 +12,7 @@ vb_lin_reg(
   Sigma0,
   a0,
   b0,
+  prior = 1L,
   tol = 1e-08,
   maxiter = 100L,
   verbose = FALSE
@@ -26,9 +27,11 @@ vb_lin_reg(
 
 \item{Sigma0}{The prior covariance for beta}
 
-\item{a0}{The scale hyperparameter}
+\item{a0}{The scale hyper-parameter}
 
-\item{b0}{The shape hyperparameter}
+\item{b0}{The shape hyper-parameter}
+
+\item{prior}{The prior to be used, `1` - inverse-gamma(a0,b0), `2`- half-t(a0,b0)}
 
 \item{tol}{Tolerance for convergence of the elbo}
 

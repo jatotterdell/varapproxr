@@ -6,6 +6,17 @@
 
 using namespace Rcpp;
 
+// blockDiag
+arma::mat blockDiag(arma::field<arma::mat>& x);
+RcppExport SEXP _varapproxr_blockDiag(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::field<arma::mat>& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(blockDiag(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // mvn_entropy
 double mvn_entropy(arma::mat& S);
 RcppExport SEXP _varapproxr_mvn_entropy(SEXP SSEXP) {
@@ -26,6 +37,42 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type a(aSEXP);
     Rcpp::traits::input_parameter< double >::type b(bSEXP);
     rcpp_result_gen = Rcpp::wrap(ig_entropy(a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ig_E
+double ig_E(double a, double b);
+RcppExport SEXP _varapproxr_ig_E(SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(ig_E(a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ig_E_inv
+double ig_E_inv(double a, double b);
+RcppExport SEXP _varapproxr_ig_E_inv(SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(ig_E_inv(a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ig_E_log
+double ig_E_log(double a, double b);
+RcppExport SEXP _varapproxr_ig_E_log(SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(ig_E_log(a, b));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -52,8 +99,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // vb_lin_reg
-List vb_lin_reg(const arma::mat& X, const arma::vec& y, const arma::vec& mu0, const arma::mat& Sigma0, const double a0, const double b0, double tol, int maxiter, bool verbose);
-RcppExport SEXP _varapproxr_vb_lin_reg(SEXP XSEXP, SEXP ySEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP a0SEXP, SEXP b0SEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP) {
+List vb_lin_reg(const arma::mat& X, const arma::vec& y, const arma::vec& mu0, const arma::mat& Sigma0, const double a0, const double b0, const int prior, double tol, int maxiter, bool verbose);
+RcppExport SEXP _varapproxr_vb_lin_reg(SEXP XSEXP, SEXP ySEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP a0SEXP, SEXP b0SEXP, SEXP priorSEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -63,10 +110,27 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::mat& >::type Sigma0(Sigma0SEXP);
     Rcpp::traits::input_parameter< const double >::type a0(a0SEXP);
     Rcpp::traits::input_parameter< const double >::type b0(b0SEXP);
+    Rcpp::traits::input_parameter< const int >::type prior(priorSEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(vb_lin_reg(X, y, mu0, Sigma0, a0, b0, tol, maxiter, verbose));
+    rcpp_result_gen = Rcpp::wrap(vb_lin_reg(X, y, mu0, Sigma0, a0, b0, prior, tol, maxiter, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
+// update_vb_lin_reg
+List update_vb_lin_reg(List vb_fit, const arma::mat& X, const arma::vec& y, double tol, int maxiter, bool verbose);
+RcppExport SEXP _varapproxr_update_vb_lin_reg(SEXP vb_fitSEXP, SEXP XSEXP, SEXP ySEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< List >::type vb_fit(vb_fitSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_vb_lin_reg(vb_fit, X, y, tol, maxiter, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -343,11 +407,16 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_varapproxr_blockDiag", (DL_FUNC) &_varapproxr_blockDiag, 1},
     {"_varapproxr_mvn_entropy", (DL_FUNC) &_varapproxr_mvn_entropy, 1},
     {"_varapproxr_ig_entropy", (DL_FUNC) &_varapproxr_ig_entropy, 2},
+    {"_varapproxr_ig_E", (DL_FUNC) &_varapproxr_ig_E, 2},
+    {"_varapproxr_ig_E_inv", (DL_FUNC) &_varapproxr_ig_E_inv, 2},
+    {"_varapproxr_ig_E_log", (DL_FUNC) &_varapproxr_ig_E_log, 2},
     {"_varapproxr_pnorm_mat", (DL_FUNC) &_varapproxr_pnorm_mat, 1},
     {"_varapproxr_dnorm_mat", (DL_FUNC) &_varapproxr_dnorm_mat, 1},
-    {"_varapproxr_vb_lin_reg", (DL_FUNC) &_varapproxr_vb_lin_reg, 9},
+    {"_varapproxr_vb_lin_reg", (DL_FUNC) &_varapproxr_vb_lin_reg, 10},
+    {"_varapproxr_update_vb_lin_reg", (DL_FUNC) &_varapproxr_update_vb_lin_reg, 6},
     {"_varapproxr_vb_lmm", (DL_FUNC) &_varapproxr_vb_lmm, 17},
     {"_varapproxr_b0", (DL_FUNC) &_varapproxr_b0, 2},
     {"_varapproxr_b1", (DL_FUNC) &_varapproxr_b1, 2},

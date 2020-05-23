@@ -1,18 +1,30 @@
 #include <RcppArmadillo.h>
 #include <Rmath.h>
 
-double lnfactorial( int a) {
-  int y;
-  double z;
-  if (a == 1)
-    return 0;
-  else
-  {
-    z = 0;
-    for (y = 2; y<=a; y++ )
-      z = log(y)+z;
-    return z;
+//' Construct block-diagonal matrix from list of matrices
+//' 
+//' @param x A list of matrices
+// [[Rcpp::export]]
+arma::mat blockDiag(arma::field<arma::mat>& x) {
+
+  unsigned int n = x.n_rows;
+  int dimen = 0;
+  arma::ivec dimvec(n);
+  
+  for(unsigned int i=0; i<n; i++) {
+    dimvec(i) = x(i,0).n_rows; 
+    dimen += dimvec(i);
   }
+  
+  arma::mat X(dimen, dimen, arma::fill::zeros);
+  int idx=0;
+  
+  for(unsigned int i=0; i<n; i++) {
+    X.submat(idx, idx, idx + dimvec(i) - 1, idx + dimvec(i) - 1 ) = x(i,0);
+    idx = idx + dimvec(i);
+  }
+  
+  return(X);
 }
 
 //' Multivariate Normal Entropy
@@ -37,6 +49,46 @@ double mvn_entropy(arma::mat& S) {
 // [[Rcpp::export]]
 double ig_entropy(double a, double b) {
   return a + log(b) + lgamma(a) - (a + 1)*R::digamma(a);
+}
+
+//' Inverse Gamma E[x]
+//' 
+//' Calculate and return the entropy for inverse gamma distribution
+//' with supplied shape and scale.
+//' 
+//' @param a shape
+//' @param b scale 
+// [[Rcpp::export]]
+double ig_E(double a, double b) {
+  double ret = 0.0;
+  if(a > 1)
+    ret = b / (a - 1);
+  return ret;
+}
+
+
+//' Inverse Gamma E[1/x]
+//' 
+//' Calculate and return the entropy for inverse gamma distribution
+//' with supplied shape and scale.
+//' 
+//' @param a shape
+//' @param b scale 
+// [[Rcpp::export]]
+double ig_E_inv(double a, double b) {
+  return a/b;
+}
+
+//' Inverse Gamma E[log(x)]
+//' 
+//' Calculate and return the entropy for inverse gamma distribution
+//' with supplied shape and scale.
+//' 
+//' @param a shape
+//' @param b scale 
+// [[Rcpp::export]]
+double ig_E_log(double a, double b) {
+  return log(b) - R::digamma(a);
 }
 
 //' Evaluate standard normal cdf for matrix of variates

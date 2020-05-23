@@ -14,4 +14,7 @@ LinkingTo: Rcpp, RcppArmadillo
 RoxygenNote: 7.1.0
 Encoding: UTF-8
 Suggests: 
-    testthat
+    testthat,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
