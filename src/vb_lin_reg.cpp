@@ -48,7 +48,6 @@ List vb_lin_reg(
   arma::mat invSigma0 = inv(Sigma0);
   arma::vec invSigma0_mu0 = invSigma0 * mu0;
   double ldetSigma0 = real(log_det(Sigma0));
-  arma::vec y_m_Xmu;
   
   // sufficient statistics
   double yty = dot(y, y);
@@ -73,7 +72,6 @@ List vb_lin_reg(
     a_div_b = a/b;
     Sigma = inv(a_div_b * XtX + invSigma0);
     mu = Sigma * (a_div_b * Xty + invSigma0_mu0);
-    y_m_Xmu = y - X*mu;
     if(prior == 1) {
       b = b0 + 0.5*yty - dot(mu, Xty) + 0.5*arma::trace(XtX * (Sigma + mu * trans(mu)));
     } else if (prior == 2) {
@@ -98,6 +96,7 @@ List vb_lin_reg(
       elbo(i) += ig_entropy(a_lam, b_lam) +
         b0/2*(log(b0) - ig_E_log(a_lam, b_lam)) - lgamma(b0/2) - (b0/2 + 1)*ig_E_log(a, b) - b0*ig_E_inv(a_lam, b_lam)*ig_E_inv(a, b);
         // -log(a0) - lgamma(1/2) - 3/2*ig_E_log(a_lam, b_lam) - pow(a0, -2) * ig_E_inv(a_lam, b_lam);
+        // Issue with calculation above, need to fix...
         
     }
 

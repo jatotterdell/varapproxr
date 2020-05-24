@@ -8,6 +8,13 @@ blockDiag <- function(x) {
     .Call(`_varapproxr_blockDiag`, x)
 }
 
+#' Right-bind columns of matrices from in list.
+#' 
+#' @param x A list of matrices
+bind_cols <- function(x) {
+    .Call(`_varapproxr_bind_cols`, x)
+}
+
 #' Multivariate Normal Entropy
 #' 
 #' Calculate and return the entropy for multivariate distribution
@@ -338,6 +345,11 @@ vb_glmm <- function(X, Z, y, mu_beta, sigma_beta, mu, sigma, Au = 1.0, Bu = 1.0,
     .Call(`_varapproxr_vb_glmm`, X, Z, y, mu_beta, sigma_beta, mu, sigma, Au, Bu, Bqu, tol, maxiter, verbose)
 }
 
+#' Convert arma::vec to Rcpp::NumericVector
+#' 
+#' @param x A vector
+NULL
+
 #' Perform mean-field variational inference for 
 #' a Poisson regression model.
 #' 
@@ -354,6 +366,24 @@ vb_glmm <- function(X, Z, y, mu_beta, sigma_beta, mu, sigma, Au = 1.0, Bu = 1.0,
 #' @export
 vb_pois_reg <- function(X, y, n, mu0, Sigma0, tol = 1e-8, maxiter = 100L, verbose = FALSE) {
     .Call(`_varapproxr_vb_pois_reg`, X, y, n, mu0, Sigma0, tol, maxiter, verbose)
+}
+
+#' Perform mean-field variational inference for 
+#' a Poisson mixed-effects regression model.
+#' 
+#' @param X The design matrix
+#' @param y The response vector
+#' @param n The offset term
+#' @param mu0 The prior mean for beta
+#' @param Sigma0 The prior covariance for beta
+#' @param tol Tolerance for convergence of the elbo
+#' @param maxiter Maximum number of iterations allowed
+#' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
+#' @return v A list of relevant outputs
+#' 
+#' @export
+vb_pois_mm <- function(X, Zlist, y, n, mu0, Sigma0, tol = 1e-8, maxiter = 100L, verbose = FALSE) {
+    .Call(`_varapproxr_vb_pois_mm`, X, Zlist, y, n, mu0, Sigma0, tol, maxiter, verbose)
 }
 
 #' Normal parametric variational Bayes for Exponential PH Model.

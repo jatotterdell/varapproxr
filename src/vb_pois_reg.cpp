@@ -8,10 +8,14 @@
 
 using namespace Rcpp;
 
+//' Convert arma::vec to Rcpp::NumericVector
+//' 
+//' @param x A vector
 template <typename T>
 Rcpp::NumericVector arma2vec(const T& x) {
   return Rcpp::NumericVector(x.begin(), x.end());
 }
+
 
 //' Perform mean-field variational inference for 
 //' a Poisson regression model.
@@ -81,4 +85,58 @@ List vb_pois_reg(
                       Named("elbo") = elbo.subvec(0, iterations),
                       Named("mu") = mu,
                       Named("Sigma") = Sigma);
+}
+
+
+//' Perform mean-field variational inference for 
+//' a Poisson mixed-effects regression model.
+//' 
+//' @param X The design matrix
+//' @param y The response vector
+//' @param n The offset term
+//' @param mu0 The prior mean for beta
+//' @param Sigma0 The prior covariance for beta
+//' @param tol Tolerance for convergence of the elbo
+//' @param maxiter Maximum number of iterations allowed
+//' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
+//' @return v A list of relevant outputs
+//' 
+//' @export
+// [[Rcpp::export]]
+List vb_pois_mm(
+    const arma::mat& X, 
+    arma::field<arma::mat>& Zlist,
+    const arma::vec& y,
+    const arma::vec& n,
+    const arma::vec& mu0,
+    const arma::mat& Sigma0,
+    double tol = 1e-8, 
+    int maxiter = 100, 
+    bool verbose = false) {
+  
+  double N = X.n_rows;
+  double P = X.n_cols;
+  double R = Zlist.n_slices;
+  arma::mat Z = blockDiag(Zlist);
+  arma::mat C = arma::join_rows(X, Z);
+  
+  // statistics
+  arma::vec lnn = log(n);
+  arma::mat CtC = trans(C)*C;
+  arma::vec Cty = trans(C)*y;
+  
+  bool converged = 0;
+  int iterations = 0;
+  Rcpp::Rcout.precision(10);
+  arma::vec elbo(maxiter);
+  
+  arma::mat mu = arma::zeros(P);
+  arma::mat Sigma = arma::diagmat(arma::ones(P));
+  
+  return List::create(Named("converged") = converged,
+                      Named("elbo") = elbo.subvec(0, iterations),
+                      Named("mu") = mu,
+                      Named("Sigma") = Sigma,
+                      Named("CtC") = CtC,
+                      Named("Cty") = Cty);
 }

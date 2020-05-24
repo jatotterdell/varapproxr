@@ -1,16 +1,15 @@
 #include <RcppArmadillo.h>
 #include <Rmath.h>
 
+
 //' Construct block-diagonal matrix from list of matrices
 //' 
 //' @param x A list of matrices
 // [[Rcpp::export]]
 arma::mat blockDiag(arma::field<arma::mat>& x) {
-
   unsigned int n = x.n_rows;
   int dimen = 0;
   arma::ivec dimvec(n);
-  
   for(unsigned int i=0; i<n; i++) {
     dimvec(i) = x(i,0).n_rows; 
     dimen += dimvec(i);
@@ -18,10 +17,40 @@ arma::mat blockDiag(arma::field<arma::mat>& x) {
   
   arma::mat X(dimen, dimen, arma::fill::zeros);
   int idx=0;
-  
   for(unsigned int i=0; i<n; i++) {
     X.submat(idx, idx, idx + dimvec(i) - 1, idx + dimvec(i) - 1 ) = x(i,0);
     idx = idx + dimvec(i);
+  }
+  
+  return(X);
+}
+
+//' Right-bind columns of matrices from in list.
+//' 
+//' @param x A list of matrices
+// [[Rcpp::export]]
+arma::mat bind_cols(arma::field<arma::mat>& x) {
+  unsigned int n = x.n_rows;
+  int c_dimen = 0;
+  int r_dimen = 0;
+  arma::ivec c_dimvec(n);
+  arma::ivec r_dimvec(n);
+  
+  for(unsigned int i=0; i<n; i++) {
+    c_dimvec(i) = x(i,0).n_cols; 
+    r_dimvec(i) = x(i,0).n_rows; 
+    c_dimen += c_dimvec(i);
+    r_dimen += r_dimvec(i);
+  }  
+  
+  // Need to check that all matrices have same number of rows...
+  // Currently no check for this...
+  
+  arma::mat X(r_dimvec(0), c_dimen, arma::fill::zeros);
+  int idx=0;
+  for(unsigned int i=0; i<n; i++) {
+    X.submat(0, idx, r_dimvec(0) - 1, idx + c_dimvec(i) - 1) = x(i,0);
+    idx = idx + c_dimvec(i);
   }
   
   return(X);
