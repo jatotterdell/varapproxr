@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{bind_cols}
 \alias{bind_cols}
-\title{Right-bind matrices from a list.}
+\title{Right-bind columns of matrices from in list.}
 \usage{
 bind_cols(x)
 }
@@ -10,5 +10,5 @@ bind_cols(x)
 \item{x}{A list of matrices}
 }
 \description{
-Right-bind matrices from a list.
+Right-bind columns of matrices from in list.
 }

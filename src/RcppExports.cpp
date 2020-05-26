@@ -6,6 +6,17 @@
 
 using namespace Rcpp;
 
+// arma2vec
+Rcpp::NumericVector arma2vec(arma::vec x);
+RcppExport SEXP _varapproxr_arma2vec(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(arma2vec(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // blockDiag
 arma::mat blockDiag(arma::field<arma::mat>& x);
 RcppExport SEXP _varapproxr_blockDiag(SEXP xSEXP) {
@@ -109,9 +120,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// vb_lin_reg
-List vb_lin_reg(const arma::mat& X, const arma::vec& y, const arma::vec& mu0, const arma::mat& Sigma0, const double a0, const double b0, const int prior, double tol, int maxiter, bool verbose);
-RcppExport SEXP _varapproxr_vb_lin_reg(SEXP XSEXP, SEXP ySEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP a0SEXP, SEXP b0SEXP, SEXP priorSEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP) {
+// vb_lm
+List vb_lm(const arma::mat& X, const arma::vec& y, const arma::vec& mu0, const arma::mat& Sigma0, const double a0, const double b0, const int prior, double tol, int maxiter, bool verbose);
+RcppExport SEXP _varapproxr_vb_lm(SEXP XSEXP, SEXP ySEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP a0SEXP, SEXP b0SEXP, SEXP priorSEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -125,13 +136,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(vb_lin_reg(X, y, mu0, Sigma0, a0, b0, prior, tol, maxiter, verbose));
+    rcpp_result_gen = Rcpp::wrap(vb_lm(X, y, mu0, Sigma0, a0, b0, prior, tol, maxiter, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
-// update_vb_lin_reg
-List update_vb_lin_reg(List vb_fit, const arma::mat& X, const arma::vec& y, double tol, int maxiter, bool verbose);
-RcppExport SEXP _varapproxr_update_vb_lin_reg(SEXP vb_fitSEXP, SEXP XSEXP, SEXP ySEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP) {
+// update_vb_lm
+List update_vb_lm(List vb_fit, const arma::mat& X, const arma::vec& y, double tol, int maxiter, bool verbose);
+RcppExport SEXP _varapproxr_update_vb_lm(SEXP vb_fitSEXP, SEXP XSEXP, SEXP ySEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -141,7 +152,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(update_vb_lin_reg(vb_fit, X, y, tol, maxiter, verbose));
+    rcpp_result_gen = Rcpp::wrap(update_vb_lm(vb_fit, X, y, tol, maxiter, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -399,8 +410,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // vb_pois_mm
-List vb_pois_mm(const arma::mat& X, arma::field<arma::mat>& Zlist, const arma::vec& y, const arma::vec& n, const arma::vec& mu0, const arma::mat& Sigma0, double tol, int maxiter, bool verbose);
-RcppExport SEXP _varapproxr_vb_pois_mm(SEXP XSEXP, SEXP ZlistSEXP, SEXP ySEXP, SEXP nSEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP) {
+List vb_pois_mm(const arma::mat& X, arma::field<arma::mat>& Zlist, const arma::vec& y, const arma::vec& n, arma::vec& mu0, const arma::mat& Sigma0, arma::vec& a0, double tol, int maxiter, bool verbose);
+RcppExport SEXP _varapproxr_vb_pois_mm(SEXP XSEXP, SEXP ZlistSEXP, SEXP ySEXP, SEXP nSEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP a0SEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -408,12 +419,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::field<arma::mat>& >::type Zlist(ZlistSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type y(ySEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type n(nSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type mu0(mu0SEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type mu0(mu0SEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type Sigma0(Sigma0SEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type a0(a0SEXP);
     Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
     Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(vb_pois_mm(X, Zlist, y, n, mu0, Sigma0, tol, maxiter, verbose));
+    rcpp_result_gen = Rcpp::wrap(vb_pois_mm(X, Zlist, y, n, mu0, Sigma0, a0, tol, maxiter, verbose));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -437,6 +449,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_varapproxr_arma2vec", (DL_FUNC) &_varapproxr_arma2vec, 1},
     {"_varapproxr_blockDiag", (DL_FUNC) &_varapproxr_blockDiag, 1},
     {"_varapproxr_bind_cols", (DL_FUNC) &_varapproxr_bind_cols, 1},
     {"_varapproxr_mvn_entropy", (DL_FUNC) &_varapproxr_mvn_entropy, 1},
@@ -446,8 +459,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_ig_E_log", (DL_FUNC) &_varapproxr_ig_E_log, 2},
     {"_varapproxr_pnorm_mat", (DL_FUNC) &_varapproxr_pnorm_mat, 1},
     {"_varapproxr_dnorm_mat", (DL_FUNC) &_varapproxr_dnorm_mat, 1},
-    {"_varapproxr_vb_lin_reg", (DL_FUNC) &_varapproxr_vb_lin_reg, 10},
-    {"_varapproxr_update_vb_lin_reg", (DL_FUNC) &_varapproxr_update_vb_lin_reg, 6},
+    {"_varapproxr_vb_lm", (DL_FUNC) &_varapproxr_vb_lm, 10},
+    {"_varapproxr_update_vb_lm", (DL_FUNC) &_varapproxr_update_vb_lm, 6},
     {"_varapproxr_vb_lmm", (DL_FUNC) &_varapproxr_vb_lmm, 17},
     {"_varapproxr_b0", (DL_FUNC) &_varapproxr_b0, 2},
     {"_varapproxr_b1", (DL_FUNC) &_varapproxr_b1, 2},
@@ -462,7 +475,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_vb_logistic_n", (DL_FUNC) &_varapproxr_vb_logistic_n, 12},
     {"_varapproxr_vb_glmm", (DL_FUNC) &_varapproxr_vb_glmm, 13},
     {"_varapproxr_vb_pois_reg", (DL_FUNC) &_varapproxr_vb_pois_reg, 8},
-    {"_varapproxr_vb_pois_mm", (DL_FUNC) &_varapproxr_vb_pois_mm, 9},
+    {"_varapproxr_vb_pois_mm", (DL_FUNC) &_varapproxr_vb_pois_mm, 10},
     {"_varapproxr_ph_exponential", (DL_FUNC) &_varapproxr_ph_exponential, 8},
     {NULL, NULL, 0}
 };

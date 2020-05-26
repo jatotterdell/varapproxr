@@ -1,6 +1,15 @@
 #include <RcppArmadillo.h>
 #include <Rmath.h>
 
+//' Convert arma::vec to Rcpp::NumericVector
+//' 
+//' @param x A vector
+// [[Rcpp::export]]
+Rcpp::NumericVector arma2vec(arma::vec x) {
+  return Rcpp::NumericVector(x.begin(), x.end());
+}
+
+
 
 //' Construct block-diagonal matrix from list of matrices
 //' 

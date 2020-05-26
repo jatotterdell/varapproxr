@@ -8,8 +8,7 @@
 using namespace Rcpp;
 
 
-//' Perform mean-field variational inference for 
-//' a basic linear regression model.
+//' Mean-field variational inference for a normal linear model.
 //' 
 //' @param X The design matrix
 //' @param y The response vector
@@ -25,7 +24,7 @@ using namespace Rcpp;
 //' 
 //' @export
 // [[Rcpp::export]]
-List vb_lin_reg(
+List vb_lm(
     const arma::mat& X, 
     const arma::vec& y,
     const arma::vec& mu0,
@@ -126,8 +125,7 @@ List vb_lin_reg(
 }
 
 
-//' Update mean-field variational inference for 
-//' a basic linear regression model.
+//' Update mean-field variational inference for a normal linear model.
 //' 
 //' @param vb_fit A previous fit
 //' @param X The new design matrix
@@ -139,7 +137,7 @@ List vb_lin_reg(
 //' 
 //' @export
 // [[Rcpp::export]]
-List update_vb_lin_reg(
+List update_vb_lm(
     List vb_fit,
     const arma::mat& X, 
     const arma::vec& y,

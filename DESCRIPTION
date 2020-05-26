@@ -3,10 +3,11 @@ Type: Package
 Title: Variational approximations
 Version: 0.0.0.9000
 Date: 2019-06-21
-Author: James Totterdell
-Maintainer: James Totterdell <jatotterdell@gmail.com>
+Authors@R: person("James", "Totterdell", email = "jatotterdell@gmail.com",
+                  role = c("aut", "cre"))
 Description: Repository for variational approximation implementations in R. Currently only focuses on deterministic semiparametric approaches, in particular, normal approximations.
 License: MIT + file LICENSE
+Depends: R (>= 3.1.0)
 Imports: 
     Rcpp,
     nlme

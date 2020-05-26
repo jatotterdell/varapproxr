@@ -3,7 +3,10 @@
 
 #include <RcppArmadillo.h>
 
+Rcpp::NumericVector arma2vec(arma::vec x);
 arma::mat blockDiag(arma::field<arma::mat>& x);
+arma::mat bind_cols(arma::field<arma::mat>& x);
+  
 double mvn_entropy(arma::mat& S);
 double ig_entropy(double a, double b);
 double ig_E(double a, double b);

@@ -80,6 +80,7 @@ List vb_lmm(
   arma::mat C = arma::join_rows(X, Z);
   arma::mat CtC = trans(C)*C;
   arma::vec Cty = trans(C)*y;
+  double yty = dot(y, y);
   arma::mat inv_sigma_beta =  inv(sigma_beta);
   arma::mat inv_sigma_0 = arma::join_rows(
     arma::join_cols(inv_sigma_beta, arma::zeros(K, P)),
