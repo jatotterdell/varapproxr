@@ -372,10 +372,12 @@ vb_pois_reg <- function(X, y, n, mu0, Sigma0, tol = 1e-8, maxiter = 100L, verbos
 #' a Poisson mixed-effects regression model.
 #' 
 #' @param X The design matrix
+#' @param Zlist The random effect design matrices
 #' @param y The response vector
 #' @param n The offset term
 #' @param mu0 The prior mean for beta
 #' @param Sigma0 The prior covariance for beta
+#' @param a0 Half-Cauchy scale hyper-parameter
 #' @param tol Tolerance for convergence of the elbo
 #' @param maxiter Maximum number of iterations allowed
 #' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.

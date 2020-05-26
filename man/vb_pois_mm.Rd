@@ -21,6 +21,8 @@ vb_pois_mm(
 \arguments{
 \item{X}{The design matrix}
 
+\item{Zlist}{The random effect design matrices}
+
 \item{y}{The response vector}
 
 \item{n}{The offset term}
@@ -28,6 +30,8 @@ vb_pois_mm(
 \item{mu0}{The prior mean for beta}
 
 \item{Sigma0}{The prior covariance for beta}
+
+\item{a0}{Half-Cauchy scale hyper-parameter}
 
 \item{tol}{Tolerance for convergence of the elbo}
 
