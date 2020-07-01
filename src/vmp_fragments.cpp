@@ -110,7 +110,7 @@ arma::field<arma::vec> InverseGWishartPriorFragment(
 //' Iterated Inverse G-Wishart fragment update
 //' 
 //' @param G The graph matrix.
-//' @param xi The prior shape \eqn{\xi \in \mathbb{R}}.
+//' @param xi The prior shape.
 //' @param eta1_in A d + 1 x 1 vector.
 //' @param eta2_in A d + 1 x 1 vector.
 // [[Rcpp::export]]

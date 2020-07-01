@@ -9,7 +9,7 @@ IteratedInverseGWishartFragment(G, xi, eta1_in, eta2_in)
 \arguments{
 \item{G}{The graph matrix.}
 
-\item{xi}{The prior shape \eqn{\xi \in \mathbb{R}}.}
+\item{xi}{The prior shape.}
 
 \item{eta1_in}{A d + 1 x 1 vector.}
 

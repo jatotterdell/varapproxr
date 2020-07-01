@@ -511,7 +511,7 @@ InverseGWishartPriorFragment <- function(G, xi, Lambda) {
 #' Iterated Inverse G-Wishart fragment update
 #' 
 #' @param G The graph matrix.
-#' @param xi The prior shape \eqn{\xi \in \mathbb{R}}.
+#' @param xi The prior shape.
 #' @param eta1_in A d + 1 x 1 vector.
 #' @param eta2_in A d + 1 x 1 vector.
 IteratedInverseGWishartFragment <- function(G, xi, eta1_in, eta2_in) {
