@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Perform mean-field variational inference for 
-a Poisson mixed-effects regression model. — vb_pois_mm • varapproxr</title>
+<title>Variational Bayes for linear mixed model. — vb_lmm_randint • varapproxr</title>
 
 
 <!-- jquery -->
@@ -40,10 +39,8 @@ a Poisson mixed-effects regression model. — vb_pois_mm • varapproxr</title>
 
 
 
-<meta property="og:title" content="Perform mean-field variational inference for 
-a Poisson mixed-effects regression model. — vb_pois_mm" />
-<meta property="og:description" content="Perform mean-field variational inference for 
-a Poisson mixed-effects regression model." />
+<meta property="og:title" content="Variational Bayes for linear mixed model. — vb_lmm_randint" />
+<meta property="og:description" content="Variational Bayes for linear mixed model." />
 
 
 
@@ -132,28 +129,33 @@ a Poisson mixed-effects regression model." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Perform mean-field variational inference for 
-a Poisson mixed-effects regression model.</h1>
+    <h1>Variational Bayes for linear mixed model.</h1>
     <small class="dont-index">Source: <a href='https://github.com/jatotterdell/varapproxr/blob/master/R/RcppExports.R'><code>R/RcppExports.R</code></a></small>
-    <div class="hidden name"><code>vb_pois_mm.Rd</code></div>
+    <div class="hidden name"><code>vb_lmm_randint.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Perform mean-field variational inference for 
-a Poisson mixed-effects regression model.</p>
+    <p>Variational Bayes for linear mixed model.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>vb_pois_mm</span>(
+    <pre class="usage"><span class='fu'>vb_lmm_randint</span>(
   <span class='no'>X</span>,
-  <span class='no'>Zlist</span>,
+  <span class='no'>Z</span>,
   <span class='no'>y</span>,
-  <span class='no'>n</span>,
-  <span class='no'>mu0</span>,
-  <span class='no'>Sigma0</span>,
-  <span class='no'>a0</span>,
+  <span class='no'>mu_beta</span>,
+  <span class='no'>sigma_beta</span>,
+  <span class='no'>mu</span>,
+  <span class='no'>sigma</span>,
+  <span class='kw'>Aeps</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>Beps</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>Au</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>Bu</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>Bqeps</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='kw'>Bqu</span> <span class='kw'>=</span> <span class='fl'>1</span>,
   <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-08</span>,
   <span class='kw'>maxiter</span> <span class='kw'>=</span> <span class='fl'>100L</span>,
-  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
+  <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>trace</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -164,47 +166,105 @@ a Poisson mixed-effects regression model.</p>
       <td><p>The design matrix</p></td>
     </tr>
     <tr>
-      <th>Zlist</th>
-      <td><p>The random effect design matrices</p></td>
+      <th>Z</th>
+      <td><p>Group design matrix</p></td>
     </tr>
     <tr>
       <th>y</th>
       <td><p>The response vector</p></td>
     </tr>
     <tr>
-      <th>n</th>
-      <td><p>The offset term</p></td>
-    </tr>
-    <tr>
-      <th>mu0</th>
+      <th>mu_beta</th>
       <td><p>The prior mean for beta</p></td>
     </tr>
     <tr>
-      <th>Sigma0</th>
+      <th>sigma_beta</th>
       <td><p>The prior covariance for beta</p></td>
     </tr>
     <tr>
-      <th>a0</th>
-      <td><p>Half-Cauchy scale hyper-parameter</p></td>
+      <th>mu</th>
+      <td><p>Initial value for mu</p></td>
+    </tr>
+    <tr>
+      <th>sigma</th>
+      <td><p>Initial value for sigma</p></td>
+    </tr>
+    <tr>
+      <th>Aeps</th>
+      <td><p>The prior shape for sigma_eps</p></td>
+    </tr>
+    <tr>
+      <th>Beps</th>
+      <td><p>The prior scale for sigma_eps</p></td>
+    </tr>
+    <tr>
+      <th>Au</th>
+      <td><p>The prior shape for sigma_u</p></td>
+    </tr>
+    <tr>
+      <th>Bu</th>
+      <td><p>The prior scale for sigma_u</p></td>
+    </tr>
+    <tr>
+      <th>Bqeps</th>
+      <td><p>The intial value for Bqeps</p></td>
+    </tr>
+    <tr>
+      <th>Bqu</th>
+      <td><p>The initial value for Bqu</p></td>
     </tr>
     <tr>
       <th>tol</th>
-      <td><p>Tolerance for convergence of the elbo</p></td>
+      <td><p>Tolerance level</p></td>
     </tr>
     <tr>
       <th>maxiter</th>
-      <td><p>Maximum number of iterations allowed</p></td>
+      <td><p>Maximum iterations</p></td>
     </tr>
     <tr>
       <th>verbose</th>
       <td><p>Print trace of the lower bound to console. Default is <code>FALSE</code>.</p></td>
     </tr>
+    <tr>
+      <th>trace</th>
+      <td><p>Print a trace of `mu` to console.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>v A list of relevant outputs</p>
+    <p>A list containing:</p><dl'>
+  <dt>converged</dt><dd><p>Indicator for algorithm convergence.</p></dd>
+  <dt>elbo</dt><dd><p>Vector of the ELBO sequence.</p></dd> 
+  <dt>mu</dt><dd><p>The optimised value of mu.</p></dd>
+  <dt>Sigma</dt><dd><p>The optimised value of Sigma.</p></dd>
 
+</dl>
+
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>nlme</span>)
+<span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/model.matrix.html'>model.matrix</a></span>( ~ <span class='no'>age</span> + <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='no'>Sex</span>, <span class='kw'>levels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Female"</span>, <span class='st'>"Male"</span>)), <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>Orthodont</span>)
+<span class='no'>Z</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/kronecker.html'>kronecker</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='fl'>1</span>, <span class='fl'>27</span>), <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>, <span class='fl'>4</span>))
+<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='no'>Orthodont</span>$<span class='no'>distance</span>
+<span class='no'>mu0</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>X</span>))
+<span class='no'>S0</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='fl'>1e8</span>, <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>X</span>))
+<span class='no'>mu</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>X</span>) + <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>Z</span>))
+<span class='no'>S</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>X</span>) + <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>Z</span>))
+<span class='no'>A</span> <span class='kw'>&lt;-</span> <span class='fl'>1</span>/<span class='fl'>100</span>
+<span class='no'>B</span> <span class='kw'>&lt;-</span> <span class='fl'>1</span>/<span class='fl'>100</span>
+<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'>vb_lmm_randint</span>(<span class='no'>X</span>, <span class='no'>Z</span>, <span class='no'>y</span>, <span class='no'>mu0</span>, <span class='no'>S0</span>, <span class='no'>mu</span>, <span class='no'>S</span>, <span class='no'>A</span>, <span class='no'>B</span>, <span class='no'>A</span>, <span class='no'>B</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; Iter:   1; ELBO = -312.245477
+#&gt; Iter:   2; ELBO = -260.313773
+#&gt; Iter:   3; ELBO = -259.935380
+#&gt; Iter:   4; ELBO = -259.914549
+#&gt; Iter:   5; ELBO = -259.912980
+#&gt; Iter:   6; ELBO = -259.912836
+#&gt; Iter:   7; ELBO = -259.912821
+#&gt; Iter:   8; ELBO = -259.912819
+#&gt; Iter:   9; ELBO = -259.912819
+#&gt; Iter:  10; ELBO = -259.912819
+#&gt; Iter:  11; ELBO = -259.912819</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

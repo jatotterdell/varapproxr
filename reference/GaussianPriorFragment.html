@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Evaluate standard normal density for matrix of variates — dnorm_mat • varapproxr</title>
+<title>Gaussian prior fragment update — GaussianPriorFragment • varapproxr</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Evaluate standard normal density for matrix of variates — dnorm_mat" />
-<meta property="og:description" content="Evaluate standard normal density for matrix of variates" />
+<meta property="og:title" content="Gaussian prior fragment update — GaussianPriorFragment" />
+<meta property="og:description" content="Gaussian prior fragment update" />
 
 
 
@@ -129,23 +129,27 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Evaluate standard normal density for matrix of variates</h1>
+    <h1>Gaussian prior fragment update</h1>
     <small class="dont-index">Source: <a href='https://github.com/jatotterdell/varapproxr/blob/master/R/RcppExports.R'><code>R/RcppExports.R</code></a></small>
-    <div class="hidden name"><code>dnorm_mat.Rd</code></div>
+    <div class="hidden name"><code>GaussianPriorFragment.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Evaluate standard normal density for matrix of variates</p>
+    <p>Gaussian prior fragment update</p>
     </div>
 
-    <pre class="usage"><span class='fu'>dnorm_mat</span>(<span class='no'>m</span>)</pre>
+    <pre class="usage"><span class='fu'>GaussianPriorFragment</span>(<span class='no'>mu</span>, <span class='no'>Sigma</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>m</th>
-      <td><p>A matrix of variates</p></td>
+      <th>mu</th>
+      <td><p>The prior mean</p></td>
+    </tr>
+    <tr>
+      <th>Sigma</th>
+      <td><p>The prior variance</p></td>
     </tr>
     </table>
 

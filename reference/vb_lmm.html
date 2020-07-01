@@ -40,7 +40,8 @@
 
 
 <meta property="og:title" content="Variational Bayes for linear mixed model. — vb_lmm" />
-<meta property="og:description" content="Variational Bayes for linear mixed model." />
+<meta property="og:description" content="Variational approximation for linear mixed model assuming Gaussian distribution priors on fixed and grouped effects.
+Priors on the variance parameters are Scaled-Inverse-Wishart distributions." />
 
 
 
@@ -103,11 +104,19 @@
     <li>
       <a href="../articles/web_only/01-linear.html">Linear Models</a>
     </li>
+    <li>
+      <a href="../articles/web_only/99-distributions.html">Distributions</a>
+    </li>
   </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/jatotterdell/varapproxr/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -122,28 +131,27 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Variational Bayes for linear mixed model.</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/jatotterdell/varapproxr/blob/master/R/RcppExports.R'><code>R/RcppExports.R</code></a></small>
     <div class="hidden name"><code>vb_lmm.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Variational Bayes for linear mixed model.</p>
+    <p>Variational approximation for linear mixed model assuming Gaussian distribution priors on fixed and grouped effects.
+Priors on the variance parameters are Scaled-Inverse-Wishart distributions.</p>
     </div>
 
     <pre class="usage"><span class='fu'>vb_lmm</span>(
-  <span class='no'>X</span>,
-  <span class='no'>Z</span>,
   <span class='no'>y</span>,
-  <span class='no'>mu_beta</span>,
-  <span class='no'>sigma_beta</span>,
-  <span class='no'>mu</span>,
-  <span class='no'>sigma</span>,
-  <span class='kw'>Aeps</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>Beps</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>Au</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>Bu</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>Bqeps</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>Bqu</span> <span class='kw'>=</span> <span class='fl'>1</span>,
+  <span class='no'>X</span>,
+  <span class='no'>Zlist</span>,
+  <span class='no'>J</span>,
+  <span class='no'>R</span>,
+  <span class='no'>mu_beta0</span>,
+  <span class='no'>Sigma_beta0</span>,
+  <span class='no'>xi_sigma</span>,
+  <span class='no'>Lambda_sigma</span>,
+  <span class='no'>xi_k</span>,
+  <span class='no'>Lambda_k</span>,
   <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-08</span>,
   <span class='kw'>maxiter</span> <span class='kw'>=</span> <span class='fl'>100L</span>,
   <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
@@ -154,56 +162,48 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>X</th>
-      <td><p>The design matrix</p></td>
-    </tr>
-    <tr>
-      <th>Z</th>
-      <td><p>Group design matrix</p></td>
-    </tr>
-    <tr>
       <th>y</th>
       <td><p>The response vector</p></td>
     </tr>
     <tr>
-      <th>mu_beta</th>
+      <th>X</th>
+      <td><p>The design matrix</p></td>
+    </tr>
+    <tr>
+      <th>Zlist</th>
+      <td><p>Collection of group design matrices</p></td>
+    </tr>
+    <tr>
+      <th>J</th>
+      <td><p>First dimension of each Z in Zlist (e.g. number of subjects)</p></td>
+    </tr>
+    <tr>
+      <th>R</th>
+      <td><p>Second dimension of each Z in Zlist (e.g. number of variables, intercept and slope would be R = 2)</p></td>
+    </tr>
+    <tr>
+      <th>mu_beta0</th>
       <td><p>The prior mean for beta</p></td>
     </tr>
     <tr>
-      <th>sigma_beta</th>
+      <th>Sigma_beta0</th>
       <td><p>The prior covariance for beta</p></td>
     </tr>
     <tr>
-      <th>mu</th>
-      <td><p>Initial value for mu</p></td>
+      <th>xi_sigma</th>
+      <td><p>...</p></td>
     </tr>
     <tr>
-      <th>sigma</th>
-      <td><p>Initial value for sigma</p></td>
+      <th>Lambda_sigma</th>
+      <td><p>...</p></td>
     </tr>
     <tr>
-      <th>Aeps</th>
-      <td><p>The prior shape for sigma_eps</p></td>
+      <th>xi_k</th>
+      <td><p>...</p></td>
     </tr>
     <tr>
-      <th>Beps</th>
-      <td><p>The prior scale for sigma_eps</p></td>
-    </tr>
-    <tr>
-      <th>Au</th>
-      <td><p>The prior shape for sigma_u</p></td>
-    </tr>
-    <tr>
-      <th>Bu</th>
-      <td><p>The prior scale for sigma_u</p></td>
-    </tr>
-    <tr>
-      <th>Bqeps</th>
-      <td><p>The intial value for Bqeps</p></td>
-    </tr>
-    <tr>
-      <th>Bqu</th>
-      <td><p>The initial value for Bqu</p></td>
+      <th>Lambda_k</th>
+      <td><p>...</p></td>
     </tr>
     <tr>
       <th>tol</th>
@@ -234,29 +234,6 @@
 </dl>
 
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>nlme</span>)
-<span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/model.matrix.html'>model.matrix</a></span>( ~ <span class='no'>age</span> + <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='no'>Sex</span>, <span class='kw'>levels</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Female"</span>, <span class='st'>"Male"</span>)), <span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>Orthodont</span>)
-<span class='no'>Z</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/kronecker.html'>kronecker</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='fl'>1</span>, <span class='fl'>27</span>), <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>1</span>, <span class='fl'>4</span>))
-<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='no'>Orthodont</span>$<span class='no'>distance</span>
-<span class='no'>mu0</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>X</span>))
-<span class='no'>S0</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='fl'>1e8</span>, <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>X</span>))
-<span class='no'>mu</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span>(<span class='fl'>0</span>, <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>X</span>) + <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>Z</span>))
-<span class='no'>S</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span>(<span class='fl'>1</span>, <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>X</span>) + <span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>ncol</a></span>(<span class='no'>Z</span>))
-<span class='no'>A</span> <span class='kw'>&lt;-</span> <span class='fl'>1</span>/<span class='fl'>100</span>
-<span class='no'>B</span> <span class='kw'>&lt;-</span> <span class='fl'>1</span>/<span class='fl'>100</span>
-<span class='no'>fit</span> <span class='kw'>&lt;-</span> <span class='fu'>vb_lmm</span>(<span class='no'>X</span>, <span class='no'>Z</span>, <span class='no'>y</span>, <span class='no'>mu0</span>, <span class='no'>S0</span>, <span class='no'>mu</span>, <span class='no'>S</span>, <span class='no'>A</span>, <span class='no'>B</span>, <span class='no'>A</span>, <span class='no'>B</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; Iter:   1; ELBO = -312.245477
-#&gt; Iter:   2; ELBO = -260.313773
-#&gt; Iter:   3; ELBO = -259.935380
-#&gt; Iter:   4; ELBO = -259.914549
-#&gt; Iter:   5; ELBO = -259.912980
-#&gt; Iter:   6; ELBO = -259.912836
-#&gt; Iter:   7; ELBO = -259.912821
-#&gt; Iter:   8; ELBO = -259.912819
-#&gt; Iter:   9; ELBO = -259.912819
-#&gt; Iter:  10; ELBO = -259.912819
-#&gt; Iter:  11; ELBO = -259.912819</div><div class='input'>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

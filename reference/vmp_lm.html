@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Evaluate standard normal density for matrix of variates — dnorm_mat • varapproxr</title>
+<title>Variational Message Passing for Normal linear model. — vmp_lm • varapproxr</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Evaluate standard normal density for matrix of variates — dnorm_mat" />
-<meta property="og:description" content="Evaluate standard normal density for matrix of variates" />
+<meta property="og:title" content="Variational Message Passing for Normal linear model. — vmp_lm" />
+<meta property="og:description" content="Variational Message Passing for Normal linear model." />
 
 
 
@@ -129,23 +129,55 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Evaluate standard normal density for matrix of variates</h1>
+    <h1>Variational Message Passing for Normal linear model.</h1>
     <small class="dont-index">Source: <a href='https://github.com/jatotterdell/varapproxr/blob/master/R/RcppExports.R'><code>R/RcppExports.R</code></a></small>
-    <div class="hidden name"><code>dnorm_mat.Rd</code></div>
+    <div class="hidden name"><code>vmp_lm.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Evaluate standard normal density for matrix of variates</p>
+    <p>Variational Message Passing for Normal linear model.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>dnorm_mat</span>(<span class='no'>m</span>)</pre>
+    <pre class="usage"><span class='fu'>vmp_lm</span>(<span class='no'>n</span>, <span class='no'>X</span>, <span class='no'>y</span>, <span class='no'>mu0</span>, <span class='no'>Sigma0</span>, <span class='no'>A</span>, <span class='kw'>maxiter</span> <span class='kw'>=</span> <span class='fl'>100L</span>, <span class='kw'>tol</span> <span class='kw'>=</span> <span class='fl'>1e-10</span>, <span class='kw'>verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>m</th>
-      <td><p>A matrix of variates</p></td>
+      <th>n</th>
+      <td><p>Number of rows</p></td>
+    </tr>
+    <tr>
+      <th>X</th>
+      <td><p>The design matrix n by d.</p></td>
+    </tr>
+    <tr>
+      <th>y</th>
+      <td><p>The observation vector n by 1.</p></td>
+    </tr>
+    <tr>
+      <th>mu0</th>
+      <td><p>The prior mean on coefficients</p></td>
+    </tr>
+    <tr>
+      <th>Sigma0</th>
+      <td><p>The prior variance on coefficients</p></td>
+    </tr>
+    <tr>
+      <th>A</th>
+      <td><p>The prior scale on variance</p></td>
+    </tr>
+    <tr>
+      <th>maxiter</th>
+      <td><p>The maximum number of iterations</p></td>
+    </tr>
+    <tr>
+      <th>tol</th>
+      <td><p>Tolerance for convergence</p></td>
+    </tr>
+    <tr>
+      <th>verbose</th>
+      <td><p>Print trace of the ELBO</p></td>
     </tr>
     </table>
 
