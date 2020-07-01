@@ -31,64 +31,71 @@ library(varapproxr)
 We consider the following model
 $$
 \begin{aligned}
-p(y|\beta,\sigma^2) &= \text{Normal}(y|X\beta, \Sigma) \\
-p(\beta) &= \text{Normal}(\beta|\mu_0, \Sigma_0) \\
-\Sigma &= \sigma^2 I_N
+p(y|\beta,\Sigma) &= \text{Normal}(y|X\beta, \Sigma) \\
+p(\beta) &= \text{Normal}(\beta|\mu_0, \Sigma_0)
 \end{aligned}
 $$
-with either $p(\sigma^2) = \text{Inverse-Gamma}(\sigma^2|a_0, b_0)$ or $p(\sigma) = \text{Half-}t(\sigma^2|a_0,b_0)$. 
+often assuming $\Sigma = \sigma^2 I_N$ with either $p(\sigma^2) = \text{Inverse-Gamma}(\sigma^2|a_0, b_0)$ or $p(\sigma) = \text{Half-}t(\sigma^2|a_0,b_0)$. 
+
 The latter can be expressed as
 $$
 \begin{aligned}
 p(\sigma^2|\lambda) &= \text{Inverse-Gamma}(b_0/2, b_0/\lambda) \\
 p(\lambda) &= \text{Inverse-Gamma}(1/2,1/a_0^2) \\
-\implies p(\sigma) &= \text{Half-}t(a_0,b_0)
+\implies p(\sigma) &= \text{Half-}t(a_0,b_0).
 \end{aligned}
 $$
 
-## Inverse-Gamma prior on $\sigma^2$
-
-The joint posterior density $p(\beta,\sigma^2,\lambda|y)$ is approximated by
-$$
-q(\beta,\sigma^2,\lambda) = q(\beta)q(\sigma^2)
-$$
+The proposed product-form variational densities are $q(\beta,\Sigma,\lambda)=q(\beta)q(\Sigma)q(\lambda)$
 with optimal solutions
 $$
 \begin{aligned}
-q^\star(\beta) \propto \exp\left\{\mathbb E_{\sigma^2}\left[\ln p(\beta|y,\sigma^2)\right]\right\} \\
-q^\star(\sigma^2) \propto \exp\left\{\mathbb E_{\beta}\left[\ln p(\sigma^2|y,\beta)\right]\right\}.
+q^\star(\beta) &\propto \exp\left\{\mathbb E_{\Sigma}\left[\ln p(\beta|y,\Sigma)\right]\right\} \\
+q^\star(\Sigma) &\propto \exp\left\{\mathbb E_{\beta,\lambda}\left[\ln p(\Sigma|y,\beta,\lambda)\right]\right\} \\
+q^\star(\lambda) &\propto \exp\left\{\mathbb E_\Sigma[\ln p(\lambda|y,\Sigma)\right\}
 \end{aligned}
 $$
+where the $\lambda$ parameter is dropped if not needed.
 
-From the model above, $\ln p(y,\beta,\sigma^2) = \ln p(y|\beta,\sigma^2) + \ln p(\beta) + \ln p(\sigma^2|\lambda) + \ln p(\lambda)$.
+From the model above, the joint density is $\ln p(y,\beta,\Sigma) = \ln p(y|\beta,\Sigma) + \ln p(\beta) + \ln p(\Sigma|\lambda) + \ln p(\lambda)$.
+
+## Model Coefficients
+
 For the regression coefficients, the full conditional is
 $$
 \begin{aligned}
-\ln p(\beta | y, \sigma^2) &= \text{const} - \frac{1}{2}\left[(y-X\beta)^\top\Sigma^{-1}(y-X\beta) - \frac{1}{2}(\beta-\mu_0)^\top\Sigma_0^{-1}(\beta-\mu_0)\right] \\
-&= \text{const} - \frac{1}{2}\left[\left(\beta - M^{-1}m\right)^\top M\left(\beta - M^{-1}m\right)\right]\\
-M &= X^\top\Sigma^{-1}X + \Sigma_0^{-1} \\
-m &= X^\top\Sigma^{-1}y + \Sigma_0^{-1}\mu_0 \\
-\implies p(\beta|y,\sigma^2) &= \text{Normal}(\mu_{\beta|y,\sigma^2}, \Sigma_{\beta|y,\sigma^2}) \\
-\Sigma_{\beta|y,\sigma^2} &= \left(X^\top\Sigma^{-1}X + \Sigma_0^{-1}\right)^{-1} \\
-\mu_{\beta|y,\sigma^2} &= \Sigma_{\beta|y,\sigma^2}\left(X^\top\Sigma^{-1}y + \Sigma_0^{-1}\mu_0\right).
-\end{aligned}
-$$
-From which, the optimal density is
-$$
-\begin{aligned}
-\mathbb E_{q(\sigma^2)}[\ln p(\beta|y,\sigma^2)] &= \text{const} - \frac{1}{2}\left[\left(\beta - M_q^{-1}m_q\right)^\top M_q\left(\beta - M_q^{-1}m_q\right)\right] \\
-M_q &= \mathbb E_{q(\sigma^2)}\left[\sigma^{-2}\right]X^\top X + \Sigma_0^{-1} \\
-m_q &= \mathbb E_{q(\sigma^2)}\left[\sigma^{-2}\right] X^\top y + \Sigma_0^{-1}\mu_0 \\
-\implies q^\star(\beta) &= \text{Normal}(\mu_{q(\beta)}, \Sigma_{q(\beta)}) \\
-\Sigma_{q(\beta)} &= \left(\mathbb E_{q(\sigma^2)}\left[\sigma^{-2}\right] X^\top X + \Sigma_0^{-1}\right)^{-1} \\
-\mu_{q(\beta)} &= \Sigma_{q(\beta)}\left(\mathbb E_{q(\sigma^2)}\left[\sigma^{-2}\right] X^\top y + \Sigma_0^{-1}\mu_0\right).
+\ln p(\beta | y, \Sigma) &\simeq -\frac{1}{2}\left[(y-X\beta)^{\mathsf{T}}\Sigma^{-1}(y-X\beta) - \frac{1}{2}(\beta-\mu_0)^{\mathsf{T}}\Sigma_0^{-1}(\beta-\mu_0)\right] \\
+&= -\frac{1}{2}\left[\left(\beta - M^{-1}m\right)^{\mathsf{T}} M\left(\beta - M^{-1}m\right)\right]\\
+M &= X^{\mathsf{T}}\Sigma^{-1}X + \Sigma_0^{-1} \\
+m &= X^{\mathsf{T}}\Sigma^{-1}y + \Sigma_0^{-1}\mu_0 \\
+\implies p(\beta|y,\Sigma) &= \text{Normal}(\mu_{\beta|y,\Sigma}, \Psi_{\beta|y,\Sigma}) \\
+\Psi_{\beta|y,\Sigma} &= \left(X^{\mathsf{T}}\Sigma^{-1}X + \Sigma_0^{-1}\right)^{-1} \\
+\mu_{\beta|y,\Sigma} &= \Psi_{\beta|y,\Sigma}\left(X^{\mathsf{T}}\Sigma^{-1}y + \Sigma_0^{-1}\mu_0\right).
 \end{aligned}
 $$
 
-For the variance component,
+From which, the optimal density is
 $$
 \begin{aligned}
-\ln p(\sigma^2|y,\beta) &= \text{const} + \frac{P}{2}\ln(\sigma^{2})-\frac{1}{2}\sigma^{-2}\left[(y-X\beta)^\top(y-X\beta)\right] - (a_0+1)\ln(\sigma^2) - \sigma^{-2}b_0\\
+\mathbb E_{q(\Sigma)}[\ln p(\beta|y,\Sigma)] &\simeq -\frac{1}{2}\left[\left(\beta - M_q^{-1}m_q\right)^{\mathsf{T}} M_q\left(\beta - M_q^{-1}m_q\right)\right] \\
+M_q &= \mathbb E_{q(\Sigma)}\left[\Sigma^{-1}\right]X^{\mathsf{T}} X + \Sigma_0^{-1} \\
+m_q &= \mathbb E_{q(\Sigma)}\left[\Sigma^{-1}\right] X^{\mathsf{T}} y + \Sigma_0^{-1}\mu_0 \\
+\implies q^\star(\beta) &= \text{Normal}(\mu_{q(\beta)}, \Psi_{q(\beta)}) \\
+\Psi_{q(\beta)} &= \left(\mathbb E_{q(\Sigma)}\left[\Sigma^{-1}\right] X^{\mathsf{T}} X + \Sigma_0^{-1}\right)^{-1} \\
+\mu_{q(\beta)} &= \Sigma_{q(\beta)}\left(\mathbb E_{q(\Sigma)}\left[\Sigma^{-1}\right] X^{\mathsf{T}} y + \Sigma_0^{-1}\mu_0\right).
+\end{aligned}
+$$
+
+The exact formulation of this density depends upon the form of $\Sigma$ and the resulting density $q(\Sigma)$.
+Assuming that $\Sigma=\sigma^2 I$, replace $q(\Sigma)$ with $q(\sigma^2)$.
+
+
+## Inverse-Gamma prior on $\sigma^2$
+
+For the variance component assuming $\Sigma=\sigma^2 I$,
+$$
+\begin{aligned}
+\ln p(\sigma^2|y,\beta) &\simeq  \frac{P}{2}\ln(\sigma^{2})-\frac{1}{2}\sigma^{-2}\left[(y-X\beta)^{\mathsf{T}}(y-X\beta)\right] - (a_0+1)\ln(\sigma^2) - \sigma^{-2}b_0\\
 \implies p(\sigma^2|y,\beta) &= \text{Inverse-Gamma}(\sigma^2|a_{\sigma^2|\beta,y}, b_{\sigma^2|\beta,y}) \\
 a_{\sigma^2|\beta,y} &= a_0 + \frac{N}{2} \\
 b_{\sigma^2|\beta,y} &= b_0 + \frac{\lVert y-X\beta\rVert^2}{2}
@@ -100,7 +107,7 @@ $$
 q^\star(\sigma^2) &\propto \mathbb E_{q(\beta)}\left[\ln p(\sigma^2|y,\beta)\right] \\
 \implies q^\star(\sigma^2) &= \text{Inverse-Gamma}(a_{q(\sigma^2)}, b_{q(\sigma^2)}) \\
 a_{q(\sigma^2)} &= a_0 + \frac{N}{2} \\
-b_{q(\sigma^2)} &= b_0 + \frac{\lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^\top X\Sigma_{q(\beta)})}{2}
+b_{q(\sigma^2)} &= b_0 + \frac{\lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^{\mathsf{T}} X\Sigma_{q(\beta)})}{2}
 \end{aligned}
 $$
 implying that
@@ -109,7 +116,15 @@ $$
 $$
 in the variational parameters for $q^\star(\beta)$.
 
-The lower bound itself is given by
+An alternative form for the $b_{q(\sigma^2)}$ term which avoids repeated computation of statistics is
+$$
+\begin{aligned}
+\lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^{\mathsf{T}} X\Sigma_{q(\beta)}) &= \\
+y^{\mathsf{T}}y-2\mu_{q(\beta)}^{\mathsf{T}}X^{\mathsf{T}}y&+\text{tr}\left[(X^{\mathsf{T}}X)\left(\Psi_{q(\beta)}+\mu_{q(\beta)}\mu_{q(\beta)}^{\mathsf{T}}\right)\right].
+\end{aligned}
+$$
+
+The lower bound itself is
 $$
 \begin{aligned}
 \mathcal{L}(q) &= \mathbb E_q[\ln p(y,\beta,\sigma^2) - q(\beta,\sigma^2)] \\ 
@@ -124,9 +139,9 @@ $$
 \begin{aligned}
 a_{q(\sigma^2)} &\leftarrow a_0 + N/2 \\
 \text{Cycle:} \\
-  \Sigma_{q(\beta)} &\leftarrow  \left(\frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}}X^\top X + \Sigma_0^{-1}\right)^{-1} \\
-  \mu_{q(\beta)} &\leftarrow \Sigma_{q(\beta)}\left(\frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}} X^\top y + \Sigma_0^{-1}\mu_0\right) \\
-  b_{q(\sigma^2)} &\leftarrow b_0 + \frac{\lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^\top X\Sigma_{q(\beta)})}{2}
+  \Psi_{q(\beta)} &\leftarrow  \left(\frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}}X^{\mathsf{T}} X + \Sigma_0^{-1}\right)^{-1} \\
+  \mu_{q(\beta)} &\leftarrow \Psi_{q(\beta)}\left(\frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}} X^{\mathsf{T}} y + \Sigma_0^{-1}\mu_0\right) \\
+  b_{q(\sigma^2)} &\leftarrow b_0 + \frac{\lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^{\mathsf{T}} X\Psi_{q(\beta)})}{2}
 \end{aligned}
 $$
 until the change in $\mathcal{L}(q)$ is below a specified tolerance level indicating convergence.
@@ -144,14 +159,14 @@ The optimal density for $\beta$ is unchanged from the previous section.
 We replace $p(y|\beta,\sigma^2) = \text{Normal}(y|X\beta, \Sigma)$ by
 $$
 \begin{aligned}
-p(y_i|\beta,\sigma,\nu) &= \text{Student-t}(x_i^\top\beta, \sigma, \nu) \\
+p(y_i|\beta,\sigma,\nu) &= \text{Student-t}(x_i^{\mathsf{T}}\beta, \sigma, \nu) \\
 p(\nu) &= \text{Uniform}(\nu_0, \nu_1)
 \end{aligned}
 $$
 which is equivalent to
 $$
 \begin{aligned}
-p(y_i|\beta,\sigma,\nu) &= \text{Normal}(x_i^\top\beta, \lambda_i\sigma^2) \\
+p(y_i|\beta,\sigma,\nu) &= \text{Normal}(x_i^{\mathsf{T}}\beta, \lambda_i\sigma^2) \\
 p(\lambda_i|\nu) &= \text{Inverse-Gamma}(\nu/2, \nu/2) \\
 p(\nu) &= \text{Uniform}(\nu_0, \nu_1).
 \end{aligned}
@@ -161,9 +176,9 @@ Assuming an inverse-gamma prior on $\sigma^2$, the full-conditionals satisfy
 $$
 \begin{aligned}
 \ln p(\beta|y,\sigma^2,\nu,\lambda) &= \text{const} \\
-\ln p(\sigma^2|y,\beta,\nu,\lambda) &= \text{const} -(a_0+n/2)\ln(\sigma^2) - \left[b_0+\frac{1}{2}\left((y-X\beta)^\top \text{diag}(1/\lambda)(y - X\beta)\right)\right]/\sigma^2 \\
-\ln p(\lambda_i|y,\beta,\nu,\sigma^2) &= \text{const} + \sum_{i=1}^n\left[ -\frac{1}{2}(\nu + 1)\ln(\lambda_i) - \frac{1}{2}\left[\nu + \sigma^{-2}(y_i-x_i^\top\beta)^2\right]/\lambda_i\right] \\
-\ln p(\nu|y,\beta,\sigma^2,\lambda) &= \text{const} + n\left[\frac{\nu}{2}\ln(\nu/2)-\ln\Gamma(\nu/2)\right]-(\nu/2)1^\top(\ln\lambda+1/\lambda),\quad\nu_0<\nu<\nu_1
+\ln p(\sigma^2|y,\beta,\nu,\lambda) &= \text{const} -(a_0+n/2)\ln(\sigma^2) - \left[b_0+\frac{1}{2}\left((y-X\beta)^{\mathsf{T}} \text{diag}(1/\lambda)(y - X\beta)\right)\right]/\sigma^2 \\
+\ln p(\lambda_i|y,\beta,\nu,\sigma^2) &= \text{const} + \sum_{i=1}^n\left[ -\frac{1}{2}(\nu + 1)\ln(\lambda_i) - \frac{1}{2}\left[\nu + \sigma^{-2}(y_i-x_i^{\mathsf{T}}\beta)^2\right]/\lambda_i\right] \\
+\ln p(\nu|y,\beta,\sigma^2,\lambda) &= \text{const} + n\left[\frac{\nu}{2}\ln(\nu/2)-\ln\Gamma(\nu/2)\right]-(\nu/2)1^{\mathsf{T}}(\ln\lambda+1/\lambda),\quad\nu_0<\nu<\nu_1
 \end{aligned}
 $$
 
@@ -178,12 +193,12 @@ C_\nu &= \sum_{i=1}^n \mathbb E[\ln\lambda_i] + \mathbb E[\lambda_i^{-1}] \\
 &= \sum_{i=1}^n \ln(b_{q(\lambda_i)}) - \psi\left(\frac{1}{2}(\mathbb \mu_{q(\nu)}+1)\right) + \frac{a_{q(\lambda_i)}}{b_{q(\lambda_i)}} \\
 \mu_{q(\nu)} &= \frac{\mathcal{F}(1,n,C_\nu,\nu_0,\nu_1)}{\mathcal{F}(0,n,C_\nu,\nu_0,\nu_1)} \\
 a_{q(\lambda_i)} &= \frac{\mu_{q(\nu)} + 1}{2}\\
-b_{q(\lambda_i)} &= \frac{1}{2}\left[\mu_{q(\nu)} + \frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}}\left\{(y-X\mu_{q(\beta)})_i^2 + (X\Sigma_{q(\beta)}X^\top)_{ii}\right\}\right] \\
+b_{q(\lambda_i)} &= \frac{1}{2}\left[\mu_{q(\nu)} + \frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}}\left\{(y-X\mu_{q(\beta)})_i^2 + (X\Sigma_{q(\beta)}X^{\mathsf{T}})_{ii}\right\}\right] \\
 D_\lambda &= \text{diag}(a_{q(\lambda_i)}/b_{q(\lambda_i)}) \\
 a_{q(\sigma^2)} &= a_0 + n/2\\
-b_{q(\sigma^2)} &= b_0 + \frac{1}{2}\left[(y-X\mu_{q(\beta)})^\top D_\lambda(y-X\mu_{q(\beta)})+\text{tr}(\Sigma_{q(\beta)}X^\top D_\lambda X)\right]\\
-\Sigma_{q(\beta)} &= \left(\frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}}X^\top D_\lambda X + \Sigma_0^{-1}\right)^{-1}\\
-\mu_{q(\beta)} &= \Sigma_{q(\beta)}\left(\frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}}X^\top D_\lambda y + \Sigma_0^{-1}\mu_0\right).
+b_{q(\sigma^2)} &= b_0 + \frac{1}{2}\left[(y-X\mu_{q(\beta)})^{\mathsf{T}} D_\lambda(y-X\mu_{q(\beta)})+\text{tr}(\Sigma_{q(\beta)}X^{\mathsf{T}} D_\lambda X)\right]\\
+\Sigma_{q(\beta)} &= \left(\frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}}X^{\mathsf{T}} D_\lambda X + \Sigma_0^{-1}\right)^{-1}\\
+\mu_{q(\beta)} &= \Sigma_{q(\beta)}\left(\frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}}X^{\mathsf{T}} D_\lambda y + \Sigma_0^{-1}\mu_0\right).
 \end{aligned}
 $$
 
@@ -196,8 +211,120 @@ $$
 $$
 
 
+# Linear Mixed Models
+
+Either of the previous likelihoods may be extended to a hiearchical model
+$$
+\begin{aligned}
+p(y|\beta,\sigma^2) &= \text{Normal}(y|X\beta + Z\gamma, \Sigma) \\
+p(\gamma|G) &= \text{Normal}(\gamma|0,G).
+\end{aligned}
+$$
+Where we specify grouped parameters, $\gamma = (\gamma_1^{\mathsf{T}},...,\gamma_K^{\mathsf{T}})^{\mathsf{T}}$
+$$
+\begin{aligned}
+Z &= \underset{N\times \sum_k(J_kR_k)}{\underbrace{\begin{bmatrix} Z_1 & \cdots & \overset{N\times J_kR_k}{\overbrace{Z_k}} &\cdots &Z_K \end{bmatrix}}} \\
+\gamma_k|\underset{R_k\times R_k}{\underbrace{\Sigma_k}} &\sim \text{Normal}\left(0, I_{J_k} \otimes \Sigma_k\right) \\
+\gamma_{kj}|\Sigma_k &\sim \text{Normal}(0, \Sigma_k),\quad j=1,...,J_k\\
+G &= \bigoplus_{k=1}^K I_{J_k}\otimes \Sigma_k \\ 
+&= \text{diag}(I_{J_1}\otimes \Sigma_1,...,I_{J_K}\otimes \Sigma_K)
+\end{aligned}
+$$
+such that $J_k,R_k$ hint at the structure of $\gamma_k$, e.g. (but not restricted to)
+$$
+Z_k = I_{J_k}\otimes \underset{R_k\times R_k}{\underbrace{\tilde Z_k}}.
+$$
+
+This covers combinations of different hierarchical terms in the linear predictor for example,
+$$
+\begin{aligned}
+Z &= Z_1 \\ &= I_{10}\otimes 1_3\\ \gamma_1&\sim N(0, \tau_1^2I_{10})
+\end{aligned}
+$$
+or
+$$
+\begin{aligned}
+Z &= \begin{bmatrix} Z_1 & Z_2 & Z_3 \end{bmatrix} \\ 
+Z_1 &= I_{3}\otimes 1_4\\ 
+Z_2 &= I_{4} \otimes \begin{pmatrix}1&1\\1&2\\1&3\end{pmatrix} \\
+Z_3 &= \begin{pmatrix}
+z_{3,1,1}&\cdots&z_{3,1,6}\\
+\vdots &\ddots &\vdots \\
+z_{3,12,1}&\cdots&z_{3,12,6}
+\end{pmatrix}\\
+\gamma_1|\sigma_1^2&\sim N(0, \sigma_1^2I_{3}) \\
+\gamma_2|\Sigma_2&\sim N(0, I_{4} \otimes\Sigma_2) \\
+\gamma_3|\sigma_3^2 &\sim N(0, \sigma_3^2I_{6}) \\
+G &= \text{bdiag}(\sigma_1^2 I_3. I_4\otimes\Sigma_2, \sigma_3^2 I_6)
+\end{aligned}
+$$
+
+Similarly to the fixed effects case, we can consider priors on the variance components
+$$
+\begin{aligned}
+\Sigma_k &\sim \text{Inverse-Wishart}(\xi_k,\Lambda_k),\quad \xi_k>2(R_k-1)\\
+\Sigma_k|\Lambda_k &\sim \text{Inverse-Wishart}(\nu_k+2(R_k-1),\Lambda_k),\quad \nu_k>0 \\
+\Lambda_k &\sim \text{Inverse-Wishart}\left(1, \left[\nu_k\text{diag}(a_{k1}^2,...,a_{kR_k}^2)\right]^{-1}\right)
+\end{aligned}
+$$
+where if $R_k=1$ then $\Sigma_k=\tau_kI_{J_k}$ and
+$$
+\begin{aligned}
+\tau_k &\sim \text{Inverse-Gamma}(\xi_k/2,\xi_k\lambda_k/2) \\
+\tau_k|\lambda_k&\sim \text{Inverse-Gamma}(\xi_k/2,\xi_k\lambda_k/2) \\
+\lambda_k &\sim \text{Inverse-Gamma}\left(1/2,a_k^{-2}\right)
+\end{aligned}
+$$
+
+The derivation for the optimal densities follows are for the linear regression model.
+Define $C = [X \ Z]$, $\zeta=(\beta^\top \ \gamma^\top)^\top$, and
+$$
+\Xi = \Sigma_0 \oplus G \implies \Xi^{-1} = \Sigma_0^{-1}\oplus G^{-1}
+$$
+
+Then
+$$
+\begin{aligned}
+p(\beta,\gamma|y,\Sigma,G) &\propto p(\beta,\gamma|y,\Sigma,\Omega_1,...,\Omega_K) \\
+&\propto p(y|\beta,\gamma,\Sigma)p(\beta)\prod_{k=1}^Kp(\gamma_k|\Omega_k) \\
+\ln p(\beta,\gamma|) &\simeq -\frac{1}{2}\left[\zeta^{^{\mathsf{T}}}(C^\top\Sigma^{-1}C+\Xi^{-1})\zeta - 2\zeta^{\mathsf{T}}C^{\mathsf{T}}\Sigma^{-1} y\right] \\
+\zeta|\text{rest} &\sim \text{Normal}(\mu_{\zeta|\text{rest}},\Sigma_{\zeta|\text{rest}}) \\
+\Sigma_{\zeta|\text{rest}} &= \left(C^{\mathsf{T}}\Sigma^{-1}C + \Xi^{-1}\right)^{-1}\\
+\mu_{\zeta|\text{rest}} &= \Sigma_{\zeta|\text{rest}}\left(C^{\mathsf{T}}\Sigma^{-1}y + \Xi^{-1}\begin{bmatrix}\mu_0\\ 0 \end{bmatrix}\right).
+\end{aligned}
+$$
+From which, the optimal density is
+$$
+\begin{aligned}
+q(\zeta) &= \text{Normal}(\zeta|\mu_\zeta,\Sigma_\zeta) \\
+\Sigma_\zeta &= \left(C^{\mathsf{T}}\mathbb E_q[\Sigma^{-1}]C + \mathbb E_q[\Xi^{-1}]\right)^{-1} \\
+\mu_\zeta &= \Sigma_\zeta \left(C^{\mathsf{T}}\mathbb E_q[\Sigma^{-1}]y + \mathbb E_q[\Xi^{-1}]\begin{bmatrix}\mu_0\\ 0 \end{bmatrix}\right) \\ 
+\mathbb E_q[\Xi^{-1}] &= \begin{bmatrix} \Sigma_0^{-1} & 0 \\ 0 & \bigoplus_{k=1}^K\left(I_{J_k}\otimes \mathbb E[\Omega_k^{-1}]\right)\end{bmatrix}
+\end{aligned}
+$$
+
+Suppose we again assumed $\Sigma = \sigma^2 I_N$ and $p(\sigma^2)=\text{Inv-Gamma}(a_0,b_0)$, then similar to before
+$$
+\begin{aligned}
+q(\sigma^2) &= \text{Inverse-Gamma}(a_{\sigma^2}, b_{\sigma}^2) \\
+a_{\sigma^2} &= a_0 + \tfrac{N}{2} \\
+b_{\sigma^2} &= b_0 + \tfrac{1}{2}\left\{\lVert y - C\mu_{q(\zeta)}\rVert^2+\text{tr}(C^{\mathsf{T}} C\Sigma_{q(\zeta)})\right\}.
+\end{aligned}
+$$
+
+The new variational densities are those for $\Omega_k$.
+$$
+\begin{aligned}
+p(\Omega_k|\text{rest}) &\propto p(\Omega_k|\gamma_k) \\
+&\propto p(\gamma_k|\Omega_k)p(\Omega_k) \\
+\ln p(\Omega_k|\gamma_k) &\simeq 
+\end{aligned}
+$$
+
 # Examples
 
+# Notation
 
+The symbol $\simeq$ is used to indicate equality up to an additive constant, similar to $\propto$ for multiplicative constants.
 
 # References

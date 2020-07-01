@@ -6,6 +6,20 @@
 
 using namespace Rcpp;
 
+// woodbury
+arma::mat woodbury(arma::mat& A, arma::mat& B, arma::mat& C, arma::mat& D);
+RcppExport SEXP _varapproxr_woodbury(SEXP ASEXP, SEXP BSEXP, SEXP CSEXP, SEXP DSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat& >::type A(ASEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type B(BSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type C(CSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type D(DSEXP);
+    rcpp_result_gen = Rcpp::wrap(woodbury(A, B, C, D));
+    return rcpp_result_gen;
+END_RCPP
+}
 // arma2vec
 Rcpp::NumericVector arma2vec(arma::vec x);
 RcppExport SEXP _varapproxr_arma2vec(SEXP xSEXP) {
@@ -157,8 +171,33 @@ BEGIN_RCPP
 END_RCPP
 }
 // vb_lmm
-List vb_lmm(const arma::mat& X, const arma::mat& Z, const arma::vec& y, const arma::vec& mu_beta, const arma::mat& sigma_beta, arma::vec& mu, arma::mat& sigma, double Aeps, double Beps, double Au, double Bu, double Bqeps, double Bqu, double tol, int maxiter, bool verbose, bool trace);
-RcppExport SEXP _varapproxr_vb_lmm(SEXP XSEXP, SEXP ZSEXP, SEXP ySEXP, SEXP mu_betaSEXP, SEXP sigma_betaSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP AepsSEXP, SEXP BepsSEXP, SEXP AuSEXP, SEXP BuSEXP, SEXP BqepsSEXP, SEXP BquSEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP, SEXP traceSEXP) {
+List vb_lmm(arma::vec& y, arma::mat& X, arma::field<arma::mat>& Zlist, arma::vec& J, arma::vec& R, arma::vec& mu_beta0, arma::mat& Sigma_beta0, double xi_sigma, arma::mat Lambda_sigma, arma::vec& xi_k, arma::field<arma::mat> Lambda_k, double tol, int maxiter, bool verbose, bool trace);
+RcppExport SEXP _varapproxr_vb_lmm(SEXP ySEXP, SEXP XSEXP, SEXP ZlistSEXP, SEXP JSEXP, SEXP RSEXP, SEXP mu_beta0SEXP, SEXP Sigma_beta0SEXP, SEXP xi_sigmaSEXP, SEXP Lambda_sigmaSEXP, SEXP xi_kSEXP, SEXP Lambda_kSEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP, SEXP traceSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::field<arma::mat>& >::type Zlist(ZlistSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type J(JSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type R(RSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type mu_beta0(mu_beta0SEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type Sigma_beta0(Sigma_beta0SEXP);
+    Rcpp::traits::input_parameter< double >::type xi_sigma(xi_sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Lambda_sigma(Lambda_sigmaSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type xi_k(xi_kSEXP);
+    Rcpp::traits::input_parameter< arma::field<arma::mat> >::type Lambda_k(Lambda_kSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    Rcpp::traits::input_parameter< bool >::type trace(traceSEXP);
+    rcpp_result_gen = Rcpp::wrap(vb_lmm(y, X, Zlist, J, R, mu_beta0, Sigma_beta0, xi_sigma, Lambda_sigma, xi_k, Lambda_k, tol, maxiter, verbose, trace));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vb_lmm_randint
+List vb_lmm_randint(const arma::mat& X, const arma::mat& Z, const arma::vec& y, const arma::vec& mu_beta, const arma::mat& sigma_beta, arma::vec& mu, arma::mat& sigma, double Aeps, double Beps, double Au, double Bu, double Bqeps, double Bqu, double tol, int maxiter, bool verbose, bool trace);
+RcppExport SEXP _varapproxr_vb_lmm_randint(SEXP XSEXP, SEXP ZSEXP, SEXP ySEXP, SEXP mu_betaSEXP, SEXP sigma_betaSEXP, SEXP muSEXP, SEXP sigmaSEXP, SEXP AepsSEXP, SEXP BepsSEXP, SEXP AuSEXP, SEXP BuSEXP, SEXP BqepsSEXP, SEXP BquSEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP, SEXP traceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -179,7 +218,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< bool >::type trace(traceSEXP);
-    rcpp_result_gen = Rcpp::wrap(vb_lmm(X, Z, y, mu_beta, sigma_beta, mu, sigma, Aeps, Beps, Au, Bu, Bqeps, Bqu, tol, maxiter, verbose, trace));
+    rcpp_result_gen = Rcpp::wrap(vb_lmm_randint(X, Z, y, mu_beta, sigma_beta, mu, sigma, Aeps, Beps, Au, Bu, Bqeps, Bqu, tol, maxiter, verbose, trace));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -447,8 +486,188 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// inv_vectorise
+arma::mat inv_vectorise(arma::vec v);
+RcppExport SEXP _varapproxr_inv_vectorise(SEXP vSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type v(vSEXP);
+    rcpp_result_gen = Rcpp::wrap(inv_vectorise(v));
+    return rcpp_result_gen;
+END_RCPP
+}
+// G_VMP
+arma::vec G_VMP(arma::vec v, arma::mat Q, arma::vec r, double s);
+RcppExport SEXP _varapproxr_G_VMP(SEXP vSEXP, SEXP QSEXP, SEXP rSEXP, SEXP sSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type v(vSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Q(QSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type r(rSEXP);
+    Rcpp::traits::input_parameter< double >::type s(sSEXP);
+    rcpp_result_gen = Rcpp::wrap(G_VMP(v, Q, r, s));
+    return rcpp_result_gen;
+END_RCPP
+}
+// GaussianPriorFragment
+arma::vec GaussianPriorFragment(arma::vec mu, arma::mat Sigma);
+RcppExport SEXP _varapproxr_GaussianPriorFragment(SEXP muSEXP, SEXP SigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Sigma(SigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(GaussianPriorFragment(mu, Sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
+// InverseGammaPriorFragment
+arma::vec InverseGammaPriorFragment(double a, double b);
+RcppExport SEXP _varapproxr_InverseGammaPriorFragment(SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(InverseGammaPriorFragment(a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
+// InverseWishartPriorFragment
+arma::vec InverseWishartPriorFragment(double xi, arma::mat Lambda);
+RcppExport SEXP _varapproxr_InverseWishartPriorFragment(SEXP xiSEXP, SEXP LambdaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Lambda(LambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(InverseWishartPriorFragment(xi, Lambda));
+    return rcpp_result_gen;
+END_RCPP
+}
+// InverseGWishartPriorFragment
+arma::field<arma::vec> InverseGWishartPriorFragment(arma::mat G, arma::vec xi, arma::mat Lambda);
+RcppExport SEXP _varapproxr_InverseGWishartPriorFragment(SEXP GSEXP, SEXP xiSEXP, SEXP LambdaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type G(GSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type Lambda(LambdaSEXP);
+    rcpp_result_gen = Rcpp::wrap(InverseGWishartPriorFragment(G, xi, Lambda));
+    return rcpp_result_gen;
+END_RCPP
+}
+// IteratedInverseGWishartFragment
+arma::field<arma::vec> IteratedInverseGWishartFragment(arma::mat G, arma::vec xi, arma::vec eta1_in, arma::vec eta2_in);
+RcppExport SEXP _varapproxr_IteratedInverseGWishartFragment(SEXP GSEXP, SEXP xiSEXP, SEXP eta1_inSEXP, SEXP eta2_inSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type G(GSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type eta1_in(eta1_inSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type eta2_in(eta2_inSEXP);
+    rcpp_result_gen = Rcpp::wrap(IteratedInverseGWishartFragment(G, xi, eta1_in, eta2_in));
+    return rcpp_result_gen;
+END_RCPP
+}
+// GaussianLikelihoodFragment
+arma::field<arma::vec> GaussianLikelihoodFragment(arma::vec n, arma::mat XtX, arma::vec Xty, double yty, arma::vec eta1_in, arma::vec eta2_in);
+RcppExport SEXP _varapproxr_GaussianLikelihoodFragment(SEXP nSEXP, SEXP XtXSEXP, SEXP XtySEXP, SEXP ytySEXP, SEXP eta1_inSEXP, SEXP eta2_inSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type n(nSEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type XtX(XtXSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type Xty(XtySEXP);
+    Rcpp::traits::input_parameter< double >::type yty(ytySEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type eta1_in(eta1_inSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type eta2_in(eta2_inSEXP);
+    rcpp_result_gen = Rcpp::wrap(GaussianLikelihoodFragment(n, XtX, Xty, yty, eta1_in, eta2_in));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ExpectationGaussianSufficientStatistics
+arma::field<arma::vec> ExpectationGaussianSufficientStatistics(arma::vec eta);
+RcppExport SEXP _varapproxr_ExpectationGaussianSufficientStatistics(SEXP etaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type eta(etaSEXP);
+    rcpp_result_gen = Rcpp::wrap(ExpectationGaussianSufficientStatistics(eta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// GaussianCommonParameters
+arma::field<arma::mat> GaussianCommonParameters(arma::vec& eta);
+RcppExport SEXP _varapproxr_GaussianCommonParameters(SEXP etaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec& >::type eta(etaSEXP);
+    rcpp_result_gen = Rcpp::wrap(GaussianCommonParameters(eta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// GaussianEntropy
+double GaussianEntropy(arma::vec& eta);
+RcppExport SEXP _varapproxr_GaussianEntropy(SEXP etaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec& >::type eta(etaSEXP);
+    rcpp_result_gen = Rcpp::wrap(GaussianEntropy(eta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ExpectationInverseGWishartSufficientStatistics
+arma::field<arma::mat> ExpectationInverseGWishartSufficientStatistics(arma::mat G, arma::vec eta);
+RcppExport SEXP _varapproxr_ExpectationInverseGWishartSufficientStatistics(SEXP GSEXP, SEXP etaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type G(GSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type eta(etaSEXP);
+    rcpp_result_gen = Rcpp::wrap(ExpectationInverseGWishartSufficientStatistics(G, eta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// InverseGWishartCommonParameters
+arma::field<arma::mat> InverseGWishartCommonParameters(arma::vec eta);
+RcppExport SEXP _varapproxr_InverseGWishartCommonParameters(SEXP etaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type eta(etaSEXP);
+    rcpp_result_gen = Rcpp::wrap(InverseGWishartCommonParameters(eta));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vmp_lm
+Rcpp::List vmp_lm(arma::vec& n, arma::mat& X, arma::vec& y, arma::vec& mu0, arma::mat& Sigma0, double A, int maxiter, double tol, bool verbose);
+RcppExport SEXP _varapproxr_vmp_lm(SEXP nSEXP, SEXP XSEXP, SEXP ySEXP, SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP ASEXP, SEXP maxiterSEXP, SEXP tolSEXP, SEXP verboseSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec& >::type n(nSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type X(XSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type mu0(mu0SEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type Sigma0(Sigma0SEXP);
+    Rcpp::traits::input_parameter< double >::type A(ASEXP);
+    Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    rcpp_result_gen = Rcpp::wrap(vmp_lm(n, X, y, mu0, Sigma0, A, maxiter, tol, verbose));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_varapproxr_woodbury", (DL_FUNC) &_varapproxr_woodbury, 4},
     {"_varapproxr_arma2vec", (DL_FUNC) &_varapproxr_arma2vec, 1},
     {"_varapproxr_blockDiag", (DL_FUNC) &_varapproxr_blockDiag, 1},
     {"_varapproxr_bind_cols", (DL_FUNC) &_varapproxr_bind_cols, 1},
@@ -461,7 +680,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_dnorm_mat", (DL_FUNC) &_varapproxr_dnorm_mat, 1},
     {"_varapproxr_vb_lm", (DL_FUNC) &_varapproxr_vb_lm, 10},
     {"_varapproxr_update_vb_lm", (DL_FUNC) &_varapproxr_update_vb_lm, 6},
-    {"_varapproxr_vb_lmm", (DL_FUNC) &_varapproxr_vb_lmm, 17},
+    {"_varapproxr_vb_lmm", (DL_FUNC) &_varapproxr_vb_lmm, 15},
+    {"_varapproxr_vb_lmm_randint", (DL_FUNC) &_varapproxr_vb_lmm_randint, 17},
     {"_varapproxr_b0", (DL_FUNC) &_varapproxr_b0, 2},
     {"_varapproxr_b1", (DL_FUNC) &_varapproxr_b1, 2},
     {"_varapproxr_B", (DL_FUNC) &_varapproxr_B, 4},
@@ -477,6 +697,20 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_vb_pois_reg", (DL_FUNC) &_varapproxr_vb_pois_reg, 8},
     {"_varapproxr_vb_pois_mm", (DL_FUNC) &_varapproxr_vb_pois_mm, 10},
     {"_varapproxr_ph_exponential", (DL_FUNC) &_varapproxr_ph_exponential, 8},
+    {"_varapproxr_inv_vectorise", (DL_FUNC) &_varapproxr_inv_vectorise, 1},
+    {"_varapproxr_G_VMP", (DL_FUNC) &_varapproxr_G_VMP, 4},
+    {"_varapproxr_GaussianPriorFragment", (DL_FUNC) &_varapproxr_GaussianPriorFragment, 2},
+    {"_varapproxr_InverseGammaPriorFragment", (DL_FUNC) &_varapproxr_InverseGammaPriorFragment, 2},
+    {"_varapproxr_InverseWishartPriorFragment", (DL_FUNC) &_varapproxr_InverseWishartPriorFragment, 2},
+    {"_varapproxr_InverseGWishartPriorFragment", (DL_FUNC) &_varapproxr_InverseGWishartPriorFragment, 3},
+    {"_varapproxr_IteratedInverseGWishartFragment", (DL_FUNC) &_varapproxr_IteratedInverseGWishartFragment, 4},
+    {"_varapproxr_GaussianLikelihoodFragment", (DL_FUNC) &_varapproxr_GaussianLikelihoodFragment, 6},
+    {"_varapproxr_ExpectationGaussianSufficientStatistics", (DL_FUNC) &_varapproxr_ExpectationGaussianSufficientStatistics, 1},
+    {"_varapproxr_GaussianCommonParameters", (DL_FUNC) &_varapproxr_GaussianCommonParameters, 1},
+    {"_varapproxr_GaussianEntropy", (DL_FUNC) &_varapproxr_GaussianEntropy, 1},
+    {"_varapproxr_ExpectationInverseGWishartSufficientStatistics", (DL_FUNC) &_varapproxr_ExpectationInverseGWishartSufficientStatistics, 2},
+    {"_varapproxr_InverseGWishartCommonParameters", (DL_FUNC) &_varapproxr_InverseGWishartCommonParameters, 1},
+    {"_varapproxr_vmp_lm", (DL_FUNC) &_varapproxr_vmp_lm, 9},
     {NULL, NULL, 0}
 };
 

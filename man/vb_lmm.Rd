@@ -5,19 +5,17 @@
 \title{Variational Bayes for linear mixed model.}
 \usage{
 vb_lmm(
-  X,
-  Z,
   y,
-  mu_beta,
-  sigma_beta,
-  mu,
-  sigma,
-  Aeps = 1,
-  Beps = 1,
-  Au = 1,
-  Bu = 1,
-  Bqeps = 1,
-  Bqu = 1,
+  X,
+  Zlist,
+  J,
+  R,
+  mu_beta0,
+  Sigma_beta0,
+  xi_sigma,
+  Lambda_sigma,
+  xi_k,
+  Lambda_k,
   tol = 1e-08,
   maxiter = 100L,
   verbose = FALSE,
@@ -25,19 +23,27 @@ vb_lmm(
 )
 }
 \arguments{
-\item{X}{The design matrix}
-
-\item{Z}{Group design matrix}
-
 \item{y}{The response vector}
 
-\item{mu_beta}{The prior mean for beta}
+\item{X}{The design matrix}
 
-\item{sigma_beta}{The prior covariance for beta}
+\item{Zlist}{Collection of group design matrices}
 
-\item{mu}{Initial value for mu}
+\item{J}{First dimension of each Z in Zlist (e.g. number of subjects)}
 
-\item{sigma}{Initial value for sigma}
+\item{R}{Second dimension of each Z in Zlist (e.g. number of variables, intercept and slope would be R = 2)}
+
+\item{mu_beta0}{The prior mean for beta}
+
+\item{Sigma_beta0}{The prior covariance for beta}
+
+\item{tol}{Tolerance level}
+
+\item{maxiter}{Maximum iterations}
+
+\item{verbose}{Print trace of the lower bound to console. Default is \code{FALSE}.}
+
+\item{trace}{Print a trace of `mu` to console.}
 
 \item{Aeps}{The prior shape for sigma_eps}
 
@@ -50,14 +56,6 @@ vb_lmm(
 \item{Bqeps}{The intial value for Bqeps}
 
 \item{Bqu}{The initial value for Bqu}
-
-\item{tol}{Tolerance level}
-
-\item{maxiter}{Maximum iterations}
-
-\item{verbose}{Print trace of the lower bound to console. Default is \code{FALSE}.}
-
-\item{trace}{Print a trace of `mu` to console.}
 }
 \value{
 A list containing:
@@ -69,19 +67,6 @@ A list containing:
 }
 }
 \description{
-Variational Bayes for linear mixed model.
-}
-\examples{
-library(nlme)
-X <- model.matrix( ~ age + factor(Sex, levels = c("Female", "Male")), data = Orthodont)
-Z <- kronecker(diag(1, 27), rep(1, 4))
-y <- Orthodont$distance
-mu0 <- rep(0, ncol(X))
-S0 <- diag(1e8, ncol(X))
-mu <- rep(0, ncol(X) + ncol(Z))
-S <- diag(1, ncol(X) + ncol(Z))
-A <- 1/100
-B <- 1/100
-fit <- vb_lmm(X, Z, y, mu0, S0, mu, S, A, B, A, B, verbose = TRUE)
-
+Variational approximation for linear mixed model assuming Gaussian distribution priors on fixed and grouped effects.
+Priors on the variance parameters are Scaled-Inverse-Wishart distributions.
 }

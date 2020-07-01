@@ -1,0 +1,214 @@
+---
+title: "Distributions"
+author: "James Totterdell"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+    fig_retina: null
+bibliography: ../references.bib
+vignette: >
+  %\VignetteIndexEntry{linear}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(varapproxr)
+```
+
+# Introduction
+
+This document provides a reference for relevant terms for useful distributions and their relationships in the context of variational inference.
+
+# Gamma and Inverse-Gamma
+
+## Gamma
+
+$$
+\begin{aligned}
+y &\sim \text{Gamma}(\alpha, \beta) \\
+f(y|\alpha,\beta) &= \frac{\beta^\alpha}{\Gamma(\alpha)}e^{-y\beta}y^{\alpha-1},\quad y,\alpha,\beta\in\mathbb R^+ \\
+\ln f(y|\alpha,\beta) &= \alpha\ln\beta-\ln\Gamma(\alpha)-y\beta+(\alpha-1)\ln y\\
+\mathbb E[y] &= \alpha\beta \\
+\mathbb V[y] &= \alpha\beta^2 \\
+\mathbb H[y] &= \alpha-\ln\beta+\ln\Gamma(a)+(1-\alpha)\psi(\alpha) \\
+\mathbb E[\ln y] &= \psi(\alpha)-\ln(\beta)
+\end{aligned}
+$$
+
+## Inverse-Gamma
+
+If then $y^{-1}\sim\text{Inverse-Gamma}(\alpha,\beta)$.
+
+$$
+\begin{aligned}
+y &\sim \text{Inverse-Gamma}(\alpha,\beta) \\
+f(y|\alpha,\beta) &= \frac{\beta^\alpha}{\Gamma(\alpha)}e^{-y/\beta}y^{-\alpha-1},\quad y,\alpha,\beta\in\mathbb R^+ \\
+\ln f(y|\alpha,\beta) &= \alpha\ln\beta-\ln\Gamma(\alpha)-y/\beta-(\alpha+1)\ln(y) \\
+\mathbb E[y] &= \frac{\beta}{\alpha-1},\quad \alpha>1 \\
+\mathbb E[y^{-1}] &= \frac{\alpha}{\beta} \\
+\mathbb V[y] &= \frac{\beta^2}{(\alpha-1)^2(\alpha-2)},\quad \alpha>2 \\
+\mathbb H[y] &= \alpha+\ln\beta+\ln\Gamma(a)-(1+\alpha)\psi(\alpha) \\
+\mathbb E[\ln y] &= \ln\beta-\psi(\alpha)
+\end{aligned}
+$$
+
+
+## Relations
+
+$$
+\begin{align}
+Y &\sim \text{Gamma}(\alpha,\beta) &\iff Y &\sim \text{Inv-Gamma}(\alpha, \beta) \\
+Y &\sim \text{Gamma}(\nu/2,1/2) &\iff Y &\sim \text{Chi-square}(\nu)\\
+Y &\sim \text{Inv-Gamma}(\alpha,1/2) &\iff Y &\sim \text{Inv-Chi-square}(2\alpha) \\
+Y &\sim \text{Inv-Gamma}(\alpha, \beta) &\iff Y&\sim \text{Inv-Wishart}(2\alpha,2\beta)
+\end{align}
+$$
+
+$$
+\begin{aligned}
+Y^2|X&\sim\text{Inv-Gamma}(\nu/2,\nu/X)\\ 
+X&\sim\text{Inv-Gamma}(1/2,1/A^2) \\ 
+\implies Y&\sim\text{Half-}t(\nu,A) \\
+Y^2|X&\sim\text{Inv-Gamma}(1/2,1/X)\\ 
+X&\sim\text{Inv-Gamma}(1/2,1/A^2) \\ 
+\implies Y&\sim\text{Half-Cauchy}(A)
+\end{aligned}
+$$
+
+
+
+# Chi-squared, Inverse-Chi-squared, and Scaled-Chi-squared
+
+## Chi-squared
+
+$$
+\begin{aligned}
+y &\sim \text{Chi-squared}(\nu) \\
+f(y|\nu) &= \frac{1}{2^{n/2}\Gamma(n/2)}e^{-\nu/2}y^{n/2-1},\quad y,\nu\in\mathbb R^+ \\
+\ln f(y|\nu) &= -(n/2)\ln(2)-\ln\Gamma(n/2)-\nu/2+(n/2-1)\ln(y)\\
+\mathbb E[y] &= \nu \\
+\mathbb V[y] &= 2\nu \\
+\mathbb H[y] &= \psi(n/2) + \ln(2)
+\end{aligned}
+$$
+
+## Inverse-Chi-squared
+
+$$
+\begin{aligned}
+y &\sim \text{Inverse-Chi-squared}(\nu) \\
+f(y|\nu) &= \frac{2^{-\nu/2}}{\Gamma(\nu/2)}y^{-\nu/2-1}e^{-1/(2y)},\quad y,\nu\in\mathbb R^{+} \\
+\ln f(y|\nu) &= -(\nu/2)\ln(2)-\ln\Gamma(\nu/2)-(\nu/2+1)\ln(y)-1/(2y) \\
+\mathbb E[y] &= \frac{1}{\nu-2},\quad\nu>2\\
+\mathbb V[y] &= \frac{2}{(\nu-2)^2(\nu-4)},\quad \nu>4 \\
+\mathbb H[y] &= \nu/2+\ln\left(\frac{\nu}{2}\Gamma(\nu/2)\right)-(\nu/2+1)\psi(\nu/2)
+\end{aligned}
+$$
+
+## Scale-inverse-Chi-squared
+
+$$
+\begin{aligned}
+y &\sim \text{Scaled-inverse-Chi-squared}(\nu,\tau^2) \\
+f(y|\nu,\tau^2) &= \frac{(\tau^2\nu/2)^{\nu/2}}{\Gamma(\nu/2)} \frac{\exp\left(\frac{-\nu\tau^2}{2y}\right)}{y^{1+\nu/2}} \\
+\ln f(y,\tau^2) &= (\nu/2)\ln(\nu\tau^2/2)-\ln\Gamma(\nu/2)-\frac{\nu\tau^2}{2y}-(1+\nu/2)\ln(y) \\
+\mathbb E[y] &= \frac{\nu\tau^2}{\nu-2},\quad \nu>2\\
+\mathbb V[y] &= \frac{2\nu^2\tau^4}{(\nu-2)^2(\nu-4)},\quad \nu>4\\
+\mathbb H[y] &= \nu/2+\ln\left(\frac{\nu\tau^2}{2}\Gamma(\nu/2)\right)-(1+\nu/2)\psi(\nu/2)
+\end{aligned}
+$$
+
+## Relations
+
+$$
+\begin{aligned}
+\text{Chi-square}(\nu) &\sim \text{Gamma}(\nu/2,2) \\
+\text{Inverse-Chi-Squared}(\nu) &\sim \text{Scale-Inverse-Chi-Squared}(\nu,1/\nu) \\
+\text{Scale-Inverse-Chi-Squared}(\nu,\tau^2) &\sim \text{Inverse-Gamma}(\nu/2,\nu\tau^2/n)
+\end{aligned}
+$$
+
+# Wishart, Inverse-Wishart, G-Wishart
+
+## Wishart
+
+$$
+\begin{aligned}
+\Sigma &\sim \text{Wishart}_d(\xi,\Sigma) \\
+f(\Sigma|\xi,\lambda) &= \frac{1}{2^{\xi d/2}|\Lambda|^{\xi/2}\Gamma_d(\xi/2)}|\Sigma|^{(\xi-d-1)/2}e^{-\text{tr}(\Lambda^{-1}\Sigma)/2},\quad \xi>d-1,\Lambda>0 \\
+\ln f(\Sigma|\xi,\lambda) &= -(\xi d/2)-(\xi/2)\ln|\Lambda|-\ln\Gamma_d(\xi/2)+(\xi-d-1)/2\ln|\Sigma|-\text{tr}(\Lambda^{-1}\Sigma)/2\\
+\mathbb E[\Sigma] &= \xi\Lambda \\
+\mathbb V[\Sigma]_{ij} &= \\
+\mathbb H[\Sigma] &= \frac{d+1}{2}\ln|\Lambda|+\frac{d(d+1)}{2}\ln(2)+\ln\Gamma_d(\xi/2)-\frac{\xi-d-1}{2}\psi_d(\xi/2)+\frac{\xi d}{2} \\
+\mathbb E[\ln|\Sigma|] &= \psi_d(\xi/2)+d\ln(2)+\ln|\Lambda| \\
+\end{aligned}
+$$
+
+
+## Inverse-Wishart
+
+If $\Sigma\sim\text{Wishart}_d(\xi,\Lambda)$ then $\Sigma^{-1}\sim\text{Inverse-Wishart}_d(\xi,\Lambda^{-1})$
+
+$$
+\begin{aligned}
+\Sigma &\sim \text{Inverse-Wishart}_d(\xi,\Sigma) \\
+f(\Sigma|\xi,\Lambda) &= \frac{|\Lambda|^{\xi/2}}{2^{\xi d/2}\Gamma_d(\xi/2)}|\Sigma|^{-(\xi+d+1)/2}e^{-\text{tr}(\Lambda\Sigma^{-1})/2},\quad \xi>d-1,\Lambda>0 \\
+\ln f(\Sigma|\xi,\Lambda) &= \xi/2\ln|\Lambda|-(\xi d)/2\ln(2)-\ln\Gamma_d(\xi/2)-(\xi+d+1)/2\ln|\Sigma|-\text{tr}(\Lambda\Sigma^{-1})\\
+\mathbb E[\Sigma] &= \frac{\Lambda}{\xi-d-1} \\
+\mathbb E[\Sigma^{-1}] &= \xi\Lambda^{-1} \\
+\mathbb V[\Sigma]_{ij} &= \frac{(\xi-d+1)\lambda_{ij}^2+(\xi-d-1)\lambda_{ii}\lambda_{jj}}{(\xi-d)(\xi-d-1)^2(\xi-d-3)} \\
+\mathbb H[\Sigma] &= -\frac{\xi}{2}\ln|\Lambda|+(\xi+d+1)\mathbb E[\ln|\Sigma|]+\frac{\xi d}{2}\ln(2) +\ln\Gamma_d(\xi/2) + \frac{\xi d}{2}\\
+\mathbb E[\ln|\Sigma|] &= \ln|\tfrac{1}{2}\Lambda|-\psi_d(\xi-d+1)
+\end{aligned}
+$$
+
+
+## Relations
+
+$$
+\begin{aligned}
+\text{Wishart}_1(\xi,\Lambda) &\sim \text{Gamma}(\xi/2,\Lambda/2) \\
+\text{inv-Wishart}_1(\xi,\Lambda) &\sim \text{Inv-Gamma}(\xi/2,\Lambda/2)
+\end{aligned}
+$$
+
+$$
+\begin{aligned}
+\Sigma|X_1,...,X_p&\sim\text{Inv-Wishart}_p(\nu+p-1,2\nu\text{diag}(1/X_1,...,1/X_p))\\ 
+X_j&\overset{\text{ind}}{\sim}\text{Inv-Gamma}(1/2,1/A_j^2) \\ 
+\implies \sigma_{j}&\sim\text{Half-}t(\nu,A_j) \\
+\rho_{ij} &\propto (1-\rho_{ij}^2)^{\nu/2-1}
+\end{aligned}
+$$
+where $\Sigma_{ij} = \rho_{ij}\sigma_i\sigma_j$
+
+
+# Identities and Definitions
+
+$$
+\begin{aligned}
+\Gamma_d(x) &= \text{multivariate gamma function}(x) \\
+&= \pi^{d(d-1)/4}\prod_{j=1}^d \Gamma\left[x+(1-j)/2\right]\\
+\psi_d(x) &= \text{multivariate digamma function}(x) \\
+&= \sum_{j=1}^d \psi\left[x+(1-j)/2\right]
+\end{aligned}
+$$
+
+$$
+\left(\text{bdiag}(A_1,...,A_p)\right)^{-1}=\text{bdiag}(A_1^{-1},...,A_p^{-1})
+$$
+
+$$
+\mathbb E[\text{tr}(AX)] = \text{tr}(A\mathbb E[X])
+$$

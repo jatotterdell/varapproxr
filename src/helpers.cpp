@@ -1,6 +1,24 @@
 #include <RcppArmadillo.h>
 #include <Rmath.h>
 
+//' Woodbury matrix identity
+//'
+//' (A + BCD)^{-1}
+//' 
+//' @param A mat A
+//' @param B mat B
+//' @param C mat C
+//' @param D mat D
+// [[Rcpp::export]]
+arma::mat woodbury(
+    arma::mat& A, 
+    arma::mat& B, 
+    arma::mat& C, 
+    arma::mat& D) {
+  arma::mat Ainv = inv(A);
+  return(Ainv + Ainv*B*inv(inv(C) + D*Ainv*B)*D*inv(A));
+}
+
 //' Convert arma::vec to Rcpp::NumericVector
 //' 
 //' @param x A vector
@@ -65,6 +83,7 @@ arma::mat bind_cols(arma::field<arma::mat>& x) {
   return(X);
 }
 
+
 //' Multivariate Normal Entropy
 //' 
 //' Calculate and return the entropy for multivariate distribution
@@ -77,6 +96,7 @@ double mvn_entropy(arma::mat& S) {
   return 0.5*(d*(1 + log(2*M_PI)) + real(log_det(S)));
 }
 
+
 //' Inverse Gamma Entropy
 //' 
 //' Calculate and return the entropy for inverse gamma distribution
@@ -88,6 +108,7 @@ double mvn_entropy(arma::mat& S) {
 double ig_entropy(double a, double b) {
   return a + log(b) + lgamma(a) - (a + 1)*R::digamma(a);
 }
+
 
 //' Inverse Gamma E[x]
 //' 
