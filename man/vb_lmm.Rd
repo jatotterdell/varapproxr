@@ -37,6 +37,14 @@ vb_lmm(
 
 \item{Sigma_beta0}{The prior covariance for beta}
 
+\item{xi_sigma}{...}
+
+\item{Lambda_sigma}{...}
+
+\item{xi_k}{...}
+
+\item{Lambda_k}{...}
+
 \item{tol}{Tolerance level}
 
 \item{maxiter}{Maximum iterations}
@@ -44,18 +52,6 @@ vb_lmm(
 \item{verbose}{Print trace of the lower bound to console. Default is \code{FALSE}.}
 
 \item{trace}{Print a trace of `mu` to console.}
-
-\item{Aeps}{The prior shape for sigma_eps}
-
-\item{Beps}{The prior scale for sigma_eps}
-
-\item{Au}{The prior shape for sigma_u}
-
-\item{Bu}{The prior scale for sigma_u}
-
-\item{Bqeps}{The intial value for Bqeps}
-
-\item{Bqu}{The initial value for Bqu}
 }
 \value{
 A list containing:

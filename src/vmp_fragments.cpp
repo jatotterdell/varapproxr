@@ -15,8 +15,7 @@ arma::mat inv_vectorise(arma::vec v) {
 
 //' Calculate
 //' 
-//' @param v1 A d x 1 vector
-//' @param v2 A d*d x 1 vector
+//' @param v A (d + d*d) x 1 vector
 //' @param Q A d x d matrix
 //' @param r A d x 1 vector
 //' @param s A double
@@ -145,6 +144,12 @@ arma::field<arma::vec> IteratedInverseGWishartFragment(
 
 //' Gaussian likelihood fragment update
 //' 
+//' @param n Number of rows
+//' @param XtX Statistic 1
+//' @param Xty Statistic 2
+//' @param yty Statistic 3
+//' @param eta1_in Natural parameter 1
+//' @param eta2_in Natural parameter 2
 // [[Rcpp::export]]
 arma::field<arma::vec> GaussianLikelihoodFragment(
   arma::vec n,
@@ -274,12 +279,14 @@ arma::field<arma::mat> InverseGWishartCommonParameters(
 
 //' Variational Message Passing for Normal linear model.
 //' 
+//' @param n Number of rows
 //' @param X The design matrix n by d.
 //' @param y The observation vector n by 1.
 //' @param mu0 The prior mean on coefficients
 //' @param Sigma0 The prior variance on coefficients
 //' @param A The prior scale on variance
 //' @param maxiter The maximum number of iterations
+//' @param tol Tolerance for convergence
 //' @param verbose Print trace of the ELBO
 // [[Rcpp::export]]
 Rcpp::List vmp_lm(

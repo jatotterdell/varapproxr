@@ -7,15 +7,13 @@
 G_VMP(v, Q, r, s)
 }
 \arguments{
+\item{v}{A (d + d*d) x 1 vector}
+
 \item{Q}{A d x d matrix}
 
 \item{r}{A d x 1 vector}
 
 \item{s}{A double}
-
-\item{v1}{A d x 1 vector}
-
-\item{v2}{A d*d x 1 vector}
 }
 \description{
 Calculate

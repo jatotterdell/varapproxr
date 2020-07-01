@@ -7,6 +7,8 @@
 vmp_lm(n, X, y, mu0, Sigma0, A, maxiter = 100L, tol = 1e-10, verbose = TRUE)
 }
 \arguments{
+\item{n}{Number of rows}
+
 \item{X}{The design matrix n by d.}
 
 \item{y}{The observation vector n by 1.}
@@ -18,6 +20,8 @@ vmp_lm(n, X, y, mu0, Sigma0, A, maxiter = 100L, tol = 1e-10, verbose = TRUE)
 \item{A}{The prior scale on variance}
 
 \item{maxiter}{The maximum number of iterations}
+
+\item{tol}{Tolerance for convergence}
 
 \item{verbose}{Print trace of the ELBO}
 }

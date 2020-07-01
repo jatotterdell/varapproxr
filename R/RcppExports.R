@@ -148,12 +148,10 @@ update_vb_lm <- function(vb_fit, X, y, tol = 1e-8, maxiter = 100L, verbose = FAL
 #' @param R Second dimension of each Z in Zlist (e.g. number of variables, intercept and slope would be R = 2)
 #' @param mu_beta0 The prior mean for beta
 #' @param Sigma_beta0 The prior covariance for beta
-#' @param Aeps The prior shape for sigma_eps
-#' @param Beps The prior scale for sigma_eps
-#' @param Au The prior shape for sigma_u
-#' @param Bu The prior scale for sigma_u
-#' @param Bqeps The intial value for Bqeps
-#' @param Bqu The initial value for Bqu
+#' @param xi_sigma ...
+#' @param Lambda_sigma ...
+#' @param xi_k ...
+#' @param Lambda_k ...
 #' @param tol Tolerance level
 #' @param maxiter Maximum iterations
 #' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
@@ -469,8 +467,7 @@ inv_vectorise <- function(v) {
 
 #' Calculate
 #' 
-#' @param v1 A d x 1 vector
-#' @param v2 A d*d x 1 vector
+#' @param v A (d + d*d) x 1 vector
 #' @param Q A d x d matrix
 #' @param r A d x 1 vector
 #' @param s A double
@@ -523,6 +520,12 @@ IteratedInverseGWishartFragment <- function(G, xi, eta1_in, eta2_in) {
 
 #' Gaussian likelihood fragment update
 #' 
+#' @param n Number of rows
+#' @param XtX Statistic 1
+#' @param Xty Statistic 2
+#' @param yty Statistic 3
+#' @param eta1_in Natural parameter 1
+#' @param eta2_in Natural parameter 2
 GaussianLikelihoodFragment <- function(n, XtX, Xty, yty, eta1_in, eta2_in) {
     .Call(`_varapproxr_GaussianLikelihoodFragment`, n, XtX, Xty, yty, eta1_in, eta2_in)
 }
@@ -569,12 +572,14 @@ InverseGWishartCommonParameters <- function(eta) {
 
 #' Variational Message Passing for Normal linear model.
 #' 
+#' @param n Number of rows
 #' @param X The design matrix n by d.
 #' @param y The observation vector n by 1.
 #' @param mu0 The prior mean on coefficients
 #' @param Sigma0 The prior variance on coefficients
 #' @param A The prior scale on variance
 #' @param maxiter The maximum number of iterations
+#' @param tol Tolerance for convergence
 #' @param verbose Print trace of the ELBO
 vmp_lm <- function(n, X, y, mu0, Sigma0, A, maxiter = 1e2L, tol = 1e-10, verbose = TRUE) {
     .Call(`_varapproxr_vmp_lm`, n, X, y, mu0, Sigma0, A, maxiter, tol, verbose)

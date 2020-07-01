@@ -17,12 +17,10 @@ using namespace Rcpp;
 //' @param R Second dimension of each Z in Zlist (e.g. number of variables, intercept and slope would be R = 2)
 //' @param mu_beta0 The prior mean for beta
 //' @param Sigma_beta0 The prior covariance for beta
-//' @param Aeps The prior shape for sigma_eps
-//' @param Beps The prior scale for sigma_eps
-//' @param Au The prior shape for sigma_u
-//' @param Bu The prior scale for sigma_u
-//' @param Bqeps The intial value for Bqeps
-//' @param Bqu The initial value for Bqu
+//' @param xi_sigma ...
+//' @param Lambda_sigma ...
+//' @param xi_k ...
+//' @param Lambda_k ...
 //' @param tol Tolerance level
 //' @param maxiter Maximum iterations
 //' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.

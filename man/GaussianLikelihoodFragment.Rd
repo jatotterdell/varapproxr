@@ -6,6 +6,19 @@
 \usage{
 GaussianLikelihoodFragment(n, XtX, Xty, yty, eta1_in, eta2_in)
 }
+\arguments{
+\item{n}{Number of rows}
+
+\item{XtX}{Statistic 1}
+
+\item{Xty}{Statistic 2}
+
+\item{yty}{Statistic 3}
+
+\item{eta1_in}{Natural parameter 1}
+
+\item{eta2_in}{Natural parameter 2}
+}
 \description{
 Gaussian likelihood fragment update
 }
