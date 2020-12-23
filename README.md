@@ -10,3 +10,7 @@ Nor is concision in implementation.
 # install.packages("devtools")
 devtools::install_github('jatotterdell/varapproxr')
 ```
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/jatotterdell/varapproxr/workflows/R-CMD-check/badge.svg)](https://github.com/jatotterdell/varapproxr/actions)
+<!-- badges: end -->
