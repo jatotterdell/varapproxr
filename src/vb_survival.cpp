@@ -15,7 +15,7 @@ using namespace Rcpp;
 //' @param v The censoring vector
 //' @param mu0 The prior mean for beta
 //' @param Sigma0 The prior covariance for beta
-//' @param tol The tolerance for conergence of ELBO
+//' @param tol The tolerance for convergence of ELBO
 //' @param maxiter The maximum number of iterations allowed
 //' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
 //' @return A list containing:
@@ -75,3 +75,4 @@ List ph_exponential(
                       Named("mu") = mu,
                       Named("Sigma") = Sigma);
 }
+
