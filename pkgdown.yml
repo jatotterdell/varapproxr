@@ -1,6 +1,10 @@
 pandoc: '2.2'
-pkgdown: 1.5.1
+pkgdown: 1.6.1
 pkgdown_sha: ~
-articles: []
-last_built: 2020-07-01T05:04Z
+articles:
+  varapproxr: varapproxr.html
+  web_only/00-basics: 00-basics.html
+  web_only/01-linear: 01-linear.html
+  web_only/99-distributions: 99-distributions.html
+last_built: 2020-12-24T00:53Z
 
