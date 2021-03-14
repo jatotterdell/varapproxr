@@ -1,5 +1,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
+
 #include "helpers.h"
+#include "distribution_functions.h"
 #include <RcppArmadillo.h>
 #include <Rmath.h>
 #include <iostream>
@@ -80,23 +82,18 @@ List vb_lm(
     
     // Update ELBO
     elbo(i) = 
-      mvn_entropy(Sigma) + 
-      ig_entropy(a, b) + 
+      mvn_entropy(Sigma) + ig_entropy(a, b) + 
       -0.5*(P * log(2*M_PI) + ldetSigma0 + dot(mu - mu0, invSigma0 * (mu - mu0)) + trace(invSigma0 * Sigma)) +
-      -0.5*(N * log(2*M_PI) + N*(log(b) - R::digamma(a)) + 
-      a_div_b * (yty - 2*dot(mu, Xty) + arma::trace(XtX * (Sigma + mu * trans(mu)))));
+      -0.5*(N * log(2*M_PI) + N*(log(b) - R::digamma(a)) + a_div_b * (yty - 2*dot(mu, Xty) + arma::trace(XtX * (Sigma + mu * trans(mu)))));
     
+    // Update ELBO prior specific terms
     if(prior == 1) {
-      
       elbo(i) += a0*log(b0) - lgamma(a0) - (a0 + 1)*(log(b) - R::digamma(a)) - b0*a_div_b;
-      
     } else if(prior == 2) {
-      
       elbo(i) += ig_entropy(a_lam, b_lam) +
         b0/2*(log(b0) - ig_E_log(a_lam, b_lam)) - lgamma(b0/2) - (b0/2 + 1)*ig_E_log(a, b) - b0*ig_E_inv(a_lam, b_lam)*ig_E_inv(a, b);
         // -log(a0) - lgamma(1/2) - 3/2*ig_E_log(a_lam, b_lam) - pow(a0, -2) * ig_E_inv(a_lam, b_lam);
         // Issue with calculation above, need to fix...
-        
     }
 
     // Check for convergence

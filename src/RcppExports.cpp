@@ -6,53 +6,6 @@
 
 using namespace Rcpp;
 
-// woodbury
-arma::mat woodbury(arma::mat& A, arma::mat& B, arma::mat& C, arma::mat& D);
-RcppExport SEXP _varapproxr_woodbury(SEXP ASEXP, SEXP BSEXP, SEXP CSEXP, SEXP DSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type A(ASEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type B(BSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type C(CSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type D(DSEXP);
-    rcpp_result_gen = Rcpp::wrap(woodbury(A, B, C, D));
-    return rcpp_result_gen;
-END_RCPP
-}
-// arma2vec
-Rcpp::NumericVector arma2vec(arma::vec x);
-RcppExport SEXP _varapproxr_arma2vec(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(arma2vec(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// blockDiag
-arma::mat blockDiag(arma::field<arma::mat>& x);
-RcppExport SEXP _varapproxr_blockDiag(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::field<arma::mat>& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(blockDiag(x));
-    return rcpp_result_gen;
-END_RCPP
-}
-// bind_cols
-arma::mat bind_cols(arma::field<arma::mat>& x);
-RcppExport SEXP _varapproxr_bind_cols(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::field<arma::mat>& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(bind_cols(x));
-    return rcpp_result_gen;
-END_RCPP
-}
 // mvn_entropy
 double mvn_entropy(arma::mat& S);
 RcppExport SEXP _varapproxr_mvn_entropy(SEXP SSEXP) {
@@ -109,6 +62,53 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type a(aSEXP);
     Rcpp::traits::input_parameter< double >::type b(bSEXP);
     rcpp_result_gen = Rcpp::wrap(ig_E_log(a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
+// woodbury
+arma::mat woodbury(arma::mat& A, arma::mat& B, arma::mat& C, arma::mat& D);
+RcppExport SEXP _varapproxr_woodbury(SEXP ASEXP, SEXP BSEXP, SEXP CSEXP, SEXP DSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat& >::type A(ASEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type B(BSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type C(CSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type D(DSEXP);
+    rcpp_result_gen = Rcpp::wrap(woodbury(A, B, C, D));
+    return rcpp_result_gen;
+END_RCPP
+}
+// arma2vec
+Rcpp::NumericVector arma2vec(arma::vec x);
+RcppExport SEXP _varapproxr_arma2vec(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(arma2vec(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// blockDiag
+arma::mat blockDiag(arma::field<arma::mat>& x);
+RcppExport SEXP _varapproxr_blockDiag(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::field<arma::mat>& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(blockDiag(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// bind_cols
+arma::mat bind_cols(arma::field<arma::mat>& x);
+RcppExport SEXP _varapproxr_bind_cols(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::field<arma::mat>& >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(bind_cols(x));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -667,15 +667,15 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_varapproxr_woodbury", (DL_FUNC) &_varapproxr_woodbury, 4},
-    {"_varapproxr_arma2vec", (DL_FUNC) &_varapproxr_arma2vec, 1},
-    {"_varapproxr_blockDiag", (DL_FUNC) &_varapproxr_blockDiag, 1},
-    {"_varapproxr_bind_cols", (DL_FUNC) &_varapproxr_bind_cols, 1},
     {"_varapproxr_mvn_entropy", (DL_FUNC) &_varapproxr_mvn_entropy, 1},
     {"_varapproxr_ig_entropy", (DL_FUNC) &_varapproxr_ig_entropy, 2},
     {"_varapproxr_ig_E", (DL_FUNC) &_varapproxr_ig_E, 2},
     {"_varapproxr_ig_E_inv", (DL_FUNC) &_varapproxr_ig_E_inv, 2},
     {"_varapproxr_ig_E_log", (DL_FUNC) &_varapproxr_ig_E_log, 2},
+    {"_varapproxr_woodbury", (DL_FUNC) &_varapproxr_woodbury, 4},
+    {"_varapproxr_arma2vec", (DL_FUNC) &_varapproxr_arma2vec, 1},
+    {"_varapproxr_blockDiag", (DL_FUNC) &_varapproxr_blockDiag, 1},
+    {"_varapproxr_bind_cols", (DL_FUNC) &_varapproxr_bind_cols, 1},
     {"_varapproxr_pnorm_mat", (DL_FUNC) &_varapproxr_pnorm_mat, 1},
     {"_varapproxr_dnorm_mat", (DL_FUNC) &_varapproxr_dnorm_mat, 1},
     {"_varapproxr_vb_lm", (DL_FUNC) &_varapproxr_vb_lm, 10},

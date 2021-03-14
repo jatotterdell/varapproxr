@@ -1,5 +1,6 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include "helpers.h"
+#include "distribution_functions.h"
 #include <Rcpp.h>
 #include <RcppArmadillo.h>
 #include <Rmath.h>
