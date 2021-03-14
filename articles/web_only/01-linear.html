@@ -232,6 +232,26 @@ a_{q(\sigma^2)} &amp;\leftarrow a_0 + N/2 \\
 <a href="#half-t-prior-on-sigma" class="anchor"></a>Half-<span class="math inline">\(t\)</span> prior on <span class="math inline">\(\sigma\)</span>
 </h2>
 <p>The optimal density for <span class="math inline">\(\beta\)</span> is unchanged from the previous section.</p>
+<p>For <span class="math inline">\(\lambda\)</span>, <span class="math display">\[
+\begin{aligned}
+\ln p(\lambda|\sigma^2) &amp;\simeq -\lambda a_0^2 -(1/2+1)\ln\lambda -b_0/2\ln\lambda -\lambda\sigma^2/b_0\\
+\implies p(\lambda|\sigma^2) &amp;= \text{Inverse-Gamma}\left(a_{q(\lambda)}, b_{q(\lambda)}\right) \\
+a_{\lambda|\sigma^2} &amp;=(b_0+1)/2 \\
+b_{\lambda|\sigma^2} &amp;= a_0^{-2}+b_0\sigma^{-2}
+\end{aligned}
+\]</span> From which, the optimal density is <span class="math display">\[
+\begin{aligned}
+q^\star(\lambda) &amp;\propto \exp\left(\mathbb E_{q(\sigma^2)}[\ln p(\lambda|\sigma^2)]\right) \\
+\implies q^\star(\lambda) &amp;= \text{Inverse-Gamma}(a_{q(\lambda)}, b_{q(\lambda)}) \\
+a_{q(\lambda)} &amp;= (b_0+1)/2\\
+b_{q(\lambda)} &amp;= a_0^{-2}+b_0\mathbb E_{q(\sigma^2)}[\sigma^{-2}].
+\end{aligned}
+\]</span></p>
+<p>For <span class="math inline">\(\sigma^2\)</span>, <span class="math display">\[
+\begin{aligned}
+\ln p(\sigma^2|y,\beta,\lambda) \simeq
+\end{aligned}
+\]</span></p>
 </div>
 </div>
 <div id="t-linear-regression" class="section level1">
