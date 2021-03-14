@@ -59,6 +59,34 @@ where the $\lambda$ parameter is dropped if not needed.
 
 From the model above, the joint density is $\ln p(y,\beta,\Sigma) = \ln p(y|\beta,\Sigma) + \ln p(\beta) + \ln p(\Sigma|\lambda) + \ln p(\lambda)$.
 
+## Model Likelihood
+
+The log-likelihood has the form
+$$
+\ln p(y|\beta,\Sigma) = -\frac{1}{2}\left(\ln |\Sigma| +(y-X\beta)^{\mathsf{T}}\Sigma^{-1}(y-X\beta)+p\ln(2\pi)\right)
+$$
+so that
+$$
+\begin{aligned}
+\mathbb E_q[\ln p(y|\beta,\Sigma)] &= 
+-\frac{1}{2}\left(\mathbb E_q[\ln|\Sigma|] + \mathbb E_q[(y-X\beta)^{\mathsf{T}}\Sigma^{-1}(y-X\beta)]+p\ln(2\pi)\right) \\
+&= -\frac{1}{2}\left(\mathbb E_q[\ln|\Sigma|] + (y-X\mu_\beta)^\mathsf{T}\mathbb E_q[\Sigma^{-1}](y-X\mu_\beta) + \text{tr}\left(X^\mathsf{T}\mathbb E_q[\Sigma^{-1}]X\Sigma_\beta\right)+p\ln(2\pi)\right)
+\end{aligned}
+$$
+due to the assumed variational independence of $\beta$ and $\Sigma$.
+
+To obtain the above, (letting $\mu_\beta = \mathbb E_q[\beta]$ and $\Sigma_\beta = \mathbb V_q[\beta]$)
+$$
+\begin{aligned}
+\mathbb E_q[(y-X\beta)^{\mathsf{T}}\Sigma^{-1}(y-X\beta)] &= y^\mathsf{T}\mathbb E_q[\Sigma{-1}]y-2y^\mathsf{T}\mathbb E_q[\Sigma^{-1}]X\mathbb E_q[\beta]+\mathbb E_q[\beta^\mathsf{T}X^\mathsf{T}\Sigma^{-1}X\beta]\\
+\mathbb E_q[\beta^\mathsf{T}X^\mathsf{T}\Sigma^{-1}X\beta] &= \mathbb E_q[\text{tr}\left(X^\mathsf{T}\Sigma^{-1}X\beta\beta^\mathsf{T}\right)] \\
+&= \text{tr}\left(X^\mathsf{T}\mathbb E_q[\Sigma^{-1}]X\left\{\mathbb V_q[\beta]+\mathbb E_q[\beta]\mathbb E_q[\beta]^\mathsf{T}\right\}\right) \\
+&= \text{tr}\left(X^\mathsf{T}\mathbb E_q[\Sigma^{-1}]X\mathbb V_q[\beta]\right)+(X\mathbb E_q[\beta])^\mathsf{T}\mathbb E_q[\Sigma^{-1}]X\mathbb E_q[\beta]\\
+y^\mathsf{T}\mathbb E_q[\Sigma{-1}]y-2y^\mathsf{T}\mathbb E_q[\Sigma^{-1}]X\mathbb E_q[\beta] &= (y-X\mathbb E_q[\beta])^\mathsf{T}\mathbb E_q[\Sigma^{-1}](y-X\mathbb E_q[\beta]) - (X\mathbb E_q[\beta])^\mathsf{T}\mathbb E_q[\Sigma^{-1}]X\mathbb E_q[\beta] \\
+\mathbb E_q[(y-X\beta)^{\mathsf{T}}\Sigma^{-1}(y-X\beta)] &= (y-X\mu_\beta)^\mathsf{T}\mathbb E_q[\Sigma^{-1}](y-X\mu_\beta) + \text{tr}\left(X^\mathsf{T}\mathbb E_q[\Sigma^{-1}]X\Sigma_\beta\right)
+\end{aligned}
+$$
+
 ## Model Coefficients
 
 For the regression coefficients, the full conditional is
@@ -112,11 +140,18 @@ b_{q(\sigma^2)} &= b_0 + \frac{\lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^{\
 $$
 implying that
 $$
-\mathbb E_{q(\sigma^2)}\left[\sigma^{-2}\right] = \frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}}
+\begin{aligned}
+\mathbb E_{q(\sigma^2)}\left[\sigma^{-2}\right] &= 
+  \frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}} \\
+\mathbb E_{q(\sigma^2)}\left[\ln(\sigma^2)\right] &= 
+  \ln\left(b_{q(\sigma^2)}\right) -\psi\left(a_{q(\sigma^2)}\right)  \\
+\mathbb H_{q(\sigma^2)}\left[\sigma^2\right] &= 
+  a_{q(\sigma^2)} + \ln b_{q(\sigma^2)} + \ln\Gamma \left(a_{q(\sigma^2)}\right) - (1+a_{q(\sigma^2)})\psi\left(a_{q(\sigma^2)}\right)
+\end{aligned}
 $$
 in the variational parameters for $q^\star(\beta)$.
 
-An alternative form for the $b_{q(\sigma^2)}$ term which avoids repeated computation of statistics is
+An alternative form for the $b_{q(\sigma^2)}$ term which avoids repeated computation of statistics is to use
 $$
 \begin{aligned}
 \lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^{\mathsf{T}} X\Sigma_{q(\beta)}) &= \\
