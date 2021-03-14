@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Normal parametric variational Bayes for Exponential PH Model. — ph_exponential • varapproxr</title>
+<title>Calculate vech of a matrix — vech • varapproxr</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Normal parametric variational Bayes for Exponential PH Model. — ph_exponential" />
-<meta property="og:description" content="Perform Normal approximation variational inference for 
-proportional-hazards model with exponential base." />
+<meta property="og:title" content="Calculate vech of a matrix — vech" />
+<meta property="og:description" content="Calculate vech of a matrix" />
 
 
 
@@ -130,73 +129,25 @@ proportional-hazards model with exponential base." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Normal parametric variational Bayes for Exponential PH Model.</h1>
+    <h1>Calculate vech of a matrix</h1>
     <small class="dont-index">Source: <a href='https://github.com/jatotterdell/varapproxr/blob/master/R/RcppExports.R'><code>R/RcppExports.R</code></a></small>
-    <div class="hidden name"><code>ph_exponential.Rd</code></div>
+    <div class="hidden name"><code>vech.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Perform Normal approximation variational inference for 
-proportional-hazards model with exponential base.</p>
+    <p>Calculate vech of a matrix</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ph_exponential</span><span class='op'>(</span>
-  <span class='va'>X</span>,
-  <span class='va'>y</span>,
-  <span class='va'>v</span>,
-  <span class='va'>mu0</span>,
-  <span class='va'>Sigma0</span>,
-  tol <span class='op'>=</span> <span class='fl'>1e-08</span>,
-  maxiter <span class='op'>=</span> <span class='fl'>100L</span>,
-  verbose <span class='op'>=</span> <span class='cn'>FALSE</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>vech</span><span class='op'>(</span><span class='va'>X</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>X</th>
-      <td><p>The design matrix</p></td>
-    </tr>
-    <tr>
-      <th>y</th>
-      <td><p>The response vector</p></td>
-    </tr>
-    <tr>
-      <th>v</th>
-      <td><p>The censoring vector</p></td>
-    </tr>
-    <tr>
-      <th>mu0</th>
-      <td><p>The prior mean for beta</p></td>
-    </tr>
-    <tr>
-      <th>Sigma0</th>
-      <td><p>The prior covariance for beta</p></td>
-    </tr>
-    <tr>
-      <th>tol</th>
-      <td><p>The tolerance for convergence of ELBO</p></td>
-    </tr>
-    <tr>
-      <th>maxiter</th>
-      <td><p>The maximum number of iterations allowed</p></td>
-    </tr>
-    <tr>
-      <th>verbose</th>
-      <td><p>Print trace of the lower bound to console. Default is <code>FALSE</code>.</p></td>
+      <td><p>A square matrix of dimension d by d</p></td>
     </tr>
     </table>
-
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>A list containing:</p><dl>
-  <dt>converged</dt><dd><p>Indicator for algorithm convergence.</p></dd>
-  <dt>elbo</dt><dd><p>Vector of the ELBO sequence.</p></dd> 
-  <dt>mu</dt><dd><p>The optimised value of mu.</p></dd>
-  <dt>Sigma</dt><dd><p>The optimised value of Sigma.</p></dd>
-
-</dl>
 
 
   </div>

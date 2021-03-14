@@ -111,6 +111,7 @@ p(y|\beta,\Sigma) &amp;= \text{Normal}(y|X\beta, \Sigma) \\
 p(\beta) &amp;= \text{Normal}(\beta|\mu_0, \Sigma_0)
 \end{aligned}
 \]</span> often assuming <span class="math inline">\(\Sigma = \sigma^2 I_N\)</span> with either <span class="math inline">\(p(\sigma^2) = \text{Inverse-Gamma}(\sigma^2|a_0, b_0)\)</span> or <span class="math inline">\(p(\sigma) = \text{Half-}t(\sigma^2|a_0,b_0)\)</span>.</p>
+<p>(Look at the generalisation of this using G-Wishart priors as in Maestrini and Wand 2020)</p>
 <p>The latter can be expressed as <span class="math display">\[
 \begin{aligned}
 p(\sigma^2|\lambda) &amp;= \text{Inverse-Gamma}(b_0/2, b_0/\lambda) \\
@@ -181,7 +182,7 @@ m_q &amp;= \mathbb E_{q(\Sigma)}\left[\Sigma^{-1}\right] X^{\mathsf{T}} y + \Sig
 </h2>
 <p>For the variance component assuming <span class="math inline">\(\Sigma=\sigma^2 I\)</span>, <span class="math display">\[
 \begin{aligned}
-\ln p(\sigma^2|y,\beta) &amp;\simeq  \frac{P}{2}\ln(\sigma^{2})-\frac{1}{2}\sigma^{-2}\left[(y-X\beta)^{\mathsf{T}}(y-X\beta)\right] - (a_0+1)\ln(\sigma^2) - \sigma^{-2}b_0\\
+\ln p(\sigma^2|y,\beta) &amp;\simeq  \frac{N}{2}\ln(\sigma^{2})-\frac{1}{2}\sigma^{-2}\left[(y-X\beta)^{\mathsf{T}}(y-X\beta)\right] - (a_0+1)\ln(\sigma^2) - \sigma^{-2}b_0\\
 \implies p(\sigma^2|y,\beta) &amp;= \text{Inverse-Gamma}(\sigma^2|a_{\sigma^2|\beta,y}, b_{\sigma^2|\beta,y}) \\
 a_{\sigma^2|\beta,y} &amp;= a_0 + \frac{N}{2} \\
 b_{\sigma^2|\beta,y} &amp;= b_0 + \frac{\lVert y-X\beta\rVert^2}{2}
@@ -231,6 +232,7 @@ a_{q(\sigma^2)} &amp;\leftarrow a_0 + N/2 \\
 <h2 class="hasAnchor">
 <a href="#half-t-prior-on-sigma" class="anchor"></a>Half-<span class="math inline">\(t\)</span> prior on <span class="math inline">\(\sigma\)</span>
 </h2>
+<p>(Maestrini and Wand 2020)</p>
 <p>The optimal density for <span class="math inline">\(\beta\)</span> is unchanged from the previous section.</p>
 <p>For <span class="math inline">\(\lambda\)</span>, <span class="math display">\[
 \begin{aligned}
