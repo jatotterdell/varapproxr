@@ -91,7 +91,7 @@
       <h1 data-toc-skip>Linear Models</h1>
                         <h4 class="author">James Totterdell</h4>
             
-            <h4 class="date">2020-12-24</h4>
+            <h4 class="date">2021-03-14</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jatotterdell/varapproxr/blob/master/vignettes/web_only/01-linear.Rmd"><code>vignettes/web_only/01-linear.Rmd</code></a></small>
       <div class="hidden name"><code>01-linear.Rmd</code></div>
@@ -126,6 +126,29 @@ q^\star(\lambda) &amp;\propto \exp\left\{\mathbb E_\Sigma[\ln p(\lambda|y,\Sigma
 \end{aligned}
 \]</span> where the <span class="math inline">\(\lambda\)</span> parameter is dropped if not needed.</p>
 <p>From the model above, the joint density is <span class="math inline">\(\ln p(y,\beta,\Sigma) = \ln p(y|\beta,\Sigma) + \ln p(\beta) + \ln p(\Sigma|\lambda) + \ln p(\lambda)\)</span>.</p>
+<div id="model-likelihood" class="section level2">
+<h2 class="hasAnchor">
+<a href="#model-likelihood" class="anchor"></a>Model Likelihood</h2>
+<p>The log-likelihood has the form <span class="math display">\[
+\ln p(y|\beta,\Sigma) = -\frac{1}{2}\left(\ln |\Sigma| +(y-X\beta)^{\mathsf{T}}\Sigma^{-1}(y-X\beta)+p\ln(2\pi)\right)
+\]</span> so that <span class="math display">\[
+\begin{aligned}
+\mathbb E_q[\ln p(y|\beta,\Sigma)] &amp;= 
+-\frac{1}{2}\left(\mathbb E_q[\ln|\Sigma|] + \mathbb E_q[(y-X\beta)^{\mathsf{T}}\Sigma^{-1}(y-X\beta)]+p\ln(2\pi)\right) \\
+&amp;= -\frac{1}{2}\left(\mathbb E_q[\ln|\Sigma|] + (y-X\mu_\beta)^\mathsf{T}\mathbb E_q[\Sigma^{-1}](y-X\mu_\beta) + \text{tr}\left(X^\mathsf{T}\mathbb E_q[\Sigma^{-1}]X\Sigma_\beta\right)+p\ln(2\pi)\right)
+\end{aligned}
+\]</span> due to the assumed variational independence of <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\Sigma\)</span>.</p>
+<p>To obtain the above, (letting <span class="math inline">\(\mu_\beta = \mathbb E_q[\beta]\)</span> and <span class="math inline">\(\Sigma_\beta = \mathbb V_q[\beta]\)</span>) <span class="math display">\[
+\begin{aligned}
+\mathbb E_q[(y-X\beta)^{\mathsf{T}}\Sigma^{-1}(y-X\beta)] &amp;= y^\mathsf{T}\mathbb E_q[\Sigma{-1}]y-2y^\mathsf{T}\mathbb E_q[\Sigma^{-1}]X\mathbb E_q[\beta]+\mathbb E_q[\beta^\mathsf{T}X^\mathsf{T}\Sigma^{-1}X\beta]\\
+\mathbb E_q[\beta^\mathsf{T}X^\mathsf{T}\Sigma^{-1}X\beta] &amp;= \mathbb E_q[\text{tr}\left(X^\mathsf{T}\Sigma^{-1}X\beta\beta^\mathsf{T}\right)] \\
+&amp;= \text{tr}\left(X^\mathsf{T}\mathbb E_q[\Sigma^{-1}]X\left\{\mathbb V_q[\beta]+\mathbb E_q[\beta]\mathbb E_q[\beta]^\mathsf{T}\right\}\right) \\
+&amp;= \text{tr}\left(X^\mathsf{T}\mathbb E_q[\Sigma^{-1}]X\mathbb V_q[\beta]\right)+(X\mathbb E_q[\beta])^\mathsf{T}\mathbb E_q[\Sigma^{-1}]X\mathbb E_q[\beta]\\
+y^\mathsf{T}\mathbb E_q[\Sigma{-1}]y-2y^\mathsf{T}\mathbb E_q[\Sigma^{-1}]X\mathbb E_q[\beta] &amp;= (y-X\mathbb E_q[\beta])^\mathsf{T}\mathbb E_q[\Sigma^{-1}](y-X\mathbb E_q[\beta]) - (X\mathbb E_q[\beta])^\mathsf{T}\mathbb E_q[\Sigma^{-1}]X\mathbb E_q[\beta] \\
+\mathbb E_q[(y-X\beta)^{\mathsf{T}}\Sigma^{-1}(y-X\beta)] &amp;= (y-X\mu_\beta)^\mathsf{T}\mathbb E_q[\Sigma^{-1}](y-X\mu_\beta) + \text{tr}\left(X^\mathsf{T}\mathbb E_q[\Sigma^{-1}]X\Sigma_\beta\right)
+\end{aligned}
+\]</span></p>
+</div>
 <div id="model-coefficients" class="section level2">
 <h2 class="hasAnchor">
 <a href="#model-coefficients" class="anchor"></a>Model Coefficients</h2>
@@ -171,9 +194,16 @@ a_{q(\sigma^2)} &amp;= a_0 + \frac{N}{2} \\
 b_{q(\sigma^2)} &amp;= b_0 + \frac{\lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^{\mathsf{T}} X\Sigma_{q(\beta)})}{2}
 \end{aligned}
 \]</span> implying that <span class="math display">\[
-\mathbb E_{q(\sigma^2)}\left[\sigma^{-2}\right] = \frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}}
+\begin{aligned}
+\mathbb E_{q(\sigma^2)}\left[\sigma^{-2}\right] &amp;= 
+  \frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}} \\
+\mathbb E_{q(\sigma^2)}\left[\ln(\sigma^2)\right] &amp;= 
+  \ln\left(b_{q(\sigma^2)}\right) -\psi\left(a_{q(\sigma^2)}\right)  \\
+\mathbb H_{q(\sigma^2)}\left[\sigma^2\right] &amp;= 
+  a_{q(\sigma^2)} + \ln b_{q(\sigma^2)} + \ln\Gamma \left(a_{q(\sigma^2)}\right) - (1+a_{q(\sigma^2)})\psi\left(a_{q(\sigma^2)}\right)
+\end{aligned}
 \]</span> in the variational parameters for <span class="math inline">\(q^\star(\beta)\)</span>.</p>
-<p>An alternative form for the <span class="math inline">\(b_{q(\sigma^2)}\)</span> term which avoids repeated computation of statistics is <span class="math display">\[
+<p>An alternative form for the <span class="math inline">\(b_{q(\sigma^2)}\)</span> term which avoids repeated computation of statistics is to use <span class="math display">\[
 \begin{aligned}
 \lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^{\mathsf{T}} X\Sigma_{q(\beta)}) &amp;= \\
 y^{\mathsf{T}}y-2\mu_{q(\beta)}^{\mathsf{T}}X^{\mathsf{T}}y&amp;+\text{tr}\left[(X^{\mathsf{T}}X)\left(\Psi_{q(\beta)}+\mu_{q(\beta)}\mu_{q(\beta)}^{\mathsf{T}}\right)\right].
