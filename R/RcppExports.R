@@ -454,11 +454,32 @@ ph_exponential <- function(X, y, v, mu0, Sigma0, tol = 1e-8, maxiter = 100L, ver
     .Call(`_varapproxr_ph_exponential`, X, y, v, mu0, Sigma0, tol, maxiter, verbose)
 }
 
+#' Calculate entropy for Gaussian density
+#' 
+#' @param eta Natural parameter
+GaussianEntropy <- function(eta) {
+    .Call(`_varapproxr_GaussianEntropy`, eta)
+}
+
 #' Calculate vec^(-1)
 #' 
 #' @param v A vector of dimension d^2 by 1
 inv_vectorise <- function(v) {
     .Call(`_varapproxr_inv_vectorise`, v)
+}
+
+#' Calculate vech of a matrix
+#'
+#' @param X A square matrix of dimension d by d
+vech <- function(X) {
+    .Call(`_varapproxr_vech`, X)
+}
+
+#' Calculate inverse of vech for a vector
+#'
+#' @param v A vector of dimension d(d+1)/2 of lower triangular elements
+inv_vech <- function(v) {
+    .Call(`_varapproxr_inv_vech`, v)
 }
 
 #' Calculate
@@ -540,13 +561,6 @@ ExpectationGaussianSufficientStatistics <- function(eta) {
 #' 
 GaussianCommonParameters <- function(eta) {
     .Call(`_varapproxr_GaussianCommonParameters`, eta)
-}
-
-#' Calculate entropy for Gaussian density
-#' 
-#' @param eta Natural parameter
-GaussianEntropy <- function(eta) {
-    .Call(`_varapproxr_GaussianEntropy`, eta)
 }
 
 #' Inverse-G-Wishart transform natural parameters to E[T(X)] parameters.

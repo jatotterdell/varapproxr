@@ -486,6 +486,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// GaussianEntropy
+double GaussianEntropy(arma::vec& eta);
+RcppExport SEXP _varapproxr_GaussianEntropy(SEXP etaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec& >::type eta(etaSEXP);
+    rcpp_result_gen = Rcpp::wrap(GaussianEntropy(eta));
+    return rcpp_result_gen;
+END_RCPP
+}
 // inv_vectorise
 arma::mat inv_vectorise(arma::vec v);
 RcppExport SEXP _varapproxr_inv_vectorise(SEXP vSEXP) {
@@ -494,6 +505,28 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type v(vSEXP);
     rcpp_result_gen = Rcpp::wrap(inv_vectorise(v));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vech
+arma::vec vech(arma::mat X);
+RcppExport SEXP _varapproxr_vech(SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(vech(X));
+    return rcpp_result_gen;
+END_RCPP
+}
+// inv_vech
+arma::mat inv_vech(arma::vec v);
+RcppExport SEXP _varapproxr_inv_vech(SEXP vSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type v(vSEXP);
+    rcpp_result_gen = Rcpp::wrap(inv_vech(v));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -612,17 +645,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// GaussianEntropy
-double GaussianEntropy(arma::vec& eta);
-RcppExport SEXP _varapproxr_GaussianEntropy(SEXP etaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec& >::type eta(etaSEXP);
-    rcpp_result_gen = Rcpp::wrap(GaussianEntropy(eta));
-    return rcpp_result_gen;
-END_RCPP
-}
 // ExpectationInverseGWishartSufficientStatistics
 arma::field<arma::mat> ExpectationInverseGWishartSufficientStatistics(arma::mat G, arma::vec eta);
 RcppExport SEXP _varapproxr_ExpectationInverseGWishartSufficientStatistics(SEXP GSEXP, SEXP etaSEXP) {
@@ -636,12 +658,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // InverseGWishartCommonParameters
-arma::field<arma::mat> InverseGWishartCommonParameters(arma::vec eta);
+arma::field<arma::mat> InverseGWishartCommonParameters(arma::vec& eta);
 RcppExport SEXP _varapproxr_InverseGWishartCommonParameters(SEXP etaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type eta(etaSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type eta(etaSEXP);
     rcpp_result_gen = Rcpp::wrap(InverseGWishartCommonParameters(eta));
     return rcpp_result_gen;
 END_RCPP
@@ -697,7 +719,10 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_vb_pois_reg", (DL_FUNC) &_varapproxr_vb_pois_reg, 8},
     {"_varapproxr_vb_pois_mm", (DL_FUNC) &_varapproxr_vb_pois_mm, 10},
     {"_varapproxr_ph_exponential", (DL_FUNC) &_varapproxr_ph_exponential, 8},
+    {"_varapproxr_GaussianEntropy", (DL_FUNC) &_varapproxr_GaussianEntropy, 1},
     {"_varapproxr_inv_vectorise", (DL_FUNC) &_varapproxr_inv_vectorise, 1},
+    {"_varapproxr_vech", (DL_FUNC) &_varapproxr_vech, 1},
+    {"_varapproxr_inv_vech", (DL_FUNC) &_varapproxr_inv_vech, 1},
     {"_varapproxr_G_VMP", (DL_FUNC) &_varapproxr_G_VMP, 4},
     {"_varapproxr_GaussianPriorFragment", (DL_FUNC) &_varapproxr_GaussianPriorFragment, 2},
     {"_varapproxr_InverseGammaPriorFragment", (DL_FUNC) &_varapproxr_InverseGammaPriorFragment, 2},
@@ -707,7 +732,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_GaussianLikelihoodFragment", (DL_FUNC) &_varapproxr_GaussianLikelihoodFragment, 6},
     {"_varapproxr_ExpectationGaussianSufficientStatistics", (DL_FUNC) &_varapproxr_ExpectationGaussianSufficientStatistics, 1},
     {"_varapproxr_GaussianCommonParameters", (DL_FUNC) &_varapproxr_GaussianCommonParameters, 1},
-    {"_varapproxr_GaussianEntropy", (DL_FUNC) &_varapproxr_GaussianEntropy, 1},
     {"_varapproxr_ExpectationInverseGWishartSufficientStatistics", (DL_FUNC) &_varapproxr_ExpectationInverseGWishartSufficientStatistics, 2},
     {"_varapproxr_InverseGWishartCommonParameters", (DL_FUNC) &_varapproxr_InverseGWishartCommonParameters, 1},
     {"_varapproxr_vmp_lm", (DL_FUNC) &_varapproxr_vmp_lm, 9},

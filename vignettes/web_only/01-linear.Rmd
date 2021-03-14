@@ -37,6 +37,8 @@ p(\beta) &= \text{Normal}(\beta|\mu_0, \Sigma_0)
 $$
 often assuming $\Sigma = \sigma^2 I_N$ with either $p(\sigma^2) = \text{Inverse-Gamma}(\sigma^2|a_0, b_0)$ or $p(\sigma) = \text{Half-}t(\sigma^2|a_0,b_0)$. 
 
+(Look at the generalisation of this using G-Wishart priors as in Maestrini and Wand 2020)
+
 The latter can be expressed as
 $$
 \begin{aligned}
@@ -123,7 +125,7 @@ Assuming that $\Sigma=\sigma^2 I$, replace $q(\Sigma)$ with $q(\sigma^2)$.
 For the variance component assuming $\Sigma=\sigma^2 I$,
 $$
 \begin{aligned}
-\ln p(\sigma^2|y,\beta) &\simeq  \frac{P}{2}\ln(\sigma^{2})-\frac{1}{2}\sigma^{-2}\left[(y-X\beta)^{\mathsf{T}}(y-X\beta)\right] - (a_0+1)\ln(\sigma^2) - \sigma^{-2}b_0\\
+\ln p(\sigma^2|y,\beta) &\simeq  \frac{N}{2}\ln(\sigma^{2})-\frac{1}{2}\sigma^{-2}\left[(y-X\beta)^{\mathsf{T}}(y-X\beta)\right] - (a_0+1)\ln(\sigma^2) - \sigma^{-2}b_0\\
 \implies p(\sigma^2|y,\beta) &= \text{Inverse-Gamma}(\sigma^2|a_{\sigma^2|\beta,y}, b_{\sigma^2|\beta,y}) \\
 a_{\sigma^2|\beta,y} &= a_0 + \frac{N}{2} \\
 b_{\sigma^2|\beta,y} &= b_0 + \frac{\lVert y-X\beta\rVert^2}{2}
@@ -183,6 +185,8 @@ until the change in $\mathcal{L}(q)$ is below a specified tolerance level indica
 
 
 ## Half-$t$ prior on $\sigma$
+
+(Maestrini and Wand 2020)
 
 The optimal density for $\beta$ is unchanged from the previous section.
 

@@ -1,3 +1,4 @@
+#include "vmp_entropy.h"
 #include <RcppArmadillo.h>
 #include <Rmath.h>
 
@@ -10,6 +11,38 @@ arma::mat inv_vectorise(arma::vec v) {
   int d = sqrt(v.n_elem);
   arma::mat V = arma::reshape(v, d, d);
   return(V);
+}
+
+
+//' Calculate vech of a matrix
+//'
+//' @param X A square matrix of dimension d by d
+// [[Rcpp::export]]
+arma::vec vech(arma::mat X) {
+  if(!X.is_square()) {
+    throw std::range_error("X must be square");  
+  }
+  arma::uvec lower_indices = arma::trimatl_ind(arma::size(X));
+  arma::vec lower_part = X(lower_indices);
+  return(lower_part);
+}
+
+
+//' Calculate inverse of vech for a vector
+//'
+//' @param v A vector of dimension d(d+1)/2 of lower triangular elements
+// [[Rcpp::export]]
+arma::mat inv_vech(arma::vec v) {
+  int l = arma::size(v)[0];
+  double d = 0.5*(sqrt(8*l + 1) - 1);
+  double intpart;
+  if(modf(d, &intpart) != 0.0) {
+    throw std::range_error("v must be dimension d(d+1)/2 for square matrix d x d.");  
+  }
+  arma::mat out(d, d, arma::fill::zeros);
+  arma::uvec lower_indices = arma::trimatl_ind(size(out));
+  out.elem(lower_indices) = v;
+  return(arma::symmatl(out));
 }
 
 
@@ -35,7 +68,6 @@ arma::vec G_VMP(
       -0.5*trans(r)*V*v1-0.5*s;
   return(out);
 }
-
 
 //' Gaussian prior fragment update
 //' 
@@ -213,17 +245,7 @@ arma::field<arma::mat> GaussianCommonParameters(
   return(out);
 }
 
-//' Calculate entropy for Gaussian density
-//' 
-//' @param eta Natural parameter
-// [[Rcpp::export]]
-double GaussianEntropy(
-  arma::vec& eta
-) {
-  arma::field<arma::mat> theta = GaussianCommonParameters(eta);
-  int d = theta(1).n_rows;
-  return 0.5*(d*(1 + log(2*M_PI)) + real(log_det(theta(1))));
-}
+
 
 
 //' Inverse-G-Wishart transform natural parameters to E[T(X)] parameters.
@@ -264,7 +286,7 @@ arma::field<arma::mat> ExpectationInverseGWishartSufficientStatistics(
 //' 
 // [[Rcpp::export]]
 arma::field<arma::mat> InverseGWishartCommonParameters(
-    arma::vec eta
+    arma::vec& eta
 ) {
   double eta1 = eta(0);
   arma::vec eta2 = eta.subvec(1, eta.n_elem - 1);
@@ -350,14 +372,16 @@ Rcpp::List vmp_lm(
     
     Rcpp::Rcout << theta_beta(1) << std::endl;
     
-    elbo(i)     = as_scalar(d/2 + 1/2*real(log_det(theta_beta(1))) + 
-      -1/2*real(log_det(Sigma0)) -0.5*arma::trace(inv(Sigma0) * theta_beta(1)) +
-      -1/2*trans(theta_beta(0) - mu0)*inv(theta_beta(1))*(theta_beta(0) - mu0) +
-      +(n+2)*log(eta_sigma(1)/2) + 1 + log((n + 1)/2) -7/2*R::digamma(1) - (n+1)/2*log(2*M_PI) +
-      -(n+3)/2*R::digamma((as_scalar(n) + 1)/2) +
-      -(n+1)/(theta_sigma(1)*theta_a(1)) -4*log(theta_a(1)/2) +
-      -(n+1)/(2*theta_sigma(1))*(arma::trace(XtX*theta_beta(1)) + norm(y - X*theta_beta(0))));
+    elbo(i) = GaussianEntropy(eta_beta);
     
+    // elbo(i)     = as_scalar(d/2 + 1/2*real(log_det(theta_beta(1))) + 
+    //   -1/2*real(log_det(Sigma0)) -0.5*arma::trace(inv(Sigma0) * theta_beta(1)) +
+    //   -1/2*trans(theta_beta(0) - mu0)*inv(theta_beta(1))*(theta_beta(0) - mu0) +
+    //   +(n+2)*log(eta_sigma(1)/2) + 1 + log((n + 1)/2) -7/2*R::digamma(1) - (n+1)/2*log(2*M_PI) +
+    //   -(n+3)/2*R::digamma((as_scalar(n) + 1)/2) +
+    //   -(n+1)/(theta_sigma(1)*theta_a(1)) -4*log(theta_a(1)/2) +
+    //   -(n+1)/(2*theta_sigma(1))*(arma::trace(XtX*theta_beta(1)) + norm(y - X*theta_beta(0))));
+    // 
     // Check for convergence
     if(verbose)
       Rcpp::Rcout << "Iter: " << std::setw(3) << i << "; ELBO = " << std::fixed << elbo(i) << std::endl;

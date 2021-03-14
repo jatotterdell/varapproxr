@@ -135,7 +135,7 @@ $$
 \begin{aligned}
 \text{Chi-square}(\nu) &\sim \text{Gamma}(\nu/2,2) \\
 \text{Inverse-Chi-Squared}(\nu) &\sim \text{Scale-Inverse-Chi-Squared}(\nu,1/\nu) \\
-\text{Scale-Inverse-Chi-Squared}(\nu,\tau^2) &\sim \text{Inverse-Gamma}(\nu/2,\nu\tau^2/n)
+\text{Scale-Inverse-Chi-Squared}(\nu,\tau^2) &\sim \text{Inverse-Gamma}(\nu/2,\nu\tau^2/2)
 \end{aligned}
 $$
 

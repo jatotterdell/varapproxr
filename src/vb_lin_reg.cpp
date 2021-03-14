@@ -73,6 +73,7 @@ List vb_lm(
     a_div_b = a/b;
     Sigma = inv(a_div_b * XtX + invSigma0);
     mu = Sigma * (a_div_b * Xty + invSigma0_mu0);
+    
     if(prior == 1) {
       b = b0 + 0.5*yty - dot(mu, Xty) + 0.5*arma::trace(XtX * (Sigma + mu * trans(mu)));
     } else if (prior == 2) {
