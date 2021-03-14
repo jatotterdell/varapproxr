@@ -186,6 +186,32 @@ until the change in $\mathcal{L}(q)$ is below a specified tolerance level indica
 
 The optimal density for $\beta$ is unchanged from the previous section.
 
+For $\lambda$,
+$$
+\begin{aligned}
+\ln p(\lambda|\sigma^2) &\simeq -\lambda a_0^2 -(1/2+1)\ln\lambda -b_0/2\ln\lambda -\lambda\sigma^2/b_0\\
+\implies p(\lambda|\sigma^2) &= \text{Inverse-Gamma}\left(a_{q(\lambda)}, b_{q(\lambda)}\right) \\
+a_{\lambda|\sigma^2} &=(b_0+1)/2 \\
+b_{\lambda|\sigma^2} &= a_0^{-2}+b_0\sigma^{-2}
+\end{aligned}
+$$
+From which, the optimal density is
+$$
+\begin{aligned}
+q^\star(\lambda) &\propto \exp\left(\mathbb E_{q(\sigma^2)}[\ln p(\lambda|\sigma^2)]\right) \\
+\implies q^\star(\lambda) &= \text{Inverse-Gamma}(a_{q(\lambda)}, b_{q(\lambda)}) \\
+a_{q(\lambda)} &= (b_0+1)/2\\
+b_{q(\lambda)} &= a_0^{-2}+b_0\mathbb E_{q(\sigma^2)}[\sigma^{-2}].
+\end{aligned}
+$$
+
+For $\sigma^2$,
+$$
+\begin{aligned}
+\ln p(\sigma^2|y,\beta,\lambda) \simeq
+\end{aligned}
+$$
+
 
 # $t$ Linear Regression
 

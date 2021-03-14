@@ -76,6 +76,7 @@ List vb_lm(
     if(prior == 1) {
       b = b0 + 0.5*yty - dot(mu, Xty) + 0.5*arma::trace(XtX * (Sigma + mu * trans(mu)));
     } else if (prior == 2) {
+      // need to check these
       b_lam = (b0 * a_div_b + pow(a0, -2));
       b = b0 * a_lam / b_lam + 0.5*yty - dot(mu, Xty) + 0.5*arma::trace(XtX * (Sigma + mu * trans(mu)));
     }
