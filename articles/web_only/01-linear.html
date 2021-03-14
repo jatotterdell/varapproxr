@@ -192,7 +192,7 @@ b_{\sigma^2|\beta,y} &amp;= b_0 + \frac{\lVert y-X\beta\rVert^2}{2}
 q^\star(\sigma^2) &amp;\propto \mathbb E_{q(\beta)}\left[\ln p(\sigma^2|y,\beta)\right] \\
 \implies q^\star(\sigma^2) &amp;= \text{Inverse-Gamma}(a_{q(\sigma^2)}, b_{q(\sigma^2)}) \\
 a_{q(\sigma^2)} &amp;= a_0 + \frac{N}{2} \\
-b_{q(\sigma^2)} &amp;= b_0 + \frac{\lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^{\mathsf{T}} X\Sigma_{q(\beta)})}{2}
+b_{q(\sigma^2)} &amp;= b_0 + \frac{\lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^{\mathsf{T}} X\Psi_{q(\beta)})}{2}
 \end{aligned}
 \]</span> implying that <span class="math display">\[
 \begin{aligned}
@@ -206,16 +206,8 @@ b_{q(\sigma^2)} &amp;= b_0 + \frac{\lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(
 \]</span> in the variational parameters for <span class="math inline">\(q^\star(\beta)\)</span>.</p>
 <p>An alternative form for the <span class="math inline">\(b_{q(\sigma^2)}\)</span> term which avoids repeated computation of statistics is to use <span class="math display">\[
 \begin{aligned}
-\lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^{\mathsf{T}} X\Sigma_{q(\beta)}) &amp;= \\
+\lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^{\mathsf{T}} X\Psi_{q(\beta)}) &amp;= \\
 y^{\mathsf{T}}y-2\mu_{q(\beta)}^{\mathsf{T}}X^{\mathsf{T}}y&amp;+\text{tr}\left[(X^{\mathsf{T}}X)\left(\Psi_{q(\beta)}+\mu_{q(\beta)}\mu_{q(\beta)}^{\mathsf{T}}\right)\right].
-\end{aligned}
-\]</span></p>
-<p>The lower bound itself is <span class="math display">\[
-\begin{aligned}
-\mathcal{L}(q) &amp;= \mathbb E_q[\ln p(y,\beta,\sigma^2) - q(\beta,\sigma^2)] \\ 
-&amp;= \mathbb E_q[\ln p(y|\beta,\sigma^2)] + \mathbb E_q[\ln p(\beta)] + \mathbb E_q[\ln p(\sigma^2)] + 
-\mathbb H_q[\beta] + \mathbb H_q[\sigma^2] \\
-&amp;= 
 \end{aligned}
 \]</span></p>
 <p>The updates are then <span class="math display">\[
@@ -227,6 +219,14 @@ a_{q(\sigma^2)} &amp;\leftarrow a_0 + N/2 \\
   b_{q(\sigma^2)} &amp;\leftarrow b_0 + \frac{\lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^{\mathsf{T}} X\Psi_{q(\beta)})}{2}
 \end{aligned}
 \]</span> until the change in <span class="math inline">\(\mathcal{L}(q)\)</span> is below a specified tolerance level indicating convergence.</p>
+<p>The lower bound itself is <span class="math display">\[
+\begin{aligned}
+\mathcal{L}(q) &amp;= \mathbb E_q[\ln p(y,\beta,\sigma^2) - q(\beta,\sigma^2)] \\ 
+&amp;= \mathbb E_q[\ln p(y|\beta,\sigma^2)] + \mathbb E_q[\ln p(\beta)] + \mathbb E_q[\ln p(\sigma^2)] + 
+\mathbb H_q[\beta] + \mathbb H_q[\sigma^2] \\
+&amp;= 
+\end{aligned}
+\]</span></p>
 </div>
 <div id="half-t-prior-on-sigma" class="section level2">
 <h2 class="hasAnchor">
@@ -251,7 +251,30 @@ b_{q(\lambda)} &amp;= a_0^{-2}+b_0\mathbb E_{q(\sigma^2)}[\sigma^{-2}].
 \]</span></p>
 <p>For <span class="math inline">\(\sigma^2\)</span>, <span class="math display">\[
 \begin{aligned}
-\ln p(\sigma^2|y,\beta,\lambda) \simeq
+\ln p(\sigma^2|y,\beta,\lambda) &amp;\simeq 
+\frac{N}{2}\ln(\sigma^2) - \frac{1}{2}\sigma^{-2}||y-X\beta||^2 -(b_0/2+1)\ln(\sigma^2)-\sigma^{-2}b_0/\lambda \\
+\implies p(\sigma^2|y,\beta,\lambda) &amp;= \text{Inverse-Gamma}(a_{\sigma^2|y,\beta,\lambda}, b_{\sigma^2|y,\beta,\lambda}) \\
+a_{\sigma^2|y,\beta,\lambda} &amp;= (b_0+N)/2 \\
+b_{\sigma^2|y,\beta,\lambda} &amp;= b_0/\lambda + \frac{||y-X\beta||^2}{2}
+\end{aligned}
+\]</span> from which, the optimal density is <span class="math display">\[
+\begin{aligned}
+q^\star(\sigma^2) &amp;\propto \exp\left(\mathbb E_{q(\beta,\lambda)}[\ln p(\sigma^2|y,\beta,\lambda)]\right) \\
+\implies q^\star(\sigma^2) &amp;= \text{Inverse-Gamma}(a_{q(\sigma^2)}, b_{q(\sigma^2)}) \\
+a_{q(\sigma^2)} &amp;= (b_0 + N)/2 \\
+b_{q(\sigma^2)} &amp;= b_0\mathbb E_{q(\lambda)}[\lambda^{-1}] + \frac{||y-X\mu_{q(\beta)}||^2+\text{tr}\left(X^\mathsf{T}X\Psi_{q(\beta)}\right)}{2}\\
+&amp;= b_0\frac{a_{q(\lambda)}}{b_{q(\lambda)}} + \frac{||y-X\mu_{q(\beta)}||^2+\text{tr}\left(X^\mathsf{T}X\Psi_{q(\beta)}\right)}{2}.
+\end{aligned}
+\]</span></p>
+<p>The updates are then <span class="math display">\[
+\begin{aligned}
+a_{q(\lambda)} &amp;\leftarrow (b_0+1)/2 \\
+a_{q(\sigma^2)} &amp;\leftarrow (b_0 + N)/2 \\
+\text{Cycle:} \\
+  \Psi_{q(\beta)} &amp;\leftarrow  \left(\frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}}X^{\mathsf{T}} X + \Sigma_0^{-1}\right)^{-1} \\
+  \mu_{q(\beta)} &amp;\leftarrow \Psi_{q(\beta)}\left(\frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}} X^{\mathsf{T}} y + \Sigma_0^{-1}\mu_0\right) \\
+  b_{q(\lambda)} &amp;\leftarrow a_0^{-2} + b_0 \frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}} \\
+  b_{q(\sigma^2)} &amp;\leftarrow b_0\frac{a_{q(\lambda)}}{b_{q(\lambda)}} + \frac{\lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^{\mathsf{T}} X\Psi_{q(\beta)})}{2}
 \end{aligned}
 \]</span></p>
 </div>
