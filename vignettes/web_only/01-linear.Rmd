@@ -137,7 +137,7 @@ $$
 q^\star(\sigma^2) &\propto \mathbb E_{q(\beta)}\left[\ln p(\sigma^2|y,\beta)\right] \\
 \implies q^\star(\sigma^2) &= \text{Inverse-Gamma}(a_{q(\sigma^2)}, b_{q(\sigma^2)}) \\
 a_{q(\sigma^2)} &= a_0 + \frac{N}{2} \\
-b_{q(\sigma^2)} &= b_0 + \frac{\lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^{\mathsf{T}} X\Sigma_{q(\beta)})}{2}
+b_{q(\sigma^2)} &= b_0 + \frac{\lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^{\mathsf{T}} X\Psi_{q(\beta)})}{2}
 \end{aligned}
 $$
 implying that
@@ -156,18 +156,8 @@ in the variational parameters for $q^\star(\beta)$.
 An alternative form for the $b_{q(\sigma^2)}$ term which avoids repeated computation of statistics is to use
 $$
 \begin{aligned}
-\lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^{\mathsf{T}} X\Sigma_{q(\beta)}) &= \\
+\lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^{\mathsf{T}} X\Psi_{q(\beta)}) &= \\
 y^{\mathsf{T}}y-2\mu_{q(\beta)}^{\mathsf{T}}X^{\mathsf{T}}y&+\text{tr}\left[(X^{\mathsf{T}}X)\left(\Psi_{q(\beta)}+\mu_{q(\beta)}\mu_{q(\beta)}^{\mathsf{T}}\right)\right].
-\end{aligned}
-$$
-
-The lower bound itself is
-$$
-\begin{aligned}
-\mathcal{L}(q) &= \mathbb E_q[\ln p(y,\beta,\sigma^2) - q(\beta,\sigma^2)] \\ 
-&= \mathbb E_q[\ln p(y|\beta,\sigma^2)] + \mathbb E_q[\ln p(\beta)] + \mathbb E_q[\ln p(\sigma^2)] + 
-\mathbb H_q[\beta] + \mathbb H_q[\sigma^2] \\
-&= 
 \end{aligned}
 $$
 
@@ -182,6 +172,16 @@ a_{q(\sigma^2)} &\leftarrow a_0 + N/2 \\
 \end{aligned}
 $$
 until the change in $\mathcal{L}(q)$ is below a specified tolerance level indicating convergence.
+
+The lower bound itself is
+$$
+\begin{aligned}
+\mathcal{L}(q) &= \mathbb E_q[\ln p(y,\beta,\sigma^2) - q(\beta,\sigma^2)] \\ 
+&= \mathbb E_q[\ln p(y|\beta,\sigma^2)] + \mathbb E_q[\ln p(\beta)] + \mathbb E_q[\ln p(\sigma^2)] + 
+\mathbb H_q[\beta] + \mathbb H_q[\sigma^2] \\
+&= 
+\end{aligned}
+$$
 
 
 ## Half-$t$ prior on $\sigma$
@@ -212,10 +212,36 @@ $$
 For $\sigma^2$,
 $$
 \begin{aligned}
-\ln p(\sigma^2|y,\beta,\lambda) \simeq
+\ln p(\sigma^2|y,\beta,\lambda) &\simeq 
+\frac{N}{2}\ln(\sigma^2) - \frac{1}{2}\sigma^{-2}||y-X\beta||^2 -(b_0/2+1)\ln(\sigma^2)-\sigma^{-2}b_0/\lambda \\
+\implies p(\sigma^2|y,\beta,\lambda) &= \text{Inverse-Gamma}(a_{\sigma^2|y,\beta,\lambda}, b_{\sigma^2|y,\beta,\lambda}) \\
+a_{\sigma^2|y,\beta,\lambda} &= (b_0+N)/2 \\
+b_{\sigma^2|y,\beta,\lambda} &= b_0/\lambda + \frac{||y-X\beta||^2}{2}
+\end{aligned}
+$$
+from which, the optimal density is
+$$
+\begin{aligned}
+q^\star(\sigma^2) &\propto \exp\left(\mathbb E_{q(\beta,\lambda)}[\ln p(\sigma^2|y,\beta,\lambda)]\right) \\
+\implies q^\star(\sigma^2) &= \text{Inverse-Gamma}(a_{q(\sigma^2)}, b_{q(\sigma^2)}) \\
+a_{q(\sigma^2)} &= (b_0 + N)/2 \\
+b_{q(\sigma^2)} &= b_0\mathbb E_{q(\lambda)}[\lambda^{-1}] + \frac{||y-X\mu_{q(\beta)}||^2+\text{tr}\left(X^\mathsf{T}X\Psi_{q(\beta)}\right)}{2}\\
+&= b_0\frac{a_{q(\lambda)}}{b_{q(\lambda)}} + \frac{||y-X\mu_{q(\beta)}||^2+\text{tr}\left(X^\mathsf{T}X\Psi_{q(\beta)}\right)}{2}.
 \end{aligned}
 $$
 
+The updates are then
+$$
+\begin{aligned}
+a_{q(\lambda)} &\leftarrow (b_0+1)/2 \\
+a_{q(\sigma^2)} &\leftarrow (b_0 + N)/2 \\
+\text{Cycle:} \\
+  \Psi_{q(\beta)} &\leftarrow  \left(\frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}}X^{\mathsf{T}} X + \Sigma_0^{-1}\right)^{-1} \\
+  \mu_{q(\beta)} &\leftarrow \Psi_{q(\beta)}\left(\frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}} X^{\mathsf{T}} y + \Sigma_0^{-1}\mu_0\right) \\
+  b_{q(\lambda)} &\leftarrow a_0^{-2} + b_0 \frac{a_{q(\sigma^2)}}{b_{q(\sigma^2)}} \\
+  b_{q(\sigma^2)} &\leftarrow b_0\frac{a_{q(\lambda)}}{b_{q(\lambda)}} + \frac{\lVert y - X\mu_{q(\beta)}\rVert^2+\text{tr}(X^{\mathsf{T}} X\Psi_{q(\beta)})}{2}
+\end{aligned}
+$$
 
 # $t$ Linear Regression
 
