@@ -12,6 +12,5 @@ ig_E_inv(a, b)
 \item{b}{scale}
 }
 \description{
-Calculate and return the entropy for inverse gamma distribution
-with supplied shape and scale.
+Calculate and return E[1/x] where x ~ IG(a,b).
 }

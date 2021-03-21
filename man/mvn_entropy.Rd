@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{mvn_entropy}
 \alias{mvn_entropy}
-\title{Multivariate Normal Entropy}
+\title{Multivariate Normal H[x]}
 \usage{
 mvn_entropy(S)
 }

@@ -179,7 +179,9 @@ $$
 \mathcal{L}(q) &= \mathbb E_q[\ln p(y,\beta,\sigma^2) - q(\beta,\sigma^2)] \\ 
 &= \mathbb E_q[\ln p(y|\beta,\sigma^2)] + \mathbb E_q[\ln p(\beta)] + \mathbb E_q[\ln p(\sigma^2)] + 
 \mathbb H_q[\beta] + \mathbb H_q[\sigma^2] \\
-&= 
+\mathbb E_q[\ln p(y|\beta,\sigma^2)] &= \\
+\mathbb E_q[\ln p(\beta)] &= -\frac{1}{2}\left[d\ln(2\pi)+\ln|\Sigma_0|+(\mathbb E_q[\beta]-\mu_0)^\mathsf{T}\Sigma_0^{-1}(\mathbb E_q[\beta]-\mu_0)+\text{tr}\left(\Sigma_0^{-1}\mathbb V_q[\beta]\right)\right]\\
+\mathbb E_q[\ln p(\sigma^2)] &= a_0\ln(b_0)-\ln\Gamma(a_0)-(a_0+1)\mathbb E_q[\ln\sigma^2]-b_0\mathbb E_q[\sigma^{-2}]
 \end{aligned}
 $$
 

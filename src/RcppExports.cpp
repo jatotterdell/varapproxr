@@ -17,6 +17,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// dot_y_minus_Xb
+double dot_y_minus_Xb(double yty, arma::vec Xty, arma::mat& XtX, arma::vec mu, arma::mat& Sigma);
+RcppExport SEXP _varapproxr_dot_y_minus_Xb(SEXP ytySEXP, SEXP XtySEXP, SEXP XtXSEXP, SEXP muSEXP, SEXP SigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type yty(ytySEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type Xty(XtySEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type XtX(XtXSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type Sigma(SigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(dot_y_minus_Xb(yty, Xty, XtX, mu, Sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
 // ig_entropy
 double ig_entropy(double a, double b);
 RcppExport SEXP _varapproxr_ig_entropy(SEXP aSEXP, SEXP bSEXP) {
@@ -62,6 +77,20 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type a(aSEXP);
     Rcpp::traits::input_parameter< double >::type b(bSEXP);
     rcpp_result_gen = Rcpp::wrap(ig_E_log(a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
+// ig_E_lpdf
+double ig_E_lpdf(double a0, double b0, double a, double b);
+RcppExport SEXP _varapproxr_ig_E_lpdf(SEXP a0SEXP, SEXP b0SEXP, SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type a0(a0SEXP);
+    Rcpp::traits::input_parameter< double >::type b0(b0SEXP);
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(ig_E_lpdf(a0, b0, a, b));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -690,10 +719,12 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_mvn_entropy", (DL_FUNC) &_varapproxr_mvn_entropy, 1},
+    {"_varapproxr_dot_y_minus_Xb", (DL_FUNC) &_varapproxr_dot_y_minus_Xb, 5},
     {"_varapproxr_ig_entropy", (DL_FUNC) &_varapproxr_ig_entropy, 2},
     {"_varapproxr_ig_E", (DL_FUNC) &_varapproxr_ig_E, 2},
     {"_varapproxr_ig_E_inv", (DL_FUNC) &_varapproxr_ig_E_inv, 2},
     {"_varapproxr_ig_E_log", (DL_FUNC) &_varapproxr_ig_E_log, 2},
+    {"_varapproxr_ig_E_lpdf", (DL_FUNC) &_varapproxr_ig_E_lpdf, 4},
     {"_varapproxr_woodbury", (DL_FUNC) &_varapproxr_woodbury, 4},
     {"_varapproxr_arma2vec", (DL_FUNC) &_varapproxr_arma2vec, 1},
     {"_varapproxr_blockDiag", (DL_FUNC) &_varapproxr_blockDiag, 1},

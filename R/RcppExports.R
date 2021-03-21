@@ -11,6 +11,17 @@ mvn_entropy <- function(S) {
     .Call(`_varapproxr_mvn_entropy`, S)
 }
 
+#' Calculate E[||y - Xb||^2] for b ~ MVN(mu, Sigma)
+#'
+#' @param yty Statistic y'y
+#' @param Xty Statistic X'y
+#' @param XtX Statistic X'X
+#' @param mu Variational mean mu
+#' @param Sigma Variational variance Sigma
+dot_y_minus_Xb <- function(yty, Xty, XtX, mu, Sigma) {
+    .Call(`_varapproxr_dot_y_minus_Xb`, yty, Xty, XtX, mu, Sigma)
+}
+
 #' Inverse Gamma H[x]
 #' 
 #' Calculate H[x] where x ~ IG(a,b)
@@ -49,6 +60,16 @@ ig_E_inv <- function(a, b) {
 #' @param b scale 
 ig_E_log <- function(a, b) {
     .Call(`_varapproxr_ig_E_log`, a, b)
+}
+
+#' E_q[ln p(x)] where x ~ IG(a0, b0) and q(x) = IG(x | a, b)
+#'
+#' @param a0 Inverse gamma prior parameter
+#' @param b0 Inverse gamma prior parameter
+#' @param a Inverse gamma variational parameter
+#' @param b Inverse gamma variational parameter
+ig_E_lpdf <- function(a0, b0, a, b) {
+    .Call(`_varapproxr_ig_E_lpdf`, a0, b0, a, b)
 }
 
 #' Woodbury matrix identity

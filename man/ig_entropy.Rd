@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{ig_entropy}
 \alias{ig_entropy}
-\title{Inverse Gamma Entropy}
+\title{Inverse Gamma H[x]}
 \usage{
 ig_entropy(a, b)
 }
@@ -12,6 +12,5 @@ ig_entropy(a, b)
 \item{b}{scale}
 }
 \description{
-Calculate and return the entropy for inverse gamma distribution
-with supplied shape and scale.
+Calculate H[x] where x ~ IG(a,b)
 }
