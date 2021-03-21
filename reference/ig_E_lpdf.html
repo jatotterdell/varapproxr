@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Inverse Gamma E[x] — ig_E • varapproxr</title>
+<title>E_q[ln p(x)] where x ~ IG(a0, b0) and q(x) = IG(x | a, b) — ig_E_lpdf • varapproxr</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Inverse Gamma E[x] — ig_E" />
-<meta property="og:description" content="Calculate and return the expected value for x ~ IG(a,b)." />
+<meta property="og:title" content="E_q[ln p(x)] where x ~ IG(a0, b0) and q(x) = IG(x | a, b) — ig_E_lpdf" />
+<meta property="og:description" content="E_q[ln p(x)] where x ~ IG(a0, b0) and q(x) = IG(x | a, b)" />
 
 
 
@@ -129,27 +129,35 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Inverse Gamma E[x]</h1>
+    <h1>E_q[ln p(x)] where x ~ IG(a0, b0) and q(x) = IG(x | a, b)</h1>
     <small class="dont-index">Source: <a href='https://github.com/jatotterdell/varapproxr/blob/master/R/RcppExports.R'><code>R/RcppExports.R</code></a></small>
-    <div class="hidden name"><code>ig_E.Rd</code></div>
+    <div class="hidden name"><code>ig_E_lpdf.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Calculate and return the expected value for x ~ IG(a,b).</p>
+    <p>E_q[ln p(x)] where x ~ IG(a0, b0) and q(x) = IG(x | a, b)</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ig_E</span><span class='op'>(</span><span class='va'>a</span>, <span class='va'>b</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ig_E_lpdf</span><span class='op'>(</span><span class='va'>a0</span>, <span class='va'>b0</span>, <span class='va'>a</span>, <span class='va'>b</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>a0</th>
+      <td><p>Inverse gamma prior parameter</p></td>
+    </tr>
+    <tr>
+      <th>b0</th>
+      <td><p>Inverse gamma prior parameter</p></td>
+    </tr>
+    <tr>
       <th>a</th>
-      <td><p>shape</p></td>
+      <td><p>Inverse gamma variational parameter</p></td>
     </tr>
     <tr>
       <th>b</th>
-      <td><p>scale</p></td>
+      <td><p>Inverse gamma variational parameter</p></td>
     </tr>
     </table>
 

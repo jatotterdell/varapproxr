@@ -91,7 +91,7 @@
       <h1 data-toc-skip>Linear Models</h1>
                         <h4 class="author">James Totterdell</h4>
             
-            <h4 class="date">2021-03-14</h4>
+            <h4 class="date">2021-03-21</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/jatotterdell/varapproxr/blob/master/vignettes/web_only/01-linear.Rmd"><code>vignettes/web_only/01-linear.Rmd</code></a></small>
       <div class="hidden name"><code>01-linear.Rmd</code></div>
@@ -224,7 +224,9 @@ a_{q(\sigma^2)} &amp;\leftarrow a_0 + N/2 \\
 \mathcal{L}(q) &amp;= \mathbb E_q[\ln p(y,\beta,\sigma^2) - q(\beta,\sigma^2)] \\ 
 &amp;= \mathbb E_q[\ln p(y|\beta,\sigma^2)] + \mathbb E_q[\ln p(\beta)] + \mathbb E_q[\ln p(\sigma^2)] + 
 \mathbb H_q[\beta] + \mathbb H_q[\sigma^2] \\
-&amp;= 
+\mathbb E_q[\ln p(y|\beta,\sigma^2)] &amp;= \\
+\mathbb E_q[\ln p(\beta)] &amp;= -\frac{1}{2}\left[d\ln(2\pi)+\ln|\Sigma_0|+(\mathbb E_q[\beta]-\mu_0)^\mathsf{T}\Sigma_0^{-1}(\mathbb E_q[\beta]-\mu_0)+\text{tr}\left(\Sigma_0^{-1}\mathbb V_q[\beta]\right)\right]\\
+\mathbb E_q[\ln p(\sigma^2)] &amp;= a_0\ln(b_0)-\ln\Gamma(a_0)-(a_0+1)\mathbb E_q[\ln\sigma^2]-b_0\mathbb E_q[\sigma^{-2}]
 \end{aligned}
 \]</span></p>
 </div>
