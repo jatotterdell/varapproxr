@@ -88,10 +88,12 @@ List vb_lmm_randint(
     arma::join_cols(arma::zeros(P, K), inv_G));
   arma::vec mu_0 = arma::join_cols(mu_beta, arma::zeros(K));
   arma::vec ymCmu = y - C*mu;
+  double E_dot_ymCmu;
   arma::vec mu_u(K);
   arma::vec mu_b(P);
   arma::mat sigma_u(K,K);
   arma::mat sigma_b(P,P);
+  double E_dot_mu_u;
   
   // Monitor
   bool converged = 0;
@@ -108,14 +110,16 @@ List vb_lmm_randint(
     
     // Update parameters of q(sigma_eps)
     ymCmu = y - C*mu;
-    Bqeps = Beps + 0.5*(dot(ymCmu, ymCmu) + arma::trace(CtC*sigma));
+    E_dot_ymCmu = dot(ymCmu, ymCmu) + arma::trace(CtC*sigma);
+    Bqeps = Beps + 0.5*E_dot_ymCmu;
     
     // Update parameters of q(sigma_u)
     mu_u  = mu.subvec(P, P + K - 1);
     sigma_u = sigma.submat(P, P, P + K - 1, P + K - 1);
     mu_b  = mu.subvec(0, P - 1);
     sigma_b = sigma.submat(0, 0, P - 1, P - 1);
-    Bqu   = Bu + 0.5*(dot(mu_u, mu_u) + arma::trace(sigma_u));
+    E_dot_mu_u = dot(mu_u, mu_u) + arma::trace(sigma_u);
+    Bqu   = Bu + 0.5*E_dot_mu_u;
     inv_G = Aqu / Bqu * Ik;
     
     // Update ELBO
@@ -124,8 +128,8 @@ List vb_lmm_randint(
       Aeps*log(Beps) - lgamma(Aeps) - (Aeps + 1)*(log(Bqeps) - R::digamma(Aqeps)) - Beps*Aqeps/Bqeps +
       Au*log(Bu) - lgamma(Au) - (Au + 1)*(log(Bqu) - R::digamma(Aqu)) - Bu*Aqu/Bqu -
       0.5*(P * log(2*M_PI) + real(log_det(sigma_beta)) + dot(mu_b - mu_beta, inv_sigma_beta * (mu_b - mu_beta)) + arma::trace(inv_sigma_beta * sigma_b)) -
-      0.5*(K * log(2*M_PI) + K*(log(Bqu) - R::digamma(Aqu)) + Aqu/Bqu * (dot(mu_u, mu_u) + arma::trace(sigma_u))) -
-      0.5*(N * log(2*M_PI) + N*(log(Bqeps) - R::digamma(Aqeps)) + Aqeps/Bqeps * (dot(ymCmu, ymCmu) + arma::trace(CtC * sigma)));
+      0.5*(K * log(2*M_PI) + K*(log(Bqu) - R::digamma(Aqu)) + Aqu/Bqu * E_dot_mu_u) -
+      0.5*(N * log(2*M_PI) + N*(log(Bqeps) - R::digamma(Aqeps)) + Aqeps/Bqeps * E_dot_ymCmu);
     
     // Monitor convergence
     if(verbose) {
