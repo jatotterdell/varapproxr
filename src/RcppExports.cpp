@@ -251,43 +251,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// b0
-arma::vec b0(const arma::vec& mu, const arma::vec& sigma);
-RcppExport SEXP _varapproxr_b0(SEXP muSEXP, SEXP sigmaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type sigma(sigmaSEXP);
-    rcpp_result_gen = Rcpp::wrap(b0(mu, sigma));
-    return rcpp_result_gen;
-END_RCPP
-}
-// b1
-arma::vec b1(const arma::vec& mu, const arma::vec& sigma);
-RcppExport SEXP _varapproxr_b1(SEXP muSEXP, SEXP sigmaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const arma::vec& >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type sigma(sigmaSEXP);
-    rcpp_result_gen = Rcpp::wrap(b1(mu, sigma));
-    return rcpp_result_gen;
-END_RCPP
-}
-// B
-void B(arma::vec& b0, arma::vec& b1, const arma::vec& mu, const arma::vec& sigma);
-RcppExport SEXP _varapproxr_B(SEXP b0SEXP, SEXP b1SEXP, SEXP muSEXP, SEXP sigmaSEXP) {
-BEGIN_RCPP
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec& >::type b0(b0SEXP);
-    Rcpp::traits::input_parameter< arma::vec& >::type b1(b1SEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< const arma::vec& >::type sigma(sigmaSEXP);
-    B(b0, b1, mu, sigma);
-    return R_NilValue;
-END_RCPP
-}
 // jaakkola_jordan
 double jaakkola_jordan(const arma::mat& X, const arma::vec& y, arma::vec& eta1, arma::vec& eta2, const arma::vec& eta1_p, const arma::vec& eta2_p);
 RcppExport SEXP _varapproxr_jaakkola_jordan(SEXP XSEXP, SEXP ySEXP, SEXP eta1SEXP, SEXP eta2SEXP, SEXP eta1_pSEXP, SEXP eta2_pSEXP) {
@@ -735,9 +698,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_update_vb_lm", (DL_FUNC) &_varapproxr_update_vb_lm, 6},
     {"_varapproxr_vb_lmm", (DL_FUNC) &_varapproxr_vb_lmm, 15},
     {"_varapproxr_vb_lmm_randint", (DL_FUNC) &_varapproxr_vb_lmm_randint, 17},
-    {"_varapproxr_b0", (DL_FUNC) &_varapproxr_b0, 2},
-    {"_varapproxr_b1", (DL_FUNC) &_varapproxr_b1, 2},
-    {"_varapproxr_B", (DL_FUNC) &_varapproxr_B, 4},
     {"_varapproxr_jaakkola_jordan", (DL_FUNC) &_varapproxr_jaakkola_jordan, 6},
     {"_varapproxr_jaakkola_jordan_n", (DL_FUNC) &_varapproxr_jaakkola_jordan_n, 7},
     {"_varapproxr_saul_jordan", (DL_FUNC) &_varapproxr_saul_jordan, 7},

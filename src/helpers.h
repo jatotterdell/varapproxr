@@ -11,4 +11,8 @@ arma::mat bind_cols(arma::field<arma::mat>& x);
 arma::mat pnorm_mat(arma::mat& m);
 arma::mat dnorm_mat(arma::mat& m);
 
+// quadrature constants used in knowles-minka-wand updates
+const arma::vec MS_p;
+const arma::vec MS_s;
+
 #endif

@@ -231,18 +231,6 @@ vb_lmm_randint <- function(X, Z, y, mu_beta, sigma_beta, mu, sigma, Aeps = 1.0, 
     .Call(`_varapproxr_vb_lmm_randint`, X, Z, y, mu_beta, sigma_beta, mu, sigma, Aeps, Beps, Au, Bu, Bqeps, Bqu, tol, maxiter, verbose, trace)
 }
 
-b0 <- function(mu, sigma) {
-    .Call(`_varapproxr_b0`, mu, sigma)
-}
-
-b1 <- function(mu, sigma) {
-    .Call(`_varapproxr_b1`, mu, sigma)
-}
-
-B <- function(b0, b1, mu, sigma) {
-    invisible(.Call(`_varapproxr_B`, b0, b1, mu, sigma))
-}
-
 #' Perform Jaakkola-Jordan update of variational parameters
 #' 
 #' @param X The design matrix

@@ -6,30 +6,27 @@
 
 using namespace Rcpp;
 
-const arma::vec MS_p = {0.003246343272134, 0.051517477033972,
-                        0.195077912673858, 0.315569823632818,
-                        0.274149576158423, 0.131076880695470,
-                        0.027912418727972, 0.001449567805354};
-const arma::vec MS_s = {1.365340806296348, 1.059523971016916, 
-                        0.830791313765644, 0.650732166639391,
-                        0.508135425366489, 0.396313345166341,
-                        0.308904252267995, 0.238212616409306};
+// const arma::vec MS_p = {0.003246343272134, 0.051517477033972,
+//                         0.195077912673858, 0.315569823632818,
+//                         0.274149576158423, 0.131076880695470,
+//                         0.027912418727972, 0.001449567805354};
+// const arma::vec MS_s = {1.365340806296348, 1.059523971016916, 
+//                         0.830791313765644, 0.650732166639391,
+//                         0.508135425366489, 0.396313345166341,
+//                         0.308904252267995, 0.238212616409306};
 
-// [[Rcpp::export]]
 arma::vec b0(const arma::vec& mu, const arma::vec& sigma) {
   arma::mat Omega = sqrt(1 + sigma * trans(MS_s % MS_s));
   arma::mat tmp = (mu * trans(MS_s)) / Omega;
   return(pnorm_mat(tmp) * MS_p);
 }
 
-// [[Rcpp::export]]
 arma::vec b1(const arma::vec& mu, const arma::vec& sigma) {
   arma::mat Omega = sqrt(1 + sigma * trans(MS_s % MS_s));
   arma::mat tmp = (mu * trans(MS_s)) / Omega;
   return((dnorm_mat(tmp) / Omega) * (MS_p % MS_s));
 }
 
-// [[Rcpp::export]]
 void B(arma::vec& b0, arma::vec& b1, const arma::vec& mu, const arma::vec& sigma) {
   arma::mat Omega = sqrt(1 + sigma * trans(MS_s % MS_s));
   arma::mat tmp = (mu * trans(MS_s)) / Omega;
@@ -228,12 +225,8 @@ double knowles_minka_wand(
   arma::mat Sigma = -0.5*inv(reshape(eta2 + eta2_p, p, p));
   arma::vec mu = Sigma * (eta1 + eta1_p);
   
-  Omega = sqrt(1 + diagvec(X*Sigma*trans(X)) * trans(MS_s % MS_s));
-  tmp2 = (X*mu * trans(MS_s)) / Omega;
-  omega3 = pnorm_mat(tmp2) * MS_p;
-  
-  double l = mvn_entropy(Sigma) - real(0.5*log_det(Sigma0)) -
-    0.5*trace( inv(Sigma0) * (Sigma + (mu - mu0) * trans(mu - mu0)) ) +
+  double l = mvn_entropy(Sigma) + mvn_entropy(Sigma0) +
+    -0.5*trace( inv(Sigma0) * (Sigma + (mu - mu0) * trans(mu - mu0)) ) +
     dot(y, X * mu) - sum(omega3);
   return l;
 }
@@ -269,20 +262,16 @@ double knowles_minka_wand_n(
   arma::vec sigma2 = diagvec(tmp1 * trans(X));
   arma::mat Omega = sqrt(1 + sigma2 * trans(MS_s % MS_s));
   arma::mat tmp2 = (m * trans(MS_s)) / Omega;
-  arma::vec omega3 = pnorm_mat(tmp2) * MS_p;
-  arma::vec omega4 = (dnorm_mat(tmp2) / Omega) * (MS_p % MS_s);
-  eta1 = trans(X) * (y - omega3 + omega4 % m);
+  arma::vec omega3 = (pnorm_mat(tmp2) * MS_p);
+  arma::vec omega4 = ((dnorm_mat(tmp2) / Omega) * (MS_p % MS_s));
+  eta1 = trans(X) * (y -  (omega3 + omega4 % m));
   eta2 = -0.5 * vectorise(trans(X) * diagmat(omega4) * X);
   
   arma::mat Sigma = -0.5*inv(reshape(eta2 + eta2_p, p, p));
   arma::vec mu = Sigma * (eta1 + eta1_p);
-  
-  Omega = sqrt(1 + diagvec(X*Sigma*trans(X)) * trans(MS_s % MS_s));
-  tmp2 = (X*mu * trans(MS_s)) / Omega;
-  omega3 = pnorm_mat(tmp2) * MS_p;
-  
-  double l = mvn_entropy(Sigma) - real(0.5*log_det(Sigma0)) -
-    0.5*trace( inv(Sigma0) * (Sigma + (mu - mu0) * trans(mu - mu0)) ) +
+
+  double l = mvn_entropy(Sigma) + mvn_entropy(Sigma0) +
+    -0.5*trace( inv(Sigma0) * (Sigma + (mu - mu0) * trans(mu - mu0)) ) +
     dot(y, X * mu) - sum(omega3);
   return l;
 }
