@@ -8,9 +8,21 @@
 #' containing the variables in the model. If not found in data, 
 #' the variables are taken from environment(formula), 
 #' typically the environment from which lm is called.
+#' @param subset subset of data
+#' @param weights weighting
+#' @param na.action handling of na
 #' @param prior a list with elements (mu0, Sigma0, a, b) giving the model prior parameters.
-#' @return
+#' @param contrasts design contrasts
+#' @param x return design matrix
+#' @param y return response vector
+#' @param ... further arguments to `vb_lm`
+#' @return An `mfvb` object
 #' @export
+#' @importFrom stats model.response
+#' @importFrom stats model.matrix
+#' @importFrom stats model.weights
+#' @importFrom stats model.offset
+#' @importFrom stats setNames
 mfvb_lm <- function(
   formula, data, subset, weights, na.action,
   prior = NULL, contrasts = NULL,
@@ -66,7 +78,7 @@ mfvb_lm <- function(
 #' `coef.mfvb` implements the `coef` generic for objects of class `mfvb`.
 #' 
 #' @param object a `mfvb` model
-coef.mfvb <- function(object, ...) {
+coef.mfvb <- function(object) {
   val <- object$mu
   val
 }
@@ -77,7 +89,7 @@ coef.mfvb <- function(object, ...) {
 #' `vcov.mfvb` implements the `vcov` generic for objects of class `mfvb`.
 #' 
 #' @param object a `mfvb` model
-vcov.mfvb <- function(object, ...) {
+vcov.mfvb <- function(object) {
   val <- object$Sigma
   val
 }
@@ -87,15 +99,17 @@ vcov.mfvb <- function(object, ...) {
 #' 
 #' @param object a `mfvb` model
 #' @param level credible interval level
-confint.mfvb <- function(object, level = 0.95, ...) {
+#' @importFrom stats coef
+#' @importFrom stats vcov
+confint.mfvb <- function(object, level = 0.95) {
   cf <- coef(object)
   sds <- sqrt(diag(vcov(object)))
   pnames <- names(sds)
   if (is.matrix(cf)) 
-    cf <- setNames(as.vector(cf), pnames)
+    cf <- stats::setNames(as.vector(cf), pnames)
   a <- (1 - level) / 2
   a <- c(a, 1 - a)
-  z <- qnorm(a)
+  z <- stats::qnorm(a)
   ci <- cf + sds %o% z
   colnames(ci) <- sprintf("%2.1f%%", 100*a)
   ci
@@ -105,12 +119,11 @@ confint.mfvb <- function(object, level = 0.95, ...) {
 #' Summarise MFVB fit
 #' 
 #' @param object an object of class `mfvb`
-#' @param ... further arguments
-summary.mfvb <- function(object, ...) {
+summary.mfvb <- function(object) {
   beta <- coef(object)
   V <- vcov(object)
   S <- sqrt(diag(V))
-  P <- 1 - pnorm(0, beta, S)
+  P <- 1 - stats::pnorm(0, beta, S)
   sTable <- data.frame(beta, S, P)
   dimnames(sTable) <- list(names(beta), c("mean", "SD", "Pr(>0)"))
   sTable

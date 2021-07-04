@@ -4,7 +4,7 @@
 \alias{confint.mfvb}
 \title{Compute credible intervals for parameters of `mfvb`}
 \usage{
-\method{confint}{mfvb}(object, level = 0.95, ...)
+\method{confint}{mfvb}(object, level = 0.95)
 }
 \arguments{
 \item{object}{a `mfvb` model}

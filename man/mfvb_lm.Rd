@@ -26,10 +26,24 @@ containing the variables in the model. If not found in data,
 the variables are taken from environment(formula), 
 typically the environment from which lm is called.}
 
+\item{subset}{subset of data}
+
+\item{weights}{weighting}
+
+\item{na.action}{handling of na}
+
 \item{prior}{a list with elements (mu0, Sigma0, a, b) giving the model prior parameters.}
+
+\item{contrasts}{design contrasts}
+
+\item{x}{return design matrix}
+
+\item{y}{return response vector}
+
+\item{...}{further arguments to `vb_lm`}
 }
 \value{
-
+An `mfvb` object
 }
 \description{
 Fit a linear regression model using mean-field variational Bayes approximation.

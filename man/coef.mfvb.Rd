@@ -4,7 +4,7 @@
 \alias{coef.mfvb}
 \title{Extract model coefficients posterior means}
 \usage{
-\method{coef}{mfvb}(object, ...)
+\method{coef}{mfvb}(object)
 }
 \arguments{
 \item{object}{a `mfvb` model}
