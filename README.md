@@ -13,3 +13,9 @@ All implementations are currently prototypes; accuracy and efficiency is not gua
 # install.packages("devtools")
 devtools::install_github('jatotterdell/varapproxr')
 ```
+
+# Possible Features
+
+- [ ] Optimise C++ functions for numerical stability
+- [ ] Write wrappers to interface with standard S3 regression functions
+- [ ] Integrate with [`distr`](https://alan-turing-institute.github.io/distr6/) package for OO priors/posteriors

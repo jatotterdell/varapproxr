@@ -23,6 +23,7 @@
 #' @importFrom stats model.weights
 #' @importFrom stats model.offset
 #' @importFrom stats setNames
+#' @importFrom stats coef
 mfvb_lm <- function(
   formula, data, subset, weights, na.action,
   prior = NULL, contrasts = NULL,
@@ -62,7 +63,7 @@ mfvb_lm <- function(
   }
   
   mfvb_fit <- vb_lm(X, Y, mu0, Sigma0, a0, b0, prior = dist, ...)
-  
+  mfvb_fit$call <- mf
   mfvb_fit$mu <- setNames(c(mfvb_fit$mu), colnames(X))
   dimnames(mfvb_fit$Sigma) <- list(colnames(X), colnames(X))
   if(x) mfvb_fit$X <- X
@@ -78,6 +79,7 @@ mfvb_lm <- function(
 #' `coef.mfvb` implements the `coef` generic for objects of class `mfvb`.
 #' 
 #' @param object a `mfvb` model
+#' @export
 coef.mfvb <- function(object) {
   val <- object$mu
   val
@@ -89,6 +91,7 @@ coef.mfvb <- function(object) {
 #' `vcov.mfvb` implements the `vcov` generic for objects of class `mfvb`.
 #' 
 #' @param object a `mfvb` model
+#' @export
 vcov.mfvb <- function(object) {
   val <- object$Sigma
   val
@@ -119,12 +122,41 @@ confint.mfvb <- function(object, level = 0.95) {
 #' Summarise MFVB fit
 #' 
 #' @param object an object of class `mfvb`
+#' @export
 summary.mfvb <- function(object) {
   beta <- coef(object)
   V <- vcov(object)
   S <- sqrt(diag(V))
   P <- 1 - stats::pnorm(0, beta, S)
-  sTable <- data.frame(beta, S, P)
-  dimnames(sTable) <- list(names(beta), c("mean", "SD", "Pr(>0)"))
-  sTable
+  sTable <- cbind("mean" = beta, "SD" = S, "Pr(>0)" = P)
+  printCoefmat(sTable)
+}
+
+
+#' Sample from MFVB fit
+#' 
+#' @param object an object of class `mfvb`
+#' @param par a character vector indicating which distributions to sample
+#' @return A matrix of draws from the indicated distributions
+#' @export
+sample_vbdist <- function(object, par = NULL, n_samples = 1e3) {
+  if(is.null(par)) {
+    par <- c("mu", "sigma")
+  }
+  out <- NULL
+  if("mu" %in% par) {
+    mu <- coef(fit) 
+    Sigma <- vcov(fit)
+    beta_draws <- mvnfast::rmvn(n_samples, mu, Sigma)
+    colnames(beta_draws) <- names(mu)
+    out$beta <- beta_draws
+  }
+  if("sigma" %in% par) {
+    a <- fit$a
+    b <- fit$b
+    sigma_draws <- matrix(sqrt(1 / rgamma(n_samples, a, b)), n_samples, 1)
+    colnames(sigma_draws) <- "sigma"
+    out$sigma <- sigma_draws
+  }
+  return(do.call(cbind, out))
 }

@@ -134,7 +134,7 @@ dnorm_mat <- function(m) {
 #' @return v A list of relevant outputs
 #' 
 #' @export
-vb_lm <- function(X, y, mu0, Sigma0, a0, b0, prior = 1L, tol = 1e-8, maxiter = 100L, verbose = FALSE) {
+vb_lm <- function(X, y, mu0, Sigma0, a0 = 1e-2, b0 = 1e-2, prior = 1L, tol = 1e-8, maxiter = 100L, verbose = FALSE) {
     .Call(`_varapproxr_vb_lm`, X, y, mu0, Sigma0, a0, b0, prior, tol, maxiter, verbose)
 }
 
