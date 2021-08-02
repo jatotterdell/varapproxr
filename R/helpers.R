@@ -79,8 +79,9 @@ mfvb_lm <- function(
 #' `coef.mfvb` implements the `coef` generic for objects of class `mfvb`.
 #' 
 #' @param object a `mfvb` model
+#' @param ... Additional arguments
 #' @export
-coef.mfvb <- function(object) {
+coef.mfvb <- function(object, ...) {
   val <- object$mu
   val
 }
@@ -91,8 +92,9 @@ coef.mfvb <- function(object) {
 #' `vcov.mfvb` implements the `vcov` generic for objects of class `mfvb`.
 #' 
 #' @param object a `mfvb` model
+#' @param ... Additional arguments
 #' @export
-vcov.mfvb <- function(object) {
+vcov.mfvb <- function(object, ...) {
   val <- object$Sigma
   val
 }
@@ -122,14 +124,16 @@ confint.mfvb <- function(object, level = 0.95) {
 #' Summarise MFVB fit
 #' 
 #' @param object an object of class `mfvb`
+#' @param ... Additional arguments
+#' @importFrom stats printCoefmat
 #' @export
-summary.mfvb <- function(object) {
+summary.mfvb <- function(object, ...) {
   beta <- coef(object)
   V <- vcov(object)
   S <- sqrt(diag(V))
   P <- 1 - stats::pnorm(0, beta, S)
   sTable <- cbind("mean" = beta, "SD" = S, "Pr(>0)" = P)
-  printCoefmat(sTable)
+  stats::printCoefmat(sTable)
 }
 
 
@@ -137,7 +141,10 @@ summary.mfvb <- function(object) {
 #' 
 #' @param object an object of class `mfvb`
 #' @param par a character vector indicating which distributions to sample
+#' @param n_samples The number of samples to draw
 #' @return A matrix of draws from the indicated distributions
+#' @importFrom mvnfast rmvn
+#' @importFrom stats rgamma
 #' @export
 sample_vbdist <- function(object, par = NULL, n_samples = 1e3) {
   if(is.null(par)) {
@@ -145,16 +152,16 @@ sample_vbdist <- function(object, par = NULL, n_samples = 1e3) {
   }
   out <- NULL
   if("mu" %in% par) {
-    mu <- coef(fit) 
-    Sigma <- vcov(fit)
+    mu <- coef(object) 
+    Sigma <- vcov(object)
     beta_draws <- mvnfast::rmvn(n_samples, mu, Sigma)
     colnames(beta_draws) <- names(mu)
     out$beta <- beta_draws
   }
   if("sigma" %in% par) {
-    a <- fit$a
-    b <- fit$b
-    sigma_draws <- matrix(sqrt(1 / rgamma(n_samples, a, b)), n_samples, 1)
+    a <- object$a
+    b <- object$b
+    sigma_draws <- matrix(sqrt(1 / stats::rgamma(n_samples, a, b)), n_samples, 1)
     colnames(sigma_draws) <- "sigma"
     out$sigma <- sigma_draws
   }

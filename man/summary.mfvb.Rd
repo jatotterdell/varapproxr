@@ -4,10 +4,12 @@
 \alias{summary.mfvb}
 \title{Summarise MFVB fit}
 \usage{
-\method{summary}{mfvb}(object)
+\method{summary}{mfvb}(object, ...)
 }
 \arguments{
 \item{object}{an object of class `mfvb`}
+
+\item{...}{Additional arguments}
 }
 \description{
 Summarise MFVB fit

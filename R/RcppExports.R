@@ -161,14 +161,14 @@ update_vb_lm <- function(vb_fit, X, y, tol = 1e-8, maxiter = 100L, verbose = FAL
 #' @param y The response vector
 #' @param X The design matrix
 #' @param Zlist Collection of group design matrices
-#' @param J First dimension of each Z in Zlist (e.g. number of subjects)
+#' @param J First dimension of each Z in Zlist (e.g. number of subjects/sites)
 #' @param R Second dimension of each Z in Zlist (e.g. number of variables, intercept and slope would be R = 2)
 #' @param mu_beta0 The prior mean for beta
 #' @param Sigma_beta0 The prior covariance for beta
-#' @param xi_sigma ...
-#' @param Lambda_sigma ...
-#' @param xi_k ...
-#' @param Lambda_k ...
+#' @param xi_sigma The first prior parameter for covariance Sigma
+#' @param Lambda_sigma The second prior parameter for covariance Sigma
+#' @param xi_k A vector of first covariance parameters for hierarchical covariance
+#' @param Lambda_k A list of second covariance parameters for hierarchical covariance
 #' @param tol Tolerance level
 #' @param maxiter Maximum iterations
 #' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.

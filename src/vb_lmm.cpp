@@ -1,5 +1,6 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 #include "helpers.h"
+#include "distribution_functions.h"
 #include <RcppArmadillo.h>
 #include <Rmath.h>
 
@@ -13,14 +14,14 @@ using namespace Rcpp;
 //' @param y The response vector
 //' @param X The design matrix
 //' @param Zlist Collection of group design matrices
-//' @param J First dimension of each Z in Zlist (e.g. number of subjects)
+//' @param J First dimension of each Z in Zlist (e.g. number of subjects/sites)
 //' @param R Second dimension of each Z in Zlist (e.g. number of variables, intercept and slope would be R = 2)
 //' @param mu_beta0 The prior mean for beta
 //' @param Sigma_beta0 The prior covariance for beta
-//' @param xi_sigma ...
-//' @param Lambda_sigma ...
-//' @param xi_k ...
-//' @param Lambda_k ...
+//' @param xi_sigma The first prior parameter for covariance Sigma
+//' @param Lambda_sigma The second prior parameter for covariance Sigma
+//' @param xi_k A vector of first covariance parameters for hierarchical covariance
+//' @param Lambda_k A list of second covariance parameters for hierarchical covariance
 //' @param tol Tolerance level
 //' @param maxiter Maximum iterations
 //' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
@@ -63,8 +64,8 @@ List vb_lmm(
 
   arma::mat Z = bind_cols(Zlist);
   arma::mat C = arma::join_rows(X, Z);
-  // 
-  // // statistics
+   
+  // statistics
   arma::mat CtC = trans(C)*C;
   arma::vec Cty = trans(C)*y;
   double yty = norm(y);
@@ -90,9 +91,11 @@ List vb_lmm(
   }
   arma::vec mu = arma::join_cols(beta, gamma);
   arma::mat Sigma = arma::diagmat(arma::ones(P + Z.n_cols));
-
+  
   // variational parameters for variance components
-
+  double a_q_eps = xi_sigma/2 + N/2;
+  double b_q_eps;
+  double E_dot_y_Czeta;
 
   // Monitor
   bool converged = 0;
@@ -100,16 +103,18 @@ List vb_lmm(
   arma::vec elbo(maxiter);
   arma::mat tr(P + K, maxiter);
 
-  // for(int i = 0; i < maxiter && !converged; i++) {
-  //   
+  for(int i = 0; i < maxiter && !converged; i++) {
+    // for(int k = 0; k < K; k++) {
+    //   
+    // }
   //   // Update parameters of q(beta,u)
   //   inv_sigma_0.submat(P, P, P + K - 1, P + K - 1) = inv_G;
   //   sigma = inv(Aqeps / Bqeps * CtC + inv_sigma_0);
   //   mu    = sigma * (Aqeps / Bqeps * Cty + inv_sigma_0 * mu_0);
   //   
   //   // Update parameters of q(sigma_eps)
-  //   ymCmu = y - C*mu;
-  //   Bqeps = Beps + 0.5*(dot(ymCmu, ymCmu) + arma::trace(CtC*sigma));
+  // E_dot_y_Czeta = dot_y_minus_Xb(yty, Cty, CtC, mu, Sigma);
+  // Bqeps = Beps + 0.5*E_dot_y_Czeta;
   //   
   //   // Update parameters of q(sigma_u)
   //   mu_u  = mu.subvec(P, P + K - 1);
@@ -142,7 +147,7 @@ List vb_lmm(
   //     converged = 1;
   //   
   //   iterations = i;
-  // }
+  }
 
   List out = List::create(
     Named("converged") = converged,

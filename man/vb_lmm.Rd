@@ -29,7 +29,7 @@ vb_lmm(
 
 \item{Zlist}{Collection of group design matrices}
 
-\item{J}{First dimension of each Z in Zlist (e.g. number of subjects)}
+\item{J}{First dimension of each Z in Zlist (e.g. number of subjects/sites)}
 
 \item{R}{Second dimension of each Z in Zlist (e.g. number of variables, intercept and slope would be R = 2)}
 
@@ -37,13 +37,13 @@ vb_lmm(
 
 \item{Sigma_beta0}{The prior covariance for beta}
 
-\item{xi_sigma}{...}
+\item{xi_sigma}{The first prior parameter for covariance Sigma}
 
-\item{Lambda_sigma}{...}
+\item{Lambda_sigma}{The second prior parameter for covariance Sigma}
 
-\item{xi_k}{...}
+\item{xi_k}{A vector of first covariance parameters for hierarchical covariance}
 
-\item{Lambda_k}{...}
+\item{Lambda_k}{A list of second covariance parameters for hierarchical covariance}
 
 \item{tol}{Tolerance level}
 
