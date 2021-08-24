@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{vb_lmm_randint}
 \alias{vb_lmm_randint}
-\title{Variational Bayes for linear mixed model.}
+\title{Variational Bayes for linear mixed model (random intercept only).}
 \usage{
 vb_lmm_randint(
   X,
@@ -69,7 +69,7 @@ A list containing:
 }
 }
 \description{
-Variational Bayes for linear mixed model.
+Variational Bayes for linear mixed model (random intercept only).
 }
 \examples{
 library(nlme)

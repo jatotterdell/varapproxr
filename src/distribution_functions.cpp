@@ -5,7 +5,7 @@
 #include "helpers.h"
 
 
-//' Multivariate Normal H[x]
+//' Multivariate Normal Entropy H[x]
 //' 
 //' Calculate and return the entropy for multivariate distribution
 //' with supplied covariance matrix.
@@ -13,15 +13,28 @@
 //' @param S Covariance matrix 
 // [[Rcpp::export]]
 double mvn_entropy(arma::mat& S) {
+  if(!S.is_sympd()) 
+    Rcpp::stop("S matrix must be symmetric positive definite.");
   int d = S.n_rows;
-  return 0.5*(d*(1 + log(2*M_PI)) + real(log_det(S)));
+  return 0.5*(d*(1.0 + log(2) + log(M_PI)) + log_det_sympd(S));
 }
 
 
+//' Calculate E_q[ln p(x)] where q(x) = MVN(x | mu, Sigma) and p(x) = MVN(x | mu0, Sigma0)
+//' 
+//' E_q[ln p(x)] where x ~ MVN(mu0, Sigma0) and q(x) = MVN(x | mu, Sigma)
+//'
+//' @param mu0 Mean prior
+//' @param Sigma0 Covariance prior
+//' @param mu Variational mean
+//' @param Sigma Variational covariance
+// [[Rcpp::export]]
 double mvn_E_lpdf(arma::vec& mu0, arma::mat& Sigma0, arma::vec& mu, arma::mat& Sigma) {
+  if(!Sigma0.is_sympd() || !Sigma.is_sympd()) 
+    Rcpp::stop("Covariance matrices must be symmetric positive definite.");
   int d = Sigma.n_cols;
   arma::mat invSigma0 = inv(Sigma0);
-  return -0.5*(d * log(2*M_PI) + real(log_det(Sigma0)) + 
+  return -0.5*(d * log(2*M_PI) + log_det_sympd(Sigma0) + 
                dot(mu - mu0, invSigma0 * (mu - mu0)) + trace(invSigma0 * Sigma));
 }
 

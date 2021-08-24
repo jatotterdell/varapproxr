@@ -1,49 +1,7 @@
 #include "vmp_entropy.h"
+#include "helpers.h"
 #include <RcppArmadillo.h>
 #include <Rmath.h>
-
-
-//' Calculate vec^(-1)
-//' 
-//' @param v A vector of dimension d^2 by 1
-// [[Rcpp::export]]
-arma::mat inv_vectorise(arma::vec v) {
-  int d = sqrt(v.n_elem);
-  arma::mat V = arma::reshape(v, d, d);
-  return(V);
-}
-
-
-//' Calculate vech of a matrix
-//'
-//' @param X A square matrix of dimension d by d
-// [[Rcpp::export]]
-arma::vec vech(arma::mat X) {
-  if(!X.is_square()) {
-    throw std::range_error("X must be square");  
-  }
-  arma::uvec lower_indices = arma::trimatl_ind(arma::size(X));
-  arma::vec lower_part = X(lower_indices);
-  return(lower_part);
-}
-
-
-//' Calculate inverse of vech for a vector
-//'
-//' @param v A vector of dimension d(d+1)/2 of lower triangular elements
-// [[Rcpp::export]]
-arma::mat inv_vech(arma::vec v) {
-  int l = arma::size(v)[0];
-  double d = 0.5*(sqrt(8*l + 1) - 1);
-  double intpart;
-  if(modf(d, &intpart) != 0.0) {
-    throw std::range_error("v must be dimension d(d+1)/2 for square matrix d x d.");  
-  }
-  arma::mat out(d, d, arma::fill::zeros);
-  arma::uvec lower_indices = arma::trimatl_ind(size(out));
-  out.elem(lower_indices) = v;
-  return(arma::symmatl(out));
-}
 
 
 //' Calculate

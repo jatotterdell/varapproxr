@@ -16,3 +16,11 @@ test_that("Special mathematics functions work as expected", {
   expect_equal(mvdigamma(4, 3), 3.282059, tolerance = 1e-5)
   
 })
+
+
+test_that("Matrix operators work as expected", {
+  M1 <- matrix(c(1,2,3,4), 2, 2)
+  M2 <- matrix(c(1, 1), 1, 2)
+  expect_equal(blockDiag(list(M1, M2)),
+               matrix(c(1, 2, 0, 3, 4, 0, 0, 0, 1, 0, 0, 1), 3, 4))
+})

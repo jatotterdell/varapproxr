@@ -6,7 +6,7 @@
 
 using namespace Rcpp;
 
-//' Variational Bayes for linear mixed model.
+//' Variational Bayes for linear mixed model (random intercept only).
 //' 
 //' 
 //' @param X The design matrix
@@ -158,6 +158,55 @@ List vb_lmm_randint(
     Named("Bqu") = Bqu);
   
   if(trace) out.push_back(tr.submat(0, 0, P + K - 1, iterations), "trace");
+  
+  return out;
+}
+
+
+//' @export
+// [[Rcpp::export]]
+List vb_lmm_randintslope(
+  arma::field<arma::mat>& Xlist, 
+  arma::field<arma::mat>& Zlist,
+  arma::field<arma::vec>& ylist,
+  double tol = 1e-8, 
+  int maxiter = 100,
+  bool verbose = false,
+  bool trace = false
+) {
+  
+  if(Zlist.n_rows != Xlist.n_rows || Zlist.n_rows != ylist.n_rows)
+    Rcpp::stop("Dimension mismatch between Xlist, Zlist, ylist.");
+  
+  // input dimensions
+  int M = Zlist.n_rows;
+  int P = Xlist(0).n_cols;
+  int Q = Zlist(0).n_cols;
+  
+  arma::vec y;
+  arma::mat X;
+  arma::mat Z = blockDiag(Zlist);
+  for(int i = 0; i < M; i++) {
+    y = arma::join_cols(y, ylist(i));
+    X = arma::join_cols(X, Xlist(i));
+  }
+  
+  // Monitor
+  bool converged = 0;
+  int iterations = 0;
+  arma::vec elbo(maxiter);
+  
+  // for(int i = 0; i < maxiter && !converged; i++) {
+  // }
+  
+  List out = List::create(
+    Named("M") = M,
+    Named("P") = P,
+    Named("Q") = Q,
+    Named("y") = y,
+    Named("X") = X,
+    Named("Z") = Z
+  );
   
   return out;
 }

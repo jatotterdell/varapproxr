@@ -22,6 +22,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// mvn_E_lpdf
+double mvn_E_lpdf(arma::vec& mu0, arma::mat& Sigma0, arma::vec& mu, arma::mat& Sigma);
+RcppExport SEXP _varapproxr_mvn_E_lpdf(SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP muSEXP, SEXP SigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec& >::type mu0(mu0SEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type Sigma0(Sigma0SEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type Sigma(SigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(mvn_E_lpdf(mu0, Sigma0, mu, Sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
 // dot_y_minus_Xb
 double dot_y_minus_Xb(double yty, arma::vec Xty, arma::mat& XtX, arma::vec mu, arma::mat& Sigma);
 RcppExport SEXP _varapproxr_dot_y_minus_Xb(SEXP ytySEXP, SEXP XtySEXP, SEXP XtXSEXP, SEXP muSEXP, SEXP SigmaSEXP) {
@@ -171,6 +185,39 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// inv_vectorise
+arma::mat inv_vectorise(arma::vec v);
+RcppExport SEXP _varapproxr_inv_vectorise(SEXP vSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type v(vSEXP);
+    rcpp_result_gen = Rcpp::wrap(inv_vectorise(v));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vech
+arma::vec vech(arma::mat X);
+RcppExport SEXP _varapproxr_vech(SEXP XSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    rcpp_result_gen = Rcpp::wrap(vech(X));
+    return rcpp_result_gen;
+END_RCPP
+}
+// inv_vech
+arma::mat inv_vech(arma::vec v);
+RcppExport SEXP _varapproxr_inv_vech(SEXP vSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type v(vSEXP);
+    rcpp_result_gen = Rcpp::wrap(inv_vech(v));
+    return rcpp_result_gen;
+END_RCPP
+}
 // lmvgamma
 double lmvgamma(double x, int p);
 RcppExport SEXP _varapproxr_lmvgamma(SEXP xSEXP, SEXP pSEXP) {
@@ -251,6 +298,21 @@ BEGIN_RCPP
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::field<arma::mat>& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(bind_cols(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// solve_two_level_sparse
+Rcpp::List solve_two_level_sparse(arma::vec a1, arma::mat A11, arma::field<arma::vec> a2, arma::field<arma::mat> A22, arma::field<arma::mat> A12);
+RcppExport SEXP _varapproxr_solve_two_level_sparse(SEXP a1SEXP, SEXP A11SEXP, SEXP a2SEXP, SEXP A22SEXP, SEXP A12SEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::vec >::type a1(a1SEXP);
+    Rcpp::traits::input_parameter< arma::mat >::type A11(A11SEXP);
+    Rcpp::traits::input_parameter< arma::field<arma::vec> >::type a2(a2SEXP);
+    Rcpp::traits::input_parameter< arma::field<arma::mat> >::type A22(A22SEXP);
+    Rcpp::traits::input_parameter< arma::field<arma::mat> >::type A12(A12SEXP);
+    rcpp_result_gen = Rcpp::wrap(solve_two_level_sparse(a1, A11, a2, A22, A12));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -361,6 +423,23 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< bool >::type trace(traceSEXP);
     rcpp_result_gen = Rcpp::wrap(vb_lmm_randint(X, Z, y, mu_beta, sigma_beta, mu, sigma, Aeps, Beps, Au, Bu, Bqeps, Bqu, tol, maxiter, verbose, trace));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vb_lmm_randintslope
+List vb_lmm_randintslope(arma::field<arma::mat>& Xlist, arma::field<arma::mat>& Zlist, arma::field<arma::vec>& ylist, double tol, int maxiter, bool verbose, bool trace);
+RcppExport SEXP _varapproxr_vb_lmm_randintslope(SEXP XlistSEXP, SEXP ZlistSEXP, SEXP ylistSEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP, SEXP traceSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::field<arma::mat>& >::type Xlist(XlistSEXP);
+    Rcpp::traits::input_parameter< arma::field<arma::mat>& >::type Zlist(ZlistSEXP);
+    Rcpp::traits::input_parameter< arma::field<arma::vec>& >::type ylist(ylistSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    Rcpp::traits::input_parameter< bool >::type trace(traceSEXP);
+    rcpp_result_gen = Rcpp::wrap(vb_lmm_randintslope(Xlist, Zlist, ylist, tol, maxiter, verbose, trace));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -602,39 +681,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// inv_vectorise
-arma::mat inv_vectorise(arma::vec v);
-RcppExport SEXP _varapproxr_inv_vectorise(SEXP vSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type v(vSEXP);
-    rcpp_result_gen = Rcpp::wrap(inv_vectorise(v));
-    return rcpp_result_gen;
-END_RCPP
-}
-// vech
-arma::vec vech(arma::mat X);
-RcppExport SEXP _varapproxr_vech(SEXP XSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
-    rcpp_result_gen = Rcpp::wrap(vech(X));
-    return rcpp_result_gen;
-END_RCPP
-}
-// inv_vech
-arma::mat inv_vech(arma::vec v);
-RcppExport SEXP _varapproxr_inv_vech(SEXP vSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type v(vSEXP);
-    rcpp_result_gen = Rcpp::wrap(inv_vech(v));
-    return rcpp_result_gen;
-END_RCPP
-}
 // G_VMP
 arma::vec G_VMP(arma::vec v, arma::mat Q, arma::vec r, double s);
 RcppExport SEXP _varapproxr_G_VMP(SEXP vSEXP, SEXP QSEXP, SEXP rSEXP, SEXP sSEXP) {
@@ -795,6 +841,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_mvn_entropy", (DL_FUNC) &_varapproxr_mvn_entropy, 1},
+    {"_varapproxr_mvn_E_lpdf", (DL_FUNC) &_varapproxr_mvn_E_lpdf, 4},
     {"_varapproxr_dot_y_minus_Xb", (DL_FUNC) &_varapproxr_dot_y_minus_Xb, 5},
     {"_varapproxr_ig_entropy", (DL_FUNC) &_varapproxr_ig_entropy, 2},
     {"_varapproxr_ig_E", (DL_FUNC) &_varapproxr_ig_E, 2},
@@ -807,6 +854,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_scaled_inv_chisq_E_log", (DL_FUNC) &_varapproxr_scaled_inv_chisq_E_log, 2},
     {"_varapproxr_inv_wishart_E_invX", (DL_FUNC) &_varapproxr_inv_wishart_E_invX, 2},
     {"_varapproxr_inv_wishart_E_logdet", (DL_FUNC) &_varapproxr_inv_wishart_E_logdet, 2},
+    {"_varapproxr_inv_vectorise", (DL_FUNC) &_varapproxr_inv_vectorise, 1},
+    {"_varapproxr_vech", (DL_FUNC) &_varapproxr_vech, 1},
+    {"_varapproxr_inv_vech", (DL_FUNC) &_varapproxr_inv_vech, 1},
     {"_varapproxr_lmvgamma", (DL_FUNC) &_varapproxr_lmvgamma, 2},
     {"_varapproxr_mvgamma", (DL_FUNC) &_varapproxr_mvgamma, 2},
     {"_varapproxr_mvdigamma", (DL_FUNC) &_varapproxr_mvdigamma, 2},
@@ -814,12 +864,14 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_arma2vec", (DL_FUNC) &_varapproxr_arma2vec, 1},
     {"_varapproxr_blockDiag", (DL_FUNC) &_varapproxr_blockDiag, 1},
     {"_varapproxr_bind_cols", (DL_FUNC) &_varapproxr_bind_cols, 1},
+    {"_varapproxr_solve_two_level_sparse", (DL_FUNC) &_varapproxr_solve_two_level_sparse, 5},
     {"_varapproxr_pnorm_mat", (DL_FUNC) &_varapproxr_pnorm_mat, 1},
     {"_varapproxr_dnorm_mat", (DL_FUNC) &_varapproxr_dnorm_mat, 1},
     {"_varapproxr_vb_lm", (DL_FUNC) &_varapproxr_vb_lm, 10},
     {"_varapproxr_update_vb_lm", (DL_FUNC) &_varapproxr_update_vb_lm, 6},
     {"_varapproxr_vb_lmm", (DL_FUNC) &_varapproxr_vb_lmm, 15},
     {"_varapproxr_vb_lmm_randint", (DL_FUNC) &_varapproxr_vb_lmm_randint, 17},
+    {"_varapproxr_vb_lmm_randintslope", (DL_FUNC) &_varapproxr_vb_lmm_randintslope, 7},
     {"_varapproxr_jaakkola_jordan", (DL_FUNC) &_varapproxr_jaakkola_jordan, 6},
     {"_varapproxr_jaakkola_jordan_n", (DL_FUNC) &_varapproxr_jaakkola_jordan_n, 7},
     {"_varapproxr_saul_jordan", (DL_FUNC) &_varapproxr_saul_jordan, 7},
@@ -833,9 +885,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_vb_pois_mm", (DL_FUNC) &_varapproxr_vb_pois_mm, 10},
     {"_varapproxr_ph_exponential", (DL_FUNC) &_varapproxr_ph_exponential, 8},
     {"_varapproxr_GaussianEntropy", (DL_FUNC) &_varapproxr_GaussianEntropy, 1},
-    {"_varapproxr_inv_vectorise", (DL_FUNC) &_varapproxr_inv_vectorise, 1},
-    {"_varapproxr_vech", (DL_FUNC) &_varapproxr_vech, 1},
-    {"_varapproxr_inv_vech", (DL_FUNC) &_varapproxr_inv_vech, 1},
     {"_varapproxr_G_VMP", (DL_FUNC) &_varapproxr_G_VMP, 4},
     {"_varapproxr_GaussianPriorFragment", (DL_FUNC) &_varapproxr_GaussianPriorFragment, 2},
     {"_varapproxr_InverseGammaPriorFragment", (DL_FUNC) &_varapproxr_InverseGammaPriorFragment, 2},

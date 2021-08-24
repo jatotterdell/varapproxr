@@ -3,6 +3,10 @@
 
 #include <RcppArmadillo.h>
 
+arma::mat inv_vectorise(arma::vec v);
+arma::vec vech(arma::mat X);
+arma::mat inv_vech(arma::vec v);
+
 double mvlgamma(double x, int p = 1);
 double mvdigamma(double x, int p = 1);
 

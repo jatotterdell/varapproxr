@@ -10,5 +10,5 @@ blockDiag(x)
 \item{x}{A list of matrices}
 }
 \description{
-Construct block-diagonal matrix from list of matrices
+Constructs as dense block-diagonal matrix from a list (field) of matrices.
 }
