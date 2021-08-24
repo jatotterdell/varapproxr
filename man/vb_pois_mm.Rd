@@ -2,8 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{vb_pois_mm}
 \alias{vb_pois_mm}
-\title{Perform mean-field variational inference for 
-a Poisson mixed-effects regression model.}
+\title{Poisson Mixed Effects Model}
 \usage{
 vb_pois_mm(
   X,

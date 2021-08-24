@@ -11,6 +11,8 @@ mvn_entropy <- function(S) {
     .Call(`_varapproxr_mvn_entropy`, S)
 }
 
+#' E[||y - Xb||^2]
+#' 
 #' Calculate E[||y - Xb||^2] for b ~ MVN(mu, Sigma)
 #'
 #' @param yty Statistic y'y
@@ -62,6 +64,8 @@ ig_E_log <- function(a, b) {
     .Call(`_varapproxr_ig_E_log`, a, b)
 }
 
+#' Calculate E_q[ln p(x)] where q(x) = IG(x | a, b) and p(x) = IG(x | a0, b0)
+#' 
 #' E_q[ln p(x)] where x ~ IG(a0, b0) and q(x) = IG(x | a, b)
 #'
 #' @param a0 Inverse gamma prior parameter
@@ -70,6 +74,96 @@ ig_E_log <- function(a, b) {
 #' @param b Inverse gamma variational parameter
 ig_E_lpdf <- function(a0, b0, a, b) {
     .Call(`_varapproxr_ig_E_lpdf`, a0, b0, a, b)
+}
+
+#' Scaled Inverse Chi squared H[x]
+#' 
+#' Calculate H[x] where x ~ Scaled-Inv-Chisq(nu, tau)
+#' 
+#' @param nu shape
+#' @param tau scale 
+scaled_inv_chisq_H <- function(nu, tau) {
+    .Call(`_varapproxr_scaled_inv_chisq_H`, nu, tau)
+}
+
+#' Scaled Inverse Chi squared E[x]
+#' 
+#' Calculate E[x] where x ~ Scaled-Inv-Chisq(nu, tau)
+#' 
+#' @param nu shape
+#' @param tau scale 
+scaled_inv_chisq_E <- function(nu, tau) {
+    .Call(`_varapproxr_scaled_inv_chisq_E`, nu, tau)
+}
+
+#' Scaled Inverse Chi squared E[1/x]
+#' 
+#' Calculate E[1/x] where x ~ Scaled-Inv-Chisq(nu, tau^2)
+#' 
+#' @param nu shape
+#' @param tau scale 
+scaled_inv_chisq_E_inv <- function(nu, tau) {
+    .Call(`_varapproxr_scaled_inv_chisq_E_inv`, nu, tau)
+}
+
+#' Scaled Inverse Chi squared E[log(x)]
+#' 
+#' Calculate E[log(x)] where x ~ Scaled-Inv-Chisq(nu, tau).
+#' 
+#' @param nu shape
+#' @param tau scale 
+scaled_inv_chisq_E_log <- function(nu, tau) {
+    .Call(`_varapproxr_scaled_inv_chisq_E_log`, nu, tau)
+}
+
+#' Inverse Wishart E[X^-1]
+#' 
+#' Calculate E[X^-1] where X ~ Inverse-Wishart(nu, S).
+#' 
+#' @param nu Degrees of freedom
+#' @param S Scale matrix
+inv_wishart_E_invX <- function(nu, S) {
+    .Call(`_varapproxr_inv_wishart_E_invX`, nu, S)
+}
+
+#' Inverse Wishart E[log|X|]
+#' 
+#' Calculate E[log|X|] where X ~ Inverse-Wishart(nu, S).
+#' 
+#' @param nu Degrees of freedom
+#' @param S Scale matrix
+inv_wishart_E_logdet <- function(nu, S) {
+    .Call(`_varapproxr_inv_wishart_E_logdet`, nu, S)
+}
+
+#' Log multivariate Gamma function
+#' 
+#' Log transformation of the multivariate gamma function.
+#' 
+#' @param p The dimension
+#' @param x The value to evaluate
+lmvgamma <- function(x, p = 1L) {
+    .Call(`_varapproxr_lmvgamma`, x, p)
+}
+
+#' multivariate Gamma function
+#' 
+#' The multivariate gamma function.
+#' 
+#' @param p The dimension
+#' @param x The value to evaluate
+mvgamma <- function(x, p = 1L) {
+    .Call(`_varapproxr_mvgamma`, x, p)
+}
+
+#' Multivariate digamma function
+#' 
+#' Derivative of the multivariate Gamma function.
+#' 
+#' @param p The dimension
+#' @param x The value to evaluate
+mvdigamma <- function(x, p = 1L) {
+    .Call(`_varapproxr_mvdigamma`, x, p)
 }
 
 #' Woodbury matrix identity
@@ -230,6 +324,29 @@ vb_lmm <- function(y, X, Zlist, J, R, mu_beta0, Sigma_beta0, xi_sigma, Lambda_si
 vb_lmm_randint <- function(X, Z, y, mu_beta, sigma_beta, mu, sigma, Aeps = 1.0, Beps = 1.0, Au = 1.0, Bu = 1.0, Bqeps = 1.0, Bqu = 1.0, tol = 1e-8, maxiter = 100L, verbose = FALSE, trace = FALSE) {
     .Call(`_varapproxr_vb_lmm_randint`, X, Z, y, mu_beta, sigma_beta, mu, sigma, Aeps, Beps, Au, Bu, Bqeps, Bqu, tol, maxiter, verbose, trace)
 }
+
+#' Variational Bayes for linear mixed model.
+#' 
+#' 
+#' @param X The design matrix
+#' @param Z Group design matrix
+#' @param y The response vector
+#' @param mu_beta The prior mean for beta
+#' @param sigma_beta The prior covariance for beta
+#' @param mu Initial value for mu
+#' @param sigma Initial value for sigma
+#' @param Aeps The prior shape for sigma_eps
+#' @param Beps The prior scale for sigma_eps
+#' @param Au The prior shape for sigma_u
+#' @param Bu The prior scale for sigma_u
+#' @param Bqeps The intial value for Bqeps
+#' @param Bqu The initial value for Bqu
+#' @param tol Tolerance level
+#' @param maxiter Maximum iterations
+#' @param verbose Print trace of the lower bound to console. Default is \code{FALSE}.
+#' @param trace Print a trace of `mu` to console.
+#' @return A list containing:
+NULL
 
 #' Perform Jaakkola-Jordan update of variational parameters
 #' 
@@ -399,6 +516,8 @@ vb_glmm <- function(X, Z, y, mu_beta, sigma_beta, mu, sigma, Au = 1.0, Bu = 1.0,
     .Call(`_varapproxr_vb_glmm`, X, Z, y, mu_beta, sigma_beta, mu, sigma, Au, Bu, Bqu, tol, maxiter, verbose)
 }
 
+#' Poisson regression
+#' 
 #' Perform mean-field variational inference for 
 #' a Poisson regression model.
 #' 
@@ -417,6 +536,8 @@ vb_pois_reg <- function(X, y, n, mu0, Sigma0, tol = 1e-8, maxiter = 100L, verbos
     .Call(`_varapproxr_vb_pois_reg`, X, y, n, mu0, Sigma0, tol, maxiter, verbose)
 }
 
+#' Poisson Mixed Effects Model
+#' 
 #' Perform mean-field variational inference for 
 #' a Poisson mixed-effects regression model.
 #' 

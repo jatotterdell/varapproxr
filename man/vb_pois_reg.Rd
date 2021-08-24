@@ -2,8 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{vb_pois_reg}
 \alias{vb_pois_reg}
-\title{Perform mean-field variational inference for 
-a Poisson regression model.}
+\title{Poisson regression}
 \usage{
 vb_pois_reg(X, y, n, mu0, Sigma0, tol = 1e-08, maxiter = 100L, verbose = FALSE)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{dot_y_minus_Xb}
 \alias{dot_y_minus_Xb}
-\title{Calculate E[||y - Xb||^2] for b ~ MVN(mu, Sigma)}
+\title{E[||y - Xb||^2]}
 \usage{
 dot_y_minus_Xb(yty, Xty, XtX, mu, Sigma)
 }

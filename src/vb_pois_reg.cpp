@@ -9,6 +9,8 @@
 
 using namespace Rcpp;
 
+//' Poisson regression
+//' 
 //' Perform mean-field variational inference for 
 //' a Poisson regression model.
 //' 
@@ -80,6 +82,8 @@ List vb_pois_reg(
 }
 
 
+//' Poisson Mixed Effects Model
+//' 
 //' Perform mean-field variational inference for 
 //' a Poisson mixed-effects regression model.
 //' 

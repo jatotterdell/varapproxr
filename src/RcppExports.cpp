@@ -99,6 +99,114 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// scaled_inv_chisq_H
+double scaled_inv_chisq_H(double nu, double tau);
+RcppExport SEXP _varapproxr_scaled_inv_chisq_H(SEXP nuSEXP, SEXP tauSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< double >::type tau(tauSEXP);
+    rcpp_result_gen = Rcpp::wrap(scaled_inv_chisq_H(nu, tau));
+    return rcpp_result_gen;
+END_RCPP
+}
+// scaled_inv_chisq_E
+double scaled_inv_chisq_E(double nu, double tau);
+RcppExport SEXP _varapproxr_scaled_inv_chisq_E(SEXP nuSEXP, SEXP tauSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< double >::type tau(tauSEXP);
+    rcpp_result_gen = Rcpp::wrap(scaled_inv_chisq_E(nu, tau));
+    return rcpp_result_gen;
+END_RCPP
+}
+// scaled_inv_chisq_E_inv
+double scaled_inv_chisq_E_inv(double nu, double tau);
+RcppExport SEXP _varapproxr_scaled_inv_chisq_E_inv(SEXP nuSEXP, SEXP tauSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< double >::type tau(tauSEXP);
+    rcpp_result_gen = Rcpp::wrap(scaled_inv_chisq_E_inv(nu, tau));
+    return rcpp_result_gen;
+END_RCPP
+}
+// scaled_inv_chisq_E_log
+double scaled_inv_chisq_E_log(double nu, double tau);
+RcppExport SEXP _varapproxr_scaled_inv_chisq_E_log(SEXP nuSEXP, SEXP tauSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< double >::type tau(tauSEXP);
+    rcpp_result_gen = Rcpp::wrap(scaled_inv_chisq_E_log(nu, tau));
+    return rcpp_result_gen;
+END_RCPP
+}
+// inv_wishart_E_invX
+arma::mat inv_wishart_E_invX(double nu, arma::mat& S);
+RcppExport SEXP _varapproxr_inv_wishart_E_invX(SEXP nuSEXP, SEXP SSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type S(SSEXP);
+    rcpp_result_gen = Rcpp::wrap(inv_wishart_E_invX(nu, S));
+    return rcpp_result_gen;
+END_RCPP
+}
+// inv_wishart_E_logdet
+double inv_wishart_E_logdet(double nu, arma::mat& S);
+RcppExport SEXP _varapproxr_inv_wishart_E_logdet(SEXP nuSEXP, SEXP SSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
+    Rcpp::traits::input_parameter< arma::mat& >::type S(SSEXP);
+    rcpp_result_gen = Rcpp::wrap(inv_wishart_E_logdet(nu, S));
+    return rcpp_result_gen;
+END_RCPP
+}
+// lmvgamma
+double lmvgamma(double x, int p);
+RcppExport SEXP _varapproxr_lmvgamma(SEXP xSEXP, SEXP pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(lmvgamma(x, p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mvgamma
+double mvgamma(double x, int p);
+RcppExport SEXP _varapproxr_mvgamma(SEXP xSEXP, SEXP pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(mvgamma(x, p));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mvdigamma
+double mvdigamma(double x, int p);
+RcppExport SEXP _varapproxr_mvdigamma(SEXP xSEXP, SEXP pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(mvdigamma(x, p));
+    return rcpp_result_gen;
+END_RCPP
+}
 // woodbury
 arma::mat woodbury(arma::mat& A, arma::mat& B, arma::mat& C, arma::mat& D);
 RcppExport SEXP _varapproxr_woodbury(SEXP ASEXP, SEXP BSEXP, SEXP CSEXP, SEXP DSEXP) {
@@ -693,6 +801,15 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_ig_E_inv", (DL_FUNC) &_varapproxr_ig_E_inv, 2},
     {"_varapproxr_ig_E_log", (DL_FUNC) &_varapproxr_ig_E_log, 2},
     {"_varapproxr_ig_E_lpdf", (DL_FUNC) &_varapproxr_ig_E_lpdf, 4},
+    {"_varapproxr_scaled_inv_chisq_H", (DL_FUNC) &_varapproxr_scaled_inv_chisq_H, 2},
+    {"_varapproxr_scaled_inv_chisq_E", (DL_FUNC) &_varapproxr_scaled_inv_chisq_E, 2},
+    {"_varapproxr_scaled_inv_chisq_E_inv", (DL_FUNC) &_varapproxr_scaled_inv_chisq_E_inv, 2},
+    {"_varapproxr_scaled_inv_chisq_E_log", (DL_FUNC) &_varapproxr_scaled_inv_chisq_E_log, 2},
+    {"_varapproxr_inv_wishart_E_invX", (DL_FUNC) &_varapproxr_inv_wishart_E_invX, 2},
+    {"_varapproxr_inv_wishart_E_logdet", (DL_FUNC) &_varapproxr_inv_wishart_E_logdet, 2},
+    {"_varapproxr_lmvgamma", (DL_FUNC) &_varapproxr_lmvgamma, 2},
+    {"_varapproxr_mvgamma", (DL_FUNC) &_varapproxr_mvgamma, 2},
+    {"_varapproxr_mvdigamma", (DL_FUNC) &_varapproxr_mvdigamma, 2},
     {"_varapproxr_woodbury", (DL_FUNC) &_varapproxr_woodbury, 4},
     {"_varapproxr_arma2vec", (DL_FUNC) &_varapproxr_arma2vec, 1},
     {"_varapproxr_blockDiag", (DL_FUNC) &_varapproxr_blockDiag, 1},

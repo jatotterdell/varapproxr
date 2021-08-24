@@ -1,5 +1,56 @@
+// [[Rcpp::depends(RcppArmadillo)]]
+
 #include <RcppArmadillo.h>
 #include <Rmath.h>
+
+
+//' Log multivariate Gamma function
+//' 
+//' Log transformation of the multivariate gamma function.
+//' 
+//' @param p The dimension
+//' @param x The value to evaluate
+// [[Rcpp::export]]
+double lmvgamma(double x, int p = 1) {
+  if(x <= 0 || p < 1)
+    Rcpp::stop("Input error");
+  double lgam = 0.0;
+  for(int i = 1; i <= p; i++) {
+    lgam += lgamma(x + 0.5*(1 - i));
+  }
+  return 0.25*p*(p - 1) * log(M_PI) + lgam;
+}
+
+
+//' multivariate Gamma function
+//' 
+//' The multivariate gamma function.
+//' 
+//' @param p The dimension
+//' @param x The value to evaluate
+// [[Rcpp::export]]
+double mvgamma(double x, int p = 1) {
+  return exp(lmvgamma(x, p));
+}
+
+
+//' Multivariate digamma function
+//' 
+//' Derivative of the multivariate Gamma function.
+//' 
+//' @param p The dimension
+//' @param x The value to evaluate
+// [[Rcpp::export]]
+double mvdigamma(double x, int p = 1) {
+  if(x <= 0 || p < 1)
+    Rcpp::stop("Input error");
+  double out = 0.0;
+  for(int i = 1; i <= p; i++) {
+    out += R::digamma(x + 0.5 * (1 - i));
+  }
+  return out;
+}
+
 
 //' Woodbury matrix identity
 //'
@@ -18,6 +69,7 @@ arma::mat woodbury(
   arma::mat Ainv = inv(A);
   return(Ainv + Ainv*B*inv(inv(C) + D*Ainv*B)*D*inv(A));
 }
+
 
 //' Convert arma::vec to Rcpp::NumericVector
 //' 
@@ -52,6 +104,7 @@ arma::mat blockDiag(arma::field<arma::mat>& x) {
   return(X);
 }
 
+
 //' Right-bind columns of matrices from in list.
 //' 
 //' @param x A list of matrices
@@ -84,9 +137,6 @@ arma::mat bind_cols(arma::field<arma::mat>& x) {
 }
 
 
-
-
-
 //' Evaluate standard normal cdf for matrix of variates
 //' 
 //' @param m A matrix of variates 
@@ -104,6 +154,7 @@ arma::mat pnorm_mat(arma::mat& m) {
   return out;
 }
 
+
 //' Evaluate standard normal density for matrix of variates
 //' 
 //' @param m A matrix of variates 
@@ -120,6 +171,7 @@ arma::mat dnorm_mat(arma::mat& m) {
   }
   return out;
 }
+
 
 // Integration constants for quadrature
 const arma::vec MS_p = {0.003246343272134, 0.051517477033972,

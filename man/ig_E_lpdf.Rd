@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{ig_E_lpdf}
 \alias{ig_E_lpdf}
-\title{E_q[ln p(x)] where x ~ IG(a0, b0) and q(x) = IG(x | a, b)}
+\title{Calculate E_q[ln p(x)] where q(x) = IG(x | a, b) and p(x) = IG(x | a0, b0)}
 \usage{
 ig_E_lpdf(a0, b0, a, b)
 }
