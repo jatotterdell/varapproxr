@@ -13,4 +13,7 @@ double ig_E_inv(double a, double b);
 double ig_E_log(double a, double b);
 double ig_E_lpdf(double a0, double b0, double a, double b);
 
+arma::mat inv_wishart_E_invX(double nu, arma::mat& S);
+double inv_wishart_E_logdet(double nu, arma::mat& S);
+
 #endif

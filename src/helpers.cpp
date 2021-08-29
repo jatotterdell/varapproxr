@@ -154,6 +154,31 @@ arma::mat blockDiag(arma::field<arma::mat>& x) {
 }
 
 
+arma::mat repeatBlockDiag(arma::mat& x, arma::mat& R) {
+  int n = x.n_rows;
+  int k = R.n_rows;
+  int dimenRow = 0;
+  int dimenCol = 0;
+  arma::ivec dimvecRow(n);
+  arma::ivec dimvecCol(n);
+  for(int i = 0; i < n; i++) {
+    dimvecRow(i) = k; 
+    dimvecCol(i) = k; 
+    dimenRow += dimvecRow(i);
+    dimenCol += dimvecCol(i);
+  }
+  arma::mat X(dimenRow, dimenCol, arma::fill::zeros);
+  int idxRow=0;
+  int idxCol=0;
+  for(unsigned int i=0; i<n; i++) {
+    X.submat(idxRow, idxCol, idxRow + dimvecRow(i) - 1, idxCol + dimvecCol(i) - 1 ) = x(i,0);
+    idxRow += dimvecRow(i);
+    idxCol += dimvecCol(i);
+  }
+  return(X);
+}
+
+
 //' Right-bind columns of matrices from in list.
 //' 
 //' @param x A list of matrices

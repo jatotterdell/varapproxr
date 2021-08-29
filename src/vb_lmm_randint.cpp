@@ -163,16 +163,80 @@ List vb_lmm_randint(
 }
 
 
+List update_betagamma_vb_streamlined(
+  arma::field<arma::mat>& Xlist,
+  arma::field<arma::mat>& Zlist,
+  arma::field<arma::vec>& ylist,
+  arma::mat& inv_beta_sigma0,
+  arma::vec& beta_mu0,
+  double E_q_sigma,
+  arma::mat E_q_Omega_inv
+) {
+  // matrix dimensions
+  int M = Zlist.n_rows;
+  int P = Xlist(0).n_cols;
+  int Q = Zlist(0).n_cols;
+  
+  // temp storage
+  arma::field<arma::mat> G;
+  arma::field<arma::mat> H;
+  arma::mat S = arma::zeros(P + M*Q, P + M*Q);
+  arma::vec s = arma::zeros(P + M*Q);
+  arma::mat q_beta_sigma;
+  arma::vec q_beta_mu;
+  arma::field<arma::mat> q_gamma_sigma;
+  arma::field<arma::vec> q_gamma_mu;
+  arma::vec y;
+  arma::mat X;
+  
+  // loop over grouped matrices
+  for(int m = 0; m < M; m++) {
+    y = arma::join_cols(y, ylist(m));
+    X = arma::join_cols(X, Xlist(m));
+    G(m) = E_q_sigma * Xlist(m).t() * Zlist(m);
+    H(m) = inv(E_q_sigma * Zlist(m).t() * Zlist(m) + E_q_Omega_inv);
+    S += G(m)*H(m)*G(m).t();
+    s += G(m)*H(m)*Zlist(m).t()*ylist(m);
+  }
+  q_beta_sigma = inv(E_q_sigma * X.t() * X + inv_beta_sigma0 - S);
+  q_beta_mu = E_q_sigma * q_beta_sigma * (X.t()*y + inv_beta_sigma0 * beta_mu0 - s);
+  for(int m = 0; m < M; m++) {
+    q_gamma_sigma(m) = H(m) + H(m) * G(m).t() * q_beta_sigma * G(m) * H(m);
+    q_gamma_mu(m) = H(m) * (E_q_sigma * Zlist(m).t() * ylist(m) - G(m).t()*q_beta_mu);
+  }
+  
+  return List::create(
+    Named("q_beta_mu") = q_beta_mu,
+    Named("q_beta_sigma") = q_beta_sigma,
+    Named("q_gamma_mu") = q_gamma_mu,
+    Named("q_gamma_sigma") = q_gamma_sigma
+  );
+}
+
+
+//' @param a_eps0 The first hyper-parameter for prior on sigma
+//' @param b_eps0 The second hyper-parameter for prior on sigma
+//' @param pr_eps The prior to use for sigma_epsilon - 1 is IG(a0,b0) and 2 is Half-t(a0, b0)
+//' 
 //' @export
 // [[Rcpp::export]]
 List vb_lmm_randintslope(
   arma::field<arma::mat>& Xlist, 
   arma::field<arma::mat>& Zlist,
   arma::field<arma::vec>& ylist,
+  const arma::vec& beta_mu0, 
+  const arma::mat& beta_sigma0, 
+  double nu_Omega0,
+  arma::mat lambda_Omega0,
+  int pr_Omega = 1,
+  double sigma_a0 = 1e-2,
+  double sigma_b0 = 1e-2,
+  int pr_sigma = 1,
   double tol = 1e-8, 
-  int maxiter = 100,
+  int maxiter = 500,
   bool verbose = false,
-  bool trace = false
+  bool trace = false,
+  bool streamlined = false
 ) {
   
   if(Zlist.n_rows != Xlist.n_rows || Zlist.n_rows != ylist.n_rows)
@@ -181,23 +245,130 @@ List vb_lmm_randintslope(
   // input dimensions
   int M = Zlist.n_rows;
   int P = Xlist(0).n_cols;
-  int Q = Zlist(0).n_cols;
+  arma::vec q(M);
+  arma::vec idq = arma::zeros(M+1);
   
   arma::vec y;
   arma::mat X;
   arma::mat Z = blockDiag(Zlist);
   for(int i = 0; i < M; i++) {
+    // allow for different sized Z_i matrices
+    q(i) = Zlist(i).n_cols;
+    idq(i+1) = idq(i) + q(i);
     y = arma::join_cols(y, ylist(i));
     X = arma::join_cols(X, Xlist(i));
+  }
+  int Q = sum(q);
+  int N = y.n_elem;
+  int K = Z.n_cols;
+  
+  // if not stream-lined calculate the full matrices
+  // sufficient statistics
+  arma::mat C = arma::join_rows(X, Z);
+  arma::mat CtC = trans(C)*C;
+  arma::vec Cty = trans(C)*y;
+  double yty = dot(y, y);
+  
+  // additional variables
+  arma::mat inv_beta_sigma0 =  inv(beta_sigma0);
+  double E_dot_y_Cb = 0.0;
+  arma::mat Im = arma::eye(M, M);
+  arma::vec betagamma_mu0 = join_vert(beta_mu0, arma::zeros(Q));
+  arma::field<arma::mat> G_inv(2);
+  
+  // streamlined only
+  arma::field<arma::mat> G(M);
+  arma::field<arma::mat> H(M);
+  arma::mat S = arma::zeros(P, P);
+  arma::vec s = arma::zeros(P);
+  
+  // variational parameters and associated functions
+  
+  // beta and gamma
+  arma::vec q_betagamma_mu(P + Q);
+  arma::vec q_gamma_mu(M*Q);
+  arma::vec q_beta_mu(P);
+  arma::mat q_betagamma_sigma(P + Q, P + Q);
+  arma::mat q_gamma_sigma(Q, Q);
+  
+  // Omega
+  double q_omega_nu = nu_Omega0 + M;
+  arma::mat q_omega_lambda = lambda_Omega0;
+  arma::mat E_q_omega_inv = inv_wishart_E_invX(q_omega_nu, q_omega_lambda);
+  
+  // sigma
+  double q_sigma_a = sigma_a0 + 0.5 * N;
+  double q_sigma_b = sigma_b0;
+  double q_lambda_a = 0.5*(sigma_b0 + 1);
+  double q_lambda_b = (sigma_b0 * ig_E_inv(q_sigma_a, q_sigma_b) + pow(sigma_a0, -2));
+  if(pr_sigma == 2) {
+    q_sigma_a = 0.5 * (sigma_b0 + N);
   }
   
   // Monitor
   bool converged = 0;
   int iterations = 0;
   arma::vec elbo(maxiter);
+  arma::mat tr(P + Q, maxiter);
   
-  // for(int i = 0; i < maxiter && !converged; i++) {
-  // }
+  for(int i = 0; i < maxiter && !converged; i++) {
+
+    // Update parameters of q(beta,u)
+    if(streamlined == true) {
+      // use streamlined updates
+      // loop over grouped matrices
+      S.zeros();
+      s.zeros();
+      for(int m = 0; m < M; m++) {
+        G(m) = ig_E_inv(q_sigma_a, q_sigma_b) * Xlist(m).t() * Zlist(m);
+        H(m) = inv(ig_E_inv(q_sigma_a, q_sigma_b) * Zlist(m).t() * Zlist(m) + E_q_omega_inv);
+        S += G(m)*H(m)*G(m).t();
+        s += G(m)*H(m)*Zlist(m).t()*ylist(m);
+      }
+      q_betagamma_sigma.submat(0, 0, P-1, P-1) = inv(ig_E_inv(q_sigma_a, q_sigma_b) * X.t() * X + inv_beta_sigma0 - S);
+      q_betagamma_mu.subvec(0, P-1) = ig_E_inv(q_sigma_a, q_sigma_b) * q_betagamma_sigma.submat(0, 0, P-1, P-1) * (X.t()*y + inv_beta_sigma0 * beta_mu0 - s);
+      for(int m = 0; m < M; m++) {
+        q_betagamma_sigma.submat(P + idq(m), P + idq(m), P + idq(m+1) - 1, P + idq(m+1) - 1) =
+          H(m) + H(m) * G(m).t() * q_betagamma_sigma.submat(0, 0, P-1, P-1) * G(m) * H(m);
+        q_betagamma_mu.subvec(P + idq(m), P + idq(m+1) - 1) =
+          H(m) * (ig_E_inv(q_sigma_a, q_sigma_b) * Zlist(m).t() * ylist(m) - G(m).t()*q_betagamma_mu.subvec(0, P-1));
+      }
+    } else {
+      // use naive updates
+      G_inv(0) = inv_beta_sigma0;
+      G_inv(1) = kron(Im, E_q_omega_inv);
+      q_betagamma_sigma = inv(ig_E_inv(q_sigma_a, q_sigma_b) * CtC + blockDiag(G_inv));
+      q_betagamma_mu = q_betagamma_sigma * (ig_E_inv(q_sigma_a, q_sigma_b) * Cty + blockDiag(G_inv)*betagamma_mu0);
+    }
+    E_dot_y_Cb = dot_y_minus_Xb(yty, Cty, CtC, q_betagamma_mu, q_betagamma_sigma);
+    q_gamma_mu = q_betagamma_mu.subvec(P, P + Q - 1);
+    q_gamma_sigma = q_betagamma_sigma.submat(P, P, P + Q - 1, P + Q - 1);
+
+    // Update parameters of q(sigma)
+    if(pr_sigma == 1) {
+      q_sigma_b = sigma_b0 + 0.5*E_dot_y_Cb;
+    } else if (pr_sigma == 2) {
+      q_lambda_b = (sigma_b0 * ig_E_inv(q_sigma_a, q_sigma_b) + pow(sigma_a0, -2));
+      q_sigma_b = sigma_b0 * ig_E_inv(q_lambda_a, q_lambda_b) + 0.5*E_dot_y_Cb;
+    }
+
+    // Update parameters of q(Omega)
+    if(pr_Omega == 1) {
+      q_omega_lambda = lambda_Omega0;
+      for(int m = 0; m < M; m++) {
+        q_omega_lambda += q_gamma_mu.subvec(idq(m), idq(m+1)-1) * 
+          q_gamma_mu.subvec(idq(m), idq(m+1)-1).t() +
+          q_gamma_sigma.submat(idq(m), idq(m), idq(m+1)-1, idq(m+1)-1);
+      }
+      E_q_omega_inv = inv_wishart_E_invX(q_omega_nu, q_omega_lambda);
+    } else if (pr_Omega == 2) {
+
+    }
+    
+    if(trace)
+      tr.col(i) = q_betagamma_mu;
+    iterations = i;
+  }
   
   List out = List::create(
     Named("M") = M,
@@ -205,8 +376,19 @@ List vb_lmm_randintslope(
     Named("Q") = Q,
     Named("y") = y,
     Named("X") = X,
-    Named("Z") = Z
+    Named("Z") = Z,
+    Named("G_inv") = G_inv,
+    Named("q_betagamma_mu") = q_betagamma_mu,
+    Named("q_betagamma_sigma") = q_betagamma_sigma,
+    Named("q_omega_lambda") = q_omega_lambda,
+    Named("q_omega_nu") = q_omega_nu,
+    Named("q_sigma_a") = q_sigma_a,
+    Named("q_sigma_b") = q_sigma_b
   );
+  
+  if(trace) out.push_back(tr.submat(0, 0, P + Q - 1, iterations), "trace");
+  
+  return out;
   
   return out;
 }

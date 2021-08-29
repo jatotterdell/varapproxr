@@ -367,9 +367,13 @@ vb_lmm_randint <- function(X, Z, y, mu_beta, sigma_beta, mu, sigma, Aeps = 1.0, 
     .Call(`_varapproxr_vb_lmm_randint`, X, Z, y, mu_beta, sigma_beta, mu, sigma, Aeps, Beps, Au, Bu, Bqeps, Bqu, tol, maxiter, verbose, trace)
 }
 
+#' @param a_eps0 The first hyper-parameter for prior on sigma
+#' @param b_eps0 The second hyper-parameter for prior on sigma
+#' @param pr_eps The prior to use for sigma_epsilon - 1 is IG(a0,b0) and 2 is Half-t(a0, b0)
+#' 
 #' @export
-vb_lmm_randintslope <- function(Xlist, Zlist, ylist, tol = 1e-8, maxiter = 100L, verbose = FALSE, trace = FALSE) {
-    .Call(`_varapproxr_vb_lmm_randintslope`, Xlist, Zlist, ylist, tol, maxiter, verbose, trace)
+vb_lmm_randintslope <- function(Xlist, Zlist, ylist, beta_mu0, beta_sigma0, nu_Omega0, lambda_Omega0, pr_Omega = 1L, sigma_a0 = 1e-2, sigma_b0 = 1e-2, pr_sigma = 1L, tol = 1e-8, maxiter = 500L, verbose = FALSE, trace = FALSE, streamlined = FALSE) {
+    .Call(`_varapproxr_vb_lmm_randintslope`, Xlist, Zlist, ylist, beta_mu0, beta_sigma0, nu_Omega0, lambda_Omega0, pr_Omega, sigma_a0, sigma_b0, pr_sigma, tol, maxiter, verbose, trace, streamlined)
 }
 
 #' Perform Jaakkola-Jordan update of variational parameters
