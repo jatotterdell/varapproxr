@@ -49,8 +49,7 @@ double mvn_E_lpdf(arma::vec& mu0, arma::mat& Sigma0, arma::vec& mu, arma::mat& S
 //' @param mu Variational mean mu
 //' @param Sigma Variational variance Sigma
 // [[Rcpp::export]]
-double dot_y_minus_Xb(double yty, arma::vec Xty, arma::mat& XtX, arma::vec mu, arma::mat& Sigma
-) {
+double dot_y_minus_Xb(double yty, arma::vec Xty, arma::mat& XtX, arma::vec mu, arma::mat& Sigma) {
   return yty - 2*dot(mu, Xty) + arma::trace(XtX * (Sigma + mu * trans(mu)));
 }
 

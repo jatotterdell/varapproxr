@@ -184,6 +184,7 @@ List vb_lmm_randint(
 //' @param verbose Print trace of ELBO
 //' @param trace Return trace of parameters beta, gamma
 //' @param streamlined Use streamlined updates (more efficient if dim(Zlist) is large).
+//' @param use_elbo Should the ELBO be calculated and used for convergence checks?
 //' 
 //' @export
 // [[Rcpp::export]]
@@ -203,7 +204,8 @@ List vb_lmm_randintslope(
   int maxiter = 500,
   bool verbose = false,
   bool trace = false,
-  bool streamlined = false
+  bool streamlined = false,
+  bool use_elbo = true
 ) {
   
   if(Zlist.n_rows != Xlist.n_rows || Zlist.n_rows != ylist.n_rows)
@@ -213,7 +215,9 @@ List vb_lmm_randintslope(
   int M = Zlist.n_rows;
   int P = Xlist(0).n_cols;
   arma::vec q(M);
+  arma::vec r(M);
   arma::vec idq = arma::zeros(M+1);
+  arma::vec idr = arma::zeros(M+1);
   
   arma::vec y;
   arma::mat X;
@@ -221,7 +225,9 @@ List vb_lmm_randintslope(
   for(int i = 0; i < M; i++) {
     // allow for different sized Z_i matrices
     q(i) = Zlist(i).n_cols;
+    r(i) = Zlist(i).n_rows;
     idq(i+1) = idq(i) + q(i);
+    idr(i+1) = idr(i) + r(i);
     y = arma::join_cols(y, ylist(i));
     X = arma::join_cols(X, Xlist(i));
   }
@@ -248,6 +254,8 @@ List vb_lmm_randintslope(
   arma::field<arma::mat> H(M);
   arma::mat S = arma::zeros(P, P);
   arma::vec s = arma::zeros(P);
+  arma::vec Cmu(N);
+  double trCtCSigma = 0.0;
   
   // variational parameters and associated functions
   
@@ -262,13 +270,14 @@ List vb_lmm_randintslope(
   double q_omega_nu = nu_Omega0 + M;
   arma::mat q_omega_lambda = lambda_Omega0;
   arma::mat E_q_omega_inv = inv_wishart_E_invX(q_omega_nu, q_omega_lambda);
-  if(pr_Omega == 2) {
-    q_omega_nu = nu_Omega0 + M + lambda_Omega0.n_rows - 1;
-  }
+  // if(pr_Omega == 2) {
+  //   q_omega_nu = nu_Omega0 + M + lambda_Omega0.n_rows - 1;
+  // }
+  
   // note prior two only
-  arma::vec q_xi_a(q(0));
-  arma::vec q_xi_b(q(0));
-  arma::vec E_ig_inv_xi(q(0));
+  // arma::vec q_xi_a(q(0));
+  // arma::vec q_xi_b(q(0));
+  // arma::vec E_ig_inv_xi(q(0));
   
   // sigma
   double q_sigma_a = sigma_a0 + 0.5 * N;
@@ -288,11 +297,13 @@ List vb_lmm_randintslope(
   for(int i = 0; i < maxiter && !converged; i++) {
 
     // Update parameters of q(beta,u)
+    
     if(streamlined == true) {
       // use streamlined updates
       // loop over grouped matrices
       S.zeros();
       s.zeros();
+      trCtCSigma = 0.0;
       for(int m = 0; m < M; m++) {
         G(m) = ig_E_inv(q_sigma_a, q_sigma_b) * Xlist(m).t() * Zlist(m);
         H(m) = inv(ig_E_inv(q_sigma_a, q_sigma_b) * Zlist(m).t() * Zlist(m) + E_q_omega_inv);
@@ -302,23 +313,41 @@ List vb_lmm_randintslope(
       q_betagamma_sigma.submat(0, 0, P-1, P-1) = inv(ig_E_inv(q_sigma_a, q_sigma_b) * X.t() * X + inv_beta_sigma0 - S);
       q_betagamma_mu.subvec(0, P-1) = ig_E_inv(q_sigma_a, q_sigma_b) * q_betagamma_sigma.submat(0, 0, P-1, P-1) * (X.t()*y + inv_beta_sigma0 * beta_mu0 - s);
       for(int m = 0; m < M; m++) {
+        // upper left block
         q_betagamma_sigma.submat(P + idq(m), P + idq(m), P + idq(m+1) - 1, P + idq(m+1) - 1) =
           H(m) + H(m) * G(m).t() * q_betagamma_sigma.submat(0, 0, P-1, P-1) * G(m) * H(m);
+        // upper right block
+        q_betagamma_sigma.submat(0, P + idq(m), P- 1, P + idq(m+1) - 1) =
+          -q_betagamma_sigma.submat(0, 0, P-1, P-1) * G(m) * H(m);
+        // bottom left block
+        q_betagamma_sigma.submat(P + idq(m), 0, P + idq(m+1) - 1, P - 1) =
+          q_betagamma_sigma.submat(0, P + idq(m), P - 1, P + idq(m+1) - 1).t();
+        // bottom right block
         q_betagamma_mu.subvec(P + idq(m), P + idq(m+1) - 1) =
           H(m) * (ig_E_inv(q_sigma_a, q_sigma_b) * Zlist(m).t() * ylist(m) - G(m).t()*q_betagamma_mu.subvec(0, P-1));
+        // E[||y-Cmu||]
+        // Cmu.subvec(idr(m), idr(m+1)-1) = Zlist(m)*q_betagamma_mu.subvec(P + idq(m), P + idq(m+1)-1);
+        // trCtCSigma += -2/ig_E_inv(q_sigma_a, q_sigma_b)*
+          // arma::trace(G(m)*H(m)*G(m).t()*q_betagamma_sigma.submat(0, 0, P-1, P-1)) +
+          // arma::trace(Zlist(m).t()*Zlist(m)*q_betagamma_mu.subvec(P + idq(m), P + idq(m+1)-1));
       }
+      // Cmu += X * q_betagamma_mu.subvec(0, P-1);
+      // trCtCSigma += arma::trace(X.t()*X*q_betagamma_sigma.submat(0, 0, P-1, P-1));
+      // E_dot_y_Cb = arma::norm(y - Cmu) + trCtCSigma;
     } else {
       // use naive updates
       G_inv(0) = inv_beta_sigma0;
       G_inv(1) = kron(Im, E_q_omega_inv);
       q_betagamma_sigma = inv(ig_E_inv(q_sigma_a, q_sigma_b) * CtC + blockDiag(G_inv));
       q_betagamma_mu = q_betagamma_sigma * (ig_E_inv(q_sigma_a, q_sigma_b) * Cty + blockDiag(G_inv)*betagamma_mu0);
+      // E_dot_y_Cb = dot_y_minus_Xb(yty, Cty, CtC, q_betagamma_mu, q_betagamma_sigma);
     }
     E_dot_y_Cb = dot_y_minus_Xb(yty, Cty, CtC, q_betagamma_mu, q_betagamma_sigma);
     q_gamma_mu = q_betagamma_mu.subvec(P, P + Q - 1);
     q_gamma_sigma = q_betagamma_sigma.submat(P, P, P + Q - 1, P + Q - 1);
 
     // Update parameters of q(sigma)
+    
     // Inverse-Gamma prior
     if(pr_sigma == 1) {
       q_sigma_b = sigma_b0 + 0.5*E_dot_y_Cb;
@@ -329,6 +358,7 @@ List vb_lmm_randintslope(
     }
 
     // Update parameters of q(Omega)
+    
     // Inverse-Wishart prior
     if(pr_Omega == 1) {
       q_omega_lambda = lambda_Omega0;
@@ -338,20 +368,26 @@ List vb_lmm_randintslope(
           q_gamma_sigma.submat(idq(m), idq(m), idq(m+1)-1, idq(m+1)-1);
       }
       E_q_omega_inv = inv_wishart_E_invX(q_omega_nu, q_omega_lambda);
+      
     // Huang-Wand hierarchical prior
     } else if (pr_Omega == 2) {
-      for(int z = 0; z < q(0); z++) {
-        q_xi_b(z) = nu_Omega0 * E_q_omega_inv(z, z) + pow(lambda_Omega0(z, z), -2);
-        q_xi_a(z) = 0.5 * (nu_Omega0 + q(0)) / q_xi_b(z);
-        E_ig_inv_xi(z) = ig_E_inv(q_xi_a(z),  q_xi_b(z));
-      }
-      q_omega_lambda = 2*nu_Omega0*arma::diagmat(E_ig_inv_xi);
-      for(int m = 0; m < M; m++) {
-        q_omega_lambda += q_gamma_mu.subvec(idq(m), idq(m+1)-1) * 
-          q_gamma_mu.subvec(idq(m), idq(m+1)-1).t() +
-          q_gamma_sigma.submat(idq(m), idq(m), idq(m+1)-1, idq(m+1)-1);
-      }
-      E_q_omega_inv = inv_wishart_E_invX(q_omega_nu, q_omega_lambda);
+      // for(int z = 0; z < q(0); z++) {
+      //   q_xi_b(z) = nu_Omega0 * E_q_omega_inv(z, z) + pow(lambda_Omega0(z, z), -2);
+      //   q_xi_a(z) = 0.5 * (nu_Omega0 + q(0)) / q_xi_b(z);
+      //   E_ig_inv_xi(z) = ig_E_inv(q_xi_a(z),  q_xi_b(z));
+      // }
+      // q_omega_lambda = 2*nu_Omega0*arma::diagmat(E_ig_inv_xi);
+      // for(int m = 0; m < M; m++) {
+      //   q_omega_lambda += q_gamma_mu.subvec(idq(m), idq(m+1)-1) * 
+      //     q_gamma_mu.subvec(idq(m), idq(m+1)-1).t() +
+      //     q_gamma_sigma.submat(idq(m), idq(m), idq(m+1)-1, idq(m+1)-1);
+      // }
+      // E_q_omega_inv = inv_wishart_E_invX(q_omega_nu, q_omega_lambda);
+    }
+    
+    // update ELBO to check convergence
+    if(use_elbo) {
+      
     }
     
     if(trace)
@@ -360,13 +396,6 @@ List vb_lmm_randintslope(
   }
   
   List out = List::create(
-    Named("M") = M,
-    Named("P") = P,
-    Named("Q") = Q,
-    Named("y") = y,
-    Named("X") = X,
-    Named("Z") = Z,
-    Named("G_inv") = G_inv,
     Named("q_betagamma_mu") = q_betagamma_mu,
     Named("q_betagamma_sigma") = q_betagamma_sigma,
     Named("q_omega_lambda") = q_omega_lambda,

@@ -427,8 +427,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // vb_lmm_randintslope
-List vb_lmm_randintslope(arma::field<arma::mat>& Xlist, arma::field<arma::mat>& Zlist, arma::field<arma::vec>& ylist, const arma::vec& beta_mu0, const arma::mat& beta_sigma0, double nu_Omega0, arma::mat lambda_Omega0, int pr_Omega, double sigma_a0, double sigma_b0, int pr_sigma, double tol, int maxiter, bool verbose, bool trace, bool streamlined);
-RcppExport SEXP _varapproxr_vb_lmm_randintslope(SEXP XlistSEXP, SEXP ZlistSEXP, SEXP ylistSEXP, SEXP beta_mu0SEXP, SEXP beta_sigma0SEXP, SEXP nu_Omega0SEXP, SEXP lambda_Omega0SEXP, SEXP pr_OmegaSEXP, SEXP sigma_a0SEXP, SEXP sigma_b0SEXP, SEXP pr_sigmaSEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP, SEXP traceSEXP, SEXP streamlinedSEXP) {
+List vb_lmm_randintslope(arma::field<arma::mat>& Xlist, arma::field<arma::mat>& Zlist, arma::field<arma::vec>& ylist, const arma::vec& beta_mu0, const arma::mat& beta_sigma0, double nu_Omega0, arma::mat lambda_Omega0, int pr_Omega, double sigma_a0, double sigma_b0, int pr_sigma, double tol, int maxiter, bool verbose, bool trace, bool streamlined, bool use_elbo);
+RcppExport SEXP _varapproxr_vb_lmm_randintslope(SEXP XlistSEXP, SEXP ZlistSEXP, SEXP ylistSEXP, SEXP beta_mu0SEXP, SEXP beta_sigma0SEXP, SEXP nu_Omega0SEXP, SEXP lambda_Omega0SEXP, SEXP pr_OmegaSEXP, SEXP sigma_a0SEXP, SEXP sigma_b0SEXP, SEXP pr_sigmaSEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP, SEXP traceSEXP, SEXP streamlinedSEXP, SEXP use_elboSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -448,7 +448,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< bool >::type trace(traceSEXP);
     Rcpp::traits::input_parameter< bool >::type streamlined(streamlinedSEXP);
-    rcpp_result_gen = Rcpp::wrap(vb_lmm_randintslope(Xlist, Zlist, ylist, beta_mu0, beta_sigma0, nu_Omega0, lambda_Omega0, pr_Omega, sigma_a0, sigma_b0, pr_sigma, tol, maxiter, verbose, trace, streamlined));
+    Rcpp::traits::input_parameter< bool >::type use_elbo(use_elboSEXP);
+    rcpp_result_gen = Rcpp::wrap(vb_lmm_randintslope(Xlist, Zlist, ylist, beta_mu0, beta_sigma0, nu_Omega0, lambda_Omega0, pr_Omega, sigma_a0, sigma_b0, pr_sigma, tol, maxiter, verbose, trace, streamlined, use_elbo));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -880,7 +881,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_update_vb_lm", (DL_FUNC) &_varapproxr_update_vb_lm, 6},
     {"_varapproxr_vb_lmm", (DL_FUNC) &_varapproxr_vb_lmm, 15},
     {"_varapproxr_vb_lmm_randint", (DL_FUNC) &_varapproxr_vb_lmm_randint, 17},
-    {"_varapproxr_vb_lmm_randintslope", (DL_FUNC) &_varapproxr_vb_lmm_randintslope, 16},
+    {"_varapproxr_vb_lmm_randintslope", (DL_FUNC) &_varapproxr_vb_lmm_randintslope, 17},
     {"_varapproxr_jaakkola_jordan", (DL_FUNC) &_varapproxr_jaakkola_jordan, 6},
     {"_varapproxr_jaakkola_jordan_n", (DL_FUNC) &_varapproxr_jaakkola_jordan_n, 7},
     {"_varapproxr_saul_jordan", (DL_FUNC) &_varapproxr_saul_jordan, 7},
