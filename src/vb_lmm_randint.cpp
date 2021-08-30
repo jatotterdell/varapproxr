@@ -162,61 +162,28 @@ List vb_lmm_randint(
   return out;
 }
 
-
-List update_betagamma_vb_streamlined(
-  arma::field<arma::mat>& Xlist,
-  arma::field<arma::mat>& Zlist,
-  arma::field<arma::vec>& ylist,
-  arma::mat& inv_beta_sigma0,
-  arma::vec& beta_mu0,
-  double E_q_sigma,
-  arma::mat E_q_Omega_inv
-) {
-  // matrix dimensions
-  int M = Zlist.n_rows;
-  int P = Xlist(0).n_cols;
-  int Q = Zlist(0).n_cols;
-  
-  // temp storage
-  arma::field<arma::mat> G;
-  arma::field<arma::mat> H;
-  arma::mat S = arma::zeros(P + M*Q, P + M*Q);
-  arma::vec s = arma::zeros(P + M*Q);
-  arma::mat q_beta_sigma;
-  arma::vec q_beta_mu;
-  arma::field<arma::mat> q_gamma_sigma;
-  arma::field<arma::vec> q_gamma_mu;
-  arma::vec y;
-  arma::mat X;
-  
-  // loop over grouped matrices
-  for(int m = 0; m < M; m++) {
-    y = arma::join_cols(y, ylist(m));
-    X = arma::join_cols(X, Xlist(m));
-    G(m) = E_q_sigma * Xlist(m).t() * Zlist(m);
-    H(m) = inv(E_q_sigma * Zlist(m).t() * Zlist(m) + E_q_Omega_inv);
-    S += G(m)*H(m)*G(m).t();
-    s += G(m)*H(m)*Zlist(m).t()*ylist(m);
-  }
-  q_beta_sigma = inv(E_q_sigma * X.t() * X + inv_beta_sigma0 - S);
-  q_beta_mu = E_q_sigma * q_beta_sigma * (X.t()*y + inv_beta_sigma0 * beta_mu0 - s);
-  for(int m = 0; m < M; m++) {
-    q_gamma_sigma(m) = H(m) + H(m) * G(m).t() * q_beta_sigma * G(m) * H(m);
-    q_gamma_mu(m) = H(m) * (E_q_sigma * Zlist(m).t() * ylist(m) - G(m).t()*q_beta_mu);
-  }
-  
-  return List::create(
-    Named("q_beta_mu") = q_beta_mu,
-    Named("q_beta_sigma") = q_beta_sigma,
-    Named("q_gamma_mu") = q_gamma_mu,
-    Named("q_gamma_sigma") = q_gamma_sigma
-  );
-}
-
-
-//' @param a_eps0 The first hyper-parameter for prior on sigma
-//' @param b_eps0 The second hyper-parameter for prior on sigma
-//' @param pr_eps The prior to use for sigma_epsilon - 1 is IG(a0,b0) and 2 is Half-t(a0, b0)
+//' Variational Bayes for linear mixed model (random intercept and coefficient only).
+//' 
+//' Performs variational inference for random intercept and coefficient model.
+//' Currently assumes that all groups have same number of parameters.
+//' That is, that all Zlist elements are of equal dimension.
+//' 
+//' @param Xlist A list of subject specific design matrices
+//' @param Zlist A list of subject specific group matrices
+//' @param ylist A list of subject specific responses
+//' @param beta_mu0 Prior mean for beta
+//' @param beta_sigma0 Prior covariance for beta
+//' @param nu_Omega0 Prior df for Omega
+//' @param lambda_Omega0 Prior scale matrix for Omega
+//' @param pr_Omega Prior type for Omega - 1 is IW(nu, lambda), 2 is HW(nu, 2*nu*diag(1/lambda^2))
+//' @param sigma_a0 The first hyper-parameter for prior on sigma
+//' @param sigma_b0 The second hyper-parameter for prior on sigma
+//' @param pr_sigma The prior to use for sigma_epsilon - 1 is IG(a0,b0) and 2 is Half-t(a0, b0)
+//' @param tol Tolerance level for assessing convergence
+//' @param maxiter Maximum number of fixed-update iterations
+//' @param verbose Print trace of ELBO
+//' @param trace Return trace of parameters beta, gamma
+//' @param streamlined Use streamlined updates (more efficient if dim(Zlist) is large).
 //' 
 //' @export
 // [[Rcpp::export]]
@@ -295,6 +262,13 @@ List vb_lmm_randintslope(
   double q_omega_nu = nu_Omega0 + M;
   arma::mat q_omega_lambda = lambda_Omega0;
   arma::mat E_q_omega_inv = inv_wishart_E_invX(q_omega_nu, q_omega_lambda);
+  if(pr_Omega == 2) {
+    q_omega_nu = nu_Omega0 + M + lambda_Omega0.n_rows - 1;
+  }
+  // note prior two only
+  arma::vec q_xi_a(q(0));
+  arma::vec q_xi_b(q(0));
+  arma::vec E_ig_inv_xi(q(0));
   
   // sigma
   double q_sigma_a = sigma_a0 + 0.5 * N;
@@ -345,14 +319,17 @@ List vb_lmm_randintslope(
     q_gamma_sigma = q_betagamma_sigma.submat(P, P, P + Q - 1, P + Q - 1);
 
     // Update parameters of q(sigma)
+    // Inverse-Gamma prior
     if(pr_sigma == 1) {
       q_sigma_b = sigma_b0 + 0.5*E_dot_y_Cb;
+    // Half-t prior (hierarchical inverse gamma)
     } else if (pr_sigma == 2) {
       q_lambda_b = (sigma_b0 * ig_E_inv(q_sigma_a, q_sigma_b) + pow(sigma_a0, -2));
       q_sigma_b = sigma_b0 * ig_E_inv(q_lambda_a, q_lambda_b) + 0.5*E_dot_y_Cb;
     }
 
     // Update parameters of q(Omega)
+    // Inverse-Wishart prior
     if(pr_Omega == 1) {
       q_omega_lambda = lambda_Omega0;
       for(int m = 0; m < M; m++) {
@@ -361,8 +338,20 @@ List vb_lmm_randintslope(
           q_gamma_sigma.submat(idq(m), idq(m), idq(m+1)-1, idq(m+1)-1);
       }
       E_q_omega_inv = inv_wishart_E_invX(q_omega_nu, q_omega_lambda);
+    // Huang-Wand hierarchical prior
     } else if (pr_Omega == 2) {
-
+      for(int z = 0; z < q(0); z++) {
+        q_xi_b(z) = nu_Omega0 * E_q_omega_inv(z, z) + pow(lambda_Omega0(z, z), -2);
+        q_xi_a(z) = 0.5 * (nu_Omega0 + q(0)) / q_xi_b(z);
+        E_ig_inv_xi(z) = ig_E_inv(q_xi_a(z),  q_xi_b(z));
+      }
+      q_omega_lambda = 2*nu_Omega0*arma::diagmat(E_ig_inv_xi);
+      for(int m = 0; m < M; m++) {
+        q_omega_lambda += q_gamma_mu.subvec(idq(m), idq(m+1)-1) * 
+          q_gamma_mu.subvec(idq(m), idq(m+1)-1).t() +
+          q_gamma_sigma.submat(idq(m), idq(m), idq(m+1)-1, idq(m+1)-1);
+      }
+      E_q_omega_inv = inv_wishart_E_invX(q_omega_nu, q_omega_lambda);
     }
     
     if(trace)
@@ -387,8 +376,6 @@ List vb_lmm_randintslope(
   );
   
   if(trace) out.push_back(tr.submat(0, 0, P + Q - 1, iterations), "trace");
-  
-  return out;
   
   return out;
 }

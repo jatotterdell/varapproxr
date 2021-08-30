@@ -7,7 +7,15 @@
 solve_two_level_sparse(a1, A11, a2, A22, A12)
 }
 \arguments{
-\item{x}{A list of matrices}
+\item{a1}{A vector}
+
+\item{A11}{A matrix}
+
+\item{a2}{A list of vectors}
+
+\item{A22}{A list of matrices}
+
+\item{A12}{A list of matrices}
 }
 \description{
 Solve two level sparse matrix problem.

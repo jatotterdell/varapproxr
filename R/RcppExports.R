@@ -236,7 +236,11 @@ bind_cols <- function(x) {
 
 #' Solve two level sparse matrix problem.
 #' 
-#' @param x A list of matrices
+#' @param a1 A vector
+#' @param A11 A matrix
+#' @param a2 A list of vectors
+#' @param A22 A list of matrices
+#' @param A12 A list of matrices
 solve_two_level_sparse <- function(a1, A11, a2, A22, A12) {
     .Call(`_varapproxr_solve_two_level_sparse`, a1, A11, a2, A22, A12)
 }
@@ -367,9 +371,28 @@ vb_lmm_randint <- function(X, Z, y, mu_beta, sigma_beta, mu, sigma, Aeps = 1.0, 
     .Call(`_varapproxr_vb_lmm_randint`, X, Z, y, mu_beta, sigma_beta, mu, sigma, Aeps, Beps, Au, Bu, Bqeps, Bqu, tol, maxiter, verbose, trace)
 }
 
-#' @param a_eps0 The first hyper-parameter for prior on sigma
-#' @param b_eps0 The second hyper-parameter for prior on sigma
-#' @param pr_eps The prior to use for sigma_epsilon - 1 is IG(a0,b0) and 2 is Half-t(a0, b0)
+#' Variational Bayes for linear mixed model (random intercept and coefficient only).
+#' 
+#' Performs variational inference for random intercept and coefficient model.
+#' Currently assumes that all groups have same number of parameters.
+#' That is, that all Zlist elements are of equal dimension.
+#' 
+#' @param Xlist A list of subject specific design matrices
+#' @param Zlist A list of subject specific group matrices
+#' @param ylist A list of subject specific responses
+#' @param beta_mu0 Prior mean for beta
+#' @param beta_sigma0 Prior covariance for beta
+#' @param nu_Omega0 Prior df for Omega
+#' @param lambda_Omega0 Prior scale matrix for Omega
+#' @param pr_Omega Prior type for Omega - 1 is IW(nu, lambda), 2 is HW(nu, 2*nu*diag(1/lambda^2))
+#' @param sigma_a0 The first hyper-parameter for prior on sigma
+#' @param sigma_b0 The second hyper-parameter for prior on sigma
+#' @param pr_sigma The prior to use for sigma_epsilon - 1 is IG(a0,b0) and 2 is Half-t(a0, b0)
+#' @param tol Tolerance level for assessing convergence
+#' @param maxiter Maximum number of fixed-update iterations
+#' @param verbose Print trace of ELBO
+#' @param trace Return trace of parameters beta, gamma
+#' @param streamlined Use streamlined updates (more efficient if dim(Zlist) is large).
 #' 
 #' @export
 vb_lmm_randintslope <- function(Xlist, Zlist, ylist, beta_mu0, beta_sigma0, nu_Omega0, lambda_Omega0, pr_Omega = 1L, sigma_a0 = 1e-2, sigma_b0 = 1e-2, pr_sigma = 1L, tol = 1e-8, maxiter = 500L, verbose = FALSE, trace = FALSE, streamlined = FALSE) {

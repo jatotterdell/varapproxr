@@ -123,7 +123,6 @@ Rcpp::NumericVector arma2vec(arma::vec x) {
 }
 
 
-
 //' Construct block-diagonal matrix from list of matrices
 //' 
 //' Constructs as dense block-diagonal matrix from a list (field) of matrices.
@@ -139,31 +138,6 @@ arma::mat blockDiag(arma::field<arma::mat>& x) {
   for(unsigned int i=0; i<n; i++) {
     dimvecRow(i) = x(i,0).n_rows; 
     dimvecCol(i) = x(i,0).n_cols; 
-    dimenRow += dimvecRow(i);
-    dimenCol += dimvecCol(i);
-  }
-  arma::mat X(dimenRow, dimenCol, arma::fill::zeros);
-  int idxRow=0;
-  int idxCol=0;
-  for(unsigned int i=0; i<n; i++) {
-    X.submat(idxRow, idxCol, idxRow + dimvecRow(i) - 1, idxCol + dimvecCol(i) - 1 ) = x(i,0);
-    idxRow += dimvecRow(i);
-    idxCol += dimvecCol(i);
-  }
-  return(X);
-}
-
-
-arma::mat repeatBlockDiag(arma::mat& x, arma::mat& R) {
-  int n = x.n_rows;
-  int k = R.n_rows;
-  int dimenRow = 0;
-  int dimenCol = 0;
-  arma::ivec dimvecRow(n);
-  arma::ivec dimvecCol(n);
-  for(int i = 0; i < n; i++) {
-    dimvecRow(i) = k; 
-    dimvecCol(i) = k; 
     dimenRow += dimvecRow(i);
     dimenCol += dimvecCol(i);
   }
@@ -213,7 +187,11 @@ arma::mat bind_cols(arma::field<arma::mat>& x) {
 
 //' Solve two level sparse matrix problem.
 //' 
-//' @param x A list of matrices
+//' @param a1 A vector
+//' @param A11 A matrix
+//' @param a2 A list of vectors
+//' @param A22 A list of matrices
+//' @param A12 A list of matrices
 // [[Rcpp::export]]
 Rcpp::List solve_two_level_sparse(
   arma::vec a1,
@@ -272,7 +250,6 @@ arma::mat pnorm_mat(arma::mat& m) {
   int p = m.n_cols;
   int n = m.n_rows;
   arma::mat out(n, p);
-  
   for (int i = 0; i < n; i++) {
     for(int j = 0; j < p; j++) {
       out(i, j) = R::pnorm(m(i, j), 0.0, 1.0, 1, 0);
