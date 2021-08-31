@@ -20,7 +20,8 @@ vb_lmm_randintslope(
   maxiter = 500L,
   verbose = FALSE,
   trace = FALSE,
-  streamlined = FALSE
+  streamlined = FALSE,
+  use_elbo = TRUE
 )
 }
 \arguments{
@@ -55,6 +56,8 @@ vb_lmm_randintslope(
 \item{trace}{Return trace of parameters beta, gamma}
 
 \item{streamlined}{Use streamlined updates (more efficient if dim(Zlist) is large).}
+
+\item{use_elbo}{Should the ELBO be calculated and used for convergence checks?}
 }
 \description{
 Performs variational inference for random intercept and coefficient model.

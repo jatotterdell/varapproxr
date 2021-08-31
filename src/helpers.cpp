@@ -1,8 +1,9 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 
+#define STATS_ENABLE_ARMA_WRAPPERS
 #include <RcppArmadillo.h>
 #include <Rmath.h>
-
+#include "stats.hpp"
 
 //' Calculate vec^(-1)
 //' 
@@ -247,15 +248,7 @@ Rcpp::List solve_two_level_sparse(
 //' @param m A matrix of variates 
 // [[Rcpp::export]]
 arma::mat pnorm_mat(arma::mat& m) {
-  int p = m.n_cols;
-  int n = m.n_rows;
-  arma::mat out(n, p);
-  for (int i = 0; i < n; i++) {
-    for(int j = 0; j < p; j++) {
-      out(i, j) = R::pnorm(m(i, j), 0.0, 1.0, 1, 0);
-    }
-  }
-  return out;
+  return stats::pnorm(m, 0.0, 1.0);
 }
 
 
@@ -264,16 +257,7 @@ arma::mat pnorm_mat(arma::mat& m) {
 //' @param m A matrix of variates 
 // [[Rcpp::export]]
 arma::mat dnorm_mat(arma::mat& m) {
-  int p = m.n_cols;
-  int n = m.n_rows;
-  arma::mat out(n, p);
-  
-  for (int i = 0; i < n; i++) {
-    for(int j = 0; j < p; j++) {
-      out(i, j) = R::dnorm(m(i, j), 0.0, 1.0, 0);
-    }
-  }
-  return out;
+  return stats::dnorm(m, 0.0, 1.0);
 }
 
 

@@ -3,7 +3,7 @@
 #include <RcppArmadillo.h>
 #include <Rmath.h>
 #include "helpers.h"
-
+#include "gcem.hpp"
 
 //' Multivariate Normal Entropy H[x]
 //' 
@@ -62,7 +62,7 @@ double dot_y_minus_Xb(double yty, arma::vec Xty, arma::mat& XtX, arma::vec mu, a
 //' @param b scale 
 // [[Rcpp::export]]
 double ig_entropy(double a, double b) {
-  return a + log(b) + lgamma(a) - (a + 1)*R::digamma(a);
+  return a + log(b) + gcem::lgamma(a) - (a + 1)*R::digamma(a);
 }
 
 
@@ -120,7 +120,7 @@ double ig_E_log(double a, double b) {
 double ig_E_lpdf(double a0, double b0, double a, double b) {
   if(a0 <= 0 || b0 <= 0 || a <= 0 || b <= 0 || ISNAN(a0) || ISNAN(b0) || ISNAN(a) || ISNAN(b))
     return NAN;
-  return a0 * log(b0) - lgamma(a0) - (a0 + 1) * ig_E_log(a, b) - b0 * ig_E_inv(a, b);
+  return a0 * log(b0) - gcem::lgamma(a0) - (a0 + 1) * ig_E_log(a, b) - b0 * ig_E_inv(a, b);
 }
 
 

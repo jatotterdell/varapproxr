@@ -14,8 +14,9 @@ All implementations are currently prototypes; accuracy and efficiency is not gua
 devtools::install_github('jatotterdell/varapproxr')
 ```
 
-# Possible Features
+# Dependencies
 
-- [ ] Optimise C++ functions for numerical stability
-- [ ] Write wrappers to interface with standard S3 regression functions
-- [ ] Integrate with [`distr`](https://alan-turing-institute.github.io/distr6/) package for OO priors/posteriors
+varapproxr uses:
+
+- [GCEM](https://github.com/kthohr/gcem) for calculation of some special mathematics functions.
+- [StatsLib](https://github.com/kthohr/stats) for functions of probability distributions.
