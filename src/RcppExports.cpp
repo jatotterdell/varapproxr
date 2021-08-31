@@ -13,40 +13,40 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // mvn_entropy
-double mvn_entropy(arma::mat& S);
+double mvn_entropy(const arma::mat& S);
 RcppExport SEXP _varapproxr_mvn_entropy(SEXP SSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type S(SSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type S(SSEXP);
     rcpp_result_gen = Rcpp::wrap(mvn_entropy(S));
     return rcpp_result_gen;
 END_RCPP
 }
 // mvn_E_lpdf
-double mvn_E_lpdf(arma::vec& mu0, arma::mat& Sigma0, arma::vec& mu, arma::mat& Sigma);
+double mvn_E_lpdf(const arma::vec& mu0, const arma::mat& Sigma0, const arma::vec& mu, const arma::mat& Sigma);
 RcppExport SEXP _varapproxr_mvn_E_lpdf(SEXP mu0SEXP, SEXP Sigma0SEXP, SEXP muSEXP, SEXP SigmaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec& >::type mu0(mu0SEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type Sigma0(Sigma0SEXP);
-    Rcpp::traits::input_parameter< arma::vec& >::type mu(muSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type Sigma(SigmaSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type mu0(mu0SEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Sigma0(Sigma0SEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type Sigma(SigmaSEXP);
     rcpp_result_gen = Rcpp::wrap(mvn_E_lpdf(mu0, Sigma0, mu, Sigma));
     return rcpp_result_gen;
 END_RCPP
 }
 // dot_y_minus_Xb
-double dot_y_minus_Xb(double yty, arma::vec Xty, arma::mat& XtX, arma::vec mu, arma::mat& Sigma);
+double dot_y_minus_Xb(double yty, arma::vec& Xty, arma::mat& XtX, arma::vec& mu, arma::mat& Sigma);
 RcppExport SEXP _varapproxr_dot_y_minus_Xb(SEXP ytySEXP, SEXP XtySEXP, SEXP XtXSEXP, SEXP muSEXP, SEXP SigmaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< double >::type yty(ytySEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type Xty(XtySEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type Xty(XtySEXP);
     Rcpp::traits::input_parameter< arma::mat& >::type XtX(XtXSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type mu(muSEXP);
+    Rcpp::traits::input_parameter< arma::vec& >::type mu(muSEXP);
     Rcpp::traits::input_parameter< arma::mat& >::type Sigma(SigmaSEXP);
     rcpp_result_gen = Rcpp::wrap(dot_y_minus_Xb(yty, Xty, XtX, mu, Sigma));
     return rcpp_result_gen;
@@ -163,25 +163,25 @@ BEGIN_RCPP
 END_RCPP
 }
 // inv_wishart_E_invX
-arma::mat inv_wishart_E_invX(double nu, arma::mat& S);
+arma::mat inv_wishart_E_invX(double nu, const arma::mat& S);
 RcppExport SEXP _varapproxr_inv_wishart_E_invX(SEXP nuSEXP, SEXP SSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type S(SSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type S(SSEXP);
     rcpp_result_gen = Rcpp::wrap(inv_wishart_E_invX(nu, S));
     return rcpp_result_gen;
 END_RCPP
 }
 // inv_wishart_E_logdet
-double inv_wishart_E_logdet(double nu, arma::mat& S);
+double inv_wishart_E_logdet(double nu, const arma::mat& S);
 RcppExport SEXP _varapproxr_inv_wishart_E_logdet(SEXP nuSEXP, SEXP SSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< double >::type nu(nuSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type S(SSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type S(SSEXP);
     rcpp_result_gen = Rcpp::wrap(inv_wishart_E_logdet(nu, S));
     return rcpp_result_gen;
 END_RCPP
@@ -451,6 +451,32 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< bool >::type streamlined(streamlinedSEXP);
     Rcpp::traits::input_parameter< bool >::type use_elbo(use_elboSEXP);
     rcpp_result_gen = Rcpp::wrap(vb_lmm_randintslope(Xlist, Zlist, ylist, beta_mu0, beta_sigma0, nu_Omega0, lambda_Omega0, pr_Omega, sigma_a0, sigma_b0, pr_sigma, tol, maxiter, verbose, trace, streamlined, use_elbo));
+    return rcpp_result_gen;
+END_RCPP
+}
+// vb_lmm_randintslope_streamlined
+List vb_lmm_randintslope_streamlined(const arma::field<arma::mat>& Xlist, const arma::field<arma::mat>& Zlist, const arma::field<arma::vec>& ylist, const arma::vec& beta_mu0, const arma::mat& beta_sigma0, double nu_Omega0, const arma::mat lambda_Omega0, int pr_Omega, double sigma_a0, double sigma_b0, int pr_sigma, double tol, int maxiter, bool verbose, bool trace, bool use_elbo);
+RcppExport SEXP _varapproxr_vb_lmm_randintslope_streamlined(SEXP XlistSEXP, SEXP ZlistSEXP, SEXP ylistSEXP, SEXP beta_mu0SEXP, SEXP beta_sigma0SEXP, SEXP nu_Omega0SEXP, SEXP lambda_Omega0SEXP, SEXP pr_OmegaSEXP, SEXP sigma_a0SEXP, SEXP sigma_b0SEXP, SEXP pr_sigmaSEXP, SEXP tolSEXP, SEXP maxiterSEXP, SEXP verboseSEXP, SEXP traceSEXP, SEXP use_elboSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const arma::field<arma::mat>& >::type Xlist(XlistSEXP);
+    Rcpp::traits::input_parameter< const arma::field<arma::mat>& >::type Zlist(ZlistSEXP);
+    Rcpp::traits::input_parameter< const arma::field<arma::vec>& >::type ylist(ylistSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type beta_mu0(beta_mu0SEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type beta_sigma0(beta_sigma0SEXP);
+    Rcpp::traits::input_parameter< double >::type nu_Omega0(nu_Omega0SEXP);
+    Rcpp::traits::input_parameter< const arma::mat >::type lambda_Omega0(lambda_Omega0SEXP);
+    Rcpp::traits::input_parameter< int >::type pr_Omega(pr_OmegaSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma_a0(sigma_a0SEXP);
+    Rcpp::traits::input_parameter< double >::type sigma_b0(sigma_b0SEXP);
+    Rcpp::traits::input_parameter< int >::type pr_sigma(pr_sigmaSEXP);
+    Rcpp::traits::input_parameter< double >::type tol(tolSEXP);
+    Rcpp::traits::input_parameter< int >::type maxiter(maxiterSEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    Rcpp::traits::input_parameter< bool >::type trace(traceSEXP);
+    Rcpp::traits::input_parameter< bool >::type use_elbo(use_elboSEXP);
+    rcpp_result_gen = Rcpp::wrap(vb_lmm_randintslope_streamlined(Xlist, Zlist, ylist, beta_mu0, beta_sigma0, nu_Omega0, lambda_Omega0, pr_Omega, sigma_a0, sigma_b0, pr_sigma, tol, maxiter, verbose, trace, use_elbo));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -883,6 +909,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_vb_lmm", (DL_FUNC) &_varapproxr_vb_lmm, 15},
     {"_varapproxr_vb_lmm_randint", (DL_FUNC) &_varapproxr_vb_lmm_randint, 17},
     {"_varapproxr_vb_lmm_randintslope", (DL_FUNC) &_varapproxr_vb_lmm_randintslope, 17},
+    {"_varapproxr_vb_lmm_randintslope_streamlined", (DL_FUNC) &_varapproxr_vb_lmm_randintslope_streamlined, 16},
     {"_varapproxr_jaakkola_jordan", (DL_FUNC) &_varapproxr_jaakkola_jordan, 6},
     {"_varapproxr_jaakkola_jordan_n", (DL_FUNC) &_varapproxr_jaakkola_jordan_n, 7},
     {"_varapproxr_saul_jordan", (DL_FUNC) &_varapproxr_saul_jordan, 7},

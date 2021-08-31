@@ -12,7 +12,7 @@
 //' 
 //' @param S Covariance matrix 
 // [[Rcpp::export]]
-double mvn_entropy(arma::mat& S) {
+double mvn_entropy(const arma::mat& S) {
   if(!S.is_sympd()) 
     Rcpp::stop("S matrix must be symmetric positive definite.");
   int d = S.n_rows;
@@ -29,7 +29,12 @@ double mvn_entropy(arma::mat& S) {
 //' @param mu Variational mean
 //' @param Sigma Variational covariance
 // [[Rcpp::export]]
-double mvn_E_lpdf(arma::vec& mu0, arma::mat& Sigma0, arma::vec& mu, arma::mat& Sigma) {
+double mvn_E_lpdf(
+    const arma::vec& mu0, 
+    const arma::mat& Sigma0, 
+    const arma::vec& mu, 
+    const arma::mat& Sigma) {
+  
   if(!Sigma0.is_sympd() || !Sigma.is_sympd()) 
     Rcpp::stop("Covariance matrices must be symmetric positive definite.");
   int d = Sigma.n_cols;
@@ -49,7 +54,12 @@ double mvn_E_lpdf(arma::vec& mu0, arma::mat& Sigma0, arma::vec& mu, arma::mat& S
 //' @param mu Variational mean mu
 //' @param Sigma Variational variance Sigma
 // [[Rcpp::export]]
-double dot_y_minus_Xb(double yty, arma::vec Xty, arma::mat& XtX, arma::vec mu, arma::mat& Sigma) {
+double dot_y_minus_Xb(
+    double yty,
+    arma::vec& Xty,
+    arma::mat& XtX,
+    arma::vec& mu,
+    arma::mat& Sigma) {
   return yty - 2*dot(mu, Xty) + arma::trace(XtX * (Sigma + mu * trans(mu)));
 }
 
@@ -179,7 +189,7 @@ double scaled_inv_chisq_E_log(double nu, double tau) {
 //' @param nu Degrees of freedom
 //' @param S Scale matrix
 // [[Rcpp::export]]
-arma::mat inv_wishart_E_invX(double nu, arma::mat& S) {
+arma::mat inv_wishart_E_invX(double nu, const arma::mat& S) {
   if(!S.is_sympd()) 
     Rcpp::stop("S matrix must be symmetric positive definite.");
   if(nu <= S.n_rows)
@@ -195,7 +205,7 @@ arma::mat inv_wishart_E_invX(double nu, arma::mat& S) {
 //' @param nu Degrees of freedom
 //' @param S Scale matrix
 // [[Rcpp::export]]
-double inv_wishart_E_logdet(double nu, arma::mat& S) {
+double inv_wishart_E_logdet(double nu, const arma::mat& S) {
   if(!S.is_sympd()) 
     Rcpp::stop("S matrix must be symmetric positive definite.");
   if(nu <= S.n_rows)
