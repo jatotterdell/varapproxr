@@ -186,6 +186,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// test
+double test(double a, double b);
+RcppExport SEXP _varapproxr_test(SEXP aSEXP, SEXP bSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< double >::type a(aSEXP);
+    Rcpp::traits::input_parameter< double >::type b(bSEXP);
+    rcpp_result_gen = Rcpp::wrap(test(a, b));
+    return rcpp_result_gen;
+END_RCPP
+}
 // inv_vectorise
 arma::mat inv_vectorise(arma::vec v);
 RcppExport SEXP _varapproxr_inv_vectorise(SEXP vSEXP) {
@@ -891,6 +903,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_varapproxr_scaled_inv_chisq_E_log", (DL_FUNC) &_varapproxr_scaled_inv_chisq_E_log, 2},
     {"_varapproxr_inv_wishart_E_invX", (DL_FUNC) &_varapproxr_inv_wishart_E_invX, 2},
     {"_varapproxr_inv_wishart_E_logdet", (DL_FUNC) &_varapproxr_inv_wishart_E_logdet, 2},
+    {"_varapproxr_test", (DL_FUNC) &_varapproxr_test, 2},
     {"_varapproxr_inv_vectorise", (DL_FUNC) &_varapproxr_inv_vectorise, 1},
     {"_varapproxr_vech", (DL_FUNC) &_varapproxr_vech, 1},
     {"_varapproxr_inv_vech", (DL_FUNC) &_varapproxr_inv_vech, 1},

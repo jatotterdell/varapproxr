@@ -13,7 +13,7 @@ Imports:
     rmarkdown,
     markdown,
     mvnfast
-LinkingTo: Rcpp, RcppArmadillo
+LinkingTo: Rcpp, RcppArmadillo, BH
 RoxygenNote: 7.1.1
 Encoding: UTF-8
 Suggests: 

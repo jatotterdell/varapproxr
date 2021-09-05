@@ -148,6 +148,10 @@ inv_wishart_E_logdet <- function(nu, S) {
     .Call(`_varapproxr_inv_wishart_E_logdet`, nu, S)
 }
 
+test <- function(a, b) {
+    .Call(`_varapproxr_test`, a, b)
+}
+
 #' Calculate vec^(-1)
 #' 
 #' @param v A vector of dimension d^2 by 1
