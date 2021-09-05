@@ -10,6 +10,8 @@ sample_vbdist(object, par = NULL, n_samples = 1000)
 \item{object}{an object of class `mfvb`}
 
 \item{par}{a character vector indicating which distributions to sample}
+
+\item{n_samples}{The number of samples to draw}
 }
 \value{
 A matrix of draws from the indicated distributions

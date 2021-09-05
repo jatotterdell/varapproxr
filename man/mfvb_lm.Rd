@@ -2,7 +2,32 @@
 % Please edit documentation in R/mfvb_lm.R
 \name{mfvb_lm}
 \alias{mfvb_lm}
-\title{mfvb_lm}
+\title{#' mfvb_lm.fit
+#' 
+#' @param x The x input
+#' @param y The response
+#' @param weights weighting
+#' @param subset subset of data
+#' @param na.action handling of na
+#' @param offset Offset term
+#' @param control Control terms
+#' 
+#' @return x if all checks pass
+mfvb_lm.fit <- function(
+  x = stop("no 'x' argument"),
+  y = stop("no 'y' argument"),
+  weights = NULL,
+  subset = NULL,
+  na.action = na.fail,
+  offset = NULL,
+  control = list(),
+  ...
+  ) {
+  control <- do.call("mfvb.control", control)
+  x <- check.mfvb.x(x)
+  y <- check.mfvb.y(x, y)
+}
+mfvb_lm}
 \usage{
 mfvb_lm(
   formula,

@@ -4,10 +4,12 @@
 \alias{vcov.mfvb}
 \title{Extract model coefficient posterior covariance matrix}
 \usage{
-\method{vcov}{mfvb}(object)
+\method{vcov}{mfvb}(object, ...)
 }
 \arguments{
 \item{object}{a `mfvb` model}
+
+\item{...}{Unused}
 }
 \description{
 `vcov.mfvb` implements the `vcov` generic for objects of class `mfvb`.
