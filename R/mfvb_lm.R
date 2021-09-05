@@ -1,3 +1,104 @@
+mfvb_lm <- function(...) UseMethod("mfvb_lm")
+
+is.mfvb_lm <- function(x) {
+  inherits(x, "mfvb_lm")
+}
+
+is.mfvb <- function(x) {
+  inherits(x, "mfvb")
+}
+
+
+#' Control arguments for mfvb functions
+#' 
+#' The `control` argument 
+#' 
+#' @param tol a positive convergence tolerance for ELBO
+#' @param maxiter integer giving the maximal number of iterations
+#' @param verbose logical indicating if output should be printed for each iteration
+#' @return A list with named components
+mfvb.control <- function(tol = 1e-8, maxiter = 100, verbose = FALSE) 
+{
+  if (!is.numeric(tol) || tol <= 0) 
+    stop("value of 'tol' must be > 0")
+  if (!is.numeric(maxiter) || maxiter <= 0) 
+    stop("maximum number of iterations must be > 0")
+  list(tol = tol, maxiter = maxiter, verbose = verbose)  
+}
+
+
+#' Check the `x` input to an mfvb regression function
+#' 
+#' @param x The x input to check
+#' @return x if all checks pass
+check.mfvb.x <- function(x)
+{
+  if(!is.matrix(x))
+    stop("'x' is not a matrix or could not be converted to a matrix")
+  if(NROW(x) == 0 || NCOL(x) == 0)
+    stop("'x' is empty")
+  if(anyNA(x))
+    stop("NA in 'x'")
+  if(!is.numeric(x[,1]) && !is.logical(x[,1]))
+    stop("non-numeric column in 'x'")
+  missing.colnames <- if(is.null(colnames(x))) 1:NCOL(x) else nchar(colnames(x)) == 0
+  colnames(x)[missing.colnames] <- c("(Intercept)", paste("V", seq_len(NCOL(x) - 1), sep = ""))[missing.colnames]
+  duplicated <- which(duplicated(colnames(x)))
+  if(length(duplicated))
+    stop("column name \"", colnames(x)[duplicated[1]], "\" in 'x' is duplicated")
+  x
+}
+
+
+#' Check the `y` input to an mfvb regression function
+#' 
+#' @param x The x input
+#' @param y The y input to check
+#' @return x if all checks pass
+check.mfvb.y <- function(x, y)
+{
+  # as.vector(as.matrix(y)) is necessary when y is a data.frame
+  # (because as.vector alone on a data.frame returns a data.frame)
+  y <- as.vector(as.matrix(y))
+  if(length(y) == 0)
+    stop("'y' is empty")
+  if(anyNA(y))
+    stop("NA in 'y'")
+  if(!is.numeric(y) && !is.logical(y))
+    stop("'y' is not numeric or logical")
+  if(length(y) != nrow(x))
+    stop("nrow(x) is ", nrow(x), " but length(y) is ", length(y))
+  y
+}
+
+
+#' #' mfvb_lm.fit
+#' #' 
+#' #' @param x The x input
+#' #' @param y The response
+#' #' @param weights weighting
+#' #' @param subset subset of data
+#' #' @param na.action handling of na
+#' #' @param offset Offset term
+#' #' @param control Control terms
+#' #' 
+#' #' @return x if all checks pass
+#' mfvb_lm.fit <- function(
+#'   x = stop("no 'x' argument"),
+#'   y = stop("no 'y' argument"),
+#'   weights = NULL,
+#'   subset = NULL,
+#'   na.action = na.fail,
+#'   offset = NULL,
+#'   control = list(),
+#'   ...
+#'   ) {
+#'   control <- do.call("mfvb.control", control)
+#'   x <- check.mfvb.x(x)
+#'   y <- check.mfvb.y(x, y)
+#' }
+
+
 #' mfvb_lm
 #' 
 #' Fit a linear regression model using mean-field variational Bayes approximation.
@@ -79,9 +180,8 @@ mfvb_lm <- function(
 #' `coef.mfvb` implements the `coef` generic for objects of class `mfvb`.
 #' 
 #' @param object a `mfvb` model
-#' @param ... Additional arguments
 #' @export
-coef.mfvb <- function(object, ...) {
+coef.mfvb <- function(object) {
   val <- object$mu
   val
 }
@@ -92,9 +192,8 @@ coef.mfvb <- function(object, ...) {
 #' `vcov.mfvb` implements the `vcov` generic for objects of class `mfvb`.
 #' 
 #' @param object a `mfvb` model
-#' @param ... Additional arguments
 #' @export
-vcov.mfvb <- function(object, ...) {
+vcov.mfvb <- function(object) {
   val <- object$Sigma
   val
 }
@@ -124,16 +223,14 @@ confint.mfvb <- function(object, level = 0.95) {
 #' Summarise MFVB fit
 #' 
 #' @param object an object of class `mfvb`
-#' @param ... Additional arguments
-#' @importFrom stats printCoefmat
 #' @export
-summary.mfvb <- function(object, ...) {
+summary.mfvb <- function(object) {
   beta <- coef(object)
   V <- vcov(object)
   S <- sqrt(diag(V))
   P <- 1 - stats::pnorm(0, beta, S)
   sTable <- cbind("mean" = beta, "SD" = S, "Pr(>0)" = P)
-  stats::printCoefmat(sTable)
+  printCoefmat(sTable)
 }
 
 
@@ -141,10 +238,7 @@ summary.mfvb <- function(object, ...) {
 #' 
 #' @param object an object of class `mfvb`
 #' @param par a character vector indicating which distributions to sample
-#' @param n_samples The number of samples to draw
 #' @return A matrix of draws from the indicated distributions
-#' @importFrom mvnfast rmvn
-#' @importFrom stats rgamma
 #' @export
 sample_vbdist <- function(object, par = NULL, n_samples = 1e3) {
   if(is.null(par)) {
@@ -152,16 +246,16 @@ sample_vbdist <- function(object, par = NULL, n_samples = 1e3) {
   }
   out <- NULL
   if("mu" %in% par) {
-    mu <- coef(object) 
-    Sigma <- vcov(object)
+    mu <- coef(fit) 
+    Sigma <- vcov(fit)
     beta_draws <- mvnfast::rmvn(n_samples, mu, Sigma)
     colnames(beta_draws) <- names(mu)
     out$beta <- beta_draws
   }
   if("sigma" %in% par) {
-    a <- object$a
-    b <- object$b
-    sigma_draws <- matrix(sqrt(1 / stats::rgamma(n_samples, a, b)), n_samples, 1)
+    a <- fit$a
+    b <- fit$b
+    sigma_draws <- matrix(sqrt(1 / rgamma(n_samples, a, b)), n_samples, 1)
     colnames(sigma_draws) <- "sigma"
     out$sigma <- sigma_draws
   }
