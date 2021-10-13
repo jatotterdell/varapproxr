@@ -13,8 +13,8 @@
 //' @param S Covariance matrix 
 // [[Rcpp::export]]
 double mvn_entropy(const arma::mat& S) {
-  if(!S.is_sympd()) 
-    Rcpp::stop("S matrix must be symmetric positive definite.");
+  // if(!S.is_sympd()) 
+  //   Rcpp::stop("S matrix must be symmetric positive definite.");
   int d = S.n_rows;
   return 0.5*(d*(1.0 + log(2) + log(M_PI)) + log_det_sympd(S));
 }
