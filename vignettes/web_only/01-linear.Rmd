@@ -1,7 +1,7 @@
 ---
 title: "Linear Models"
 author: "James Totterdell"
-date: "`r Sys.Date()`"
+date: "2023-07-14"
 output:
   html_document:
     toc: true
@@ -369,7 +369,7 @@ $$
 \end{aligned}
 $$
 
-The derivation for the optimal densities follows are for the linear regression model.
+The derivation for the optimal densities follows that for the linear regression model.
 Define $C = [X \ Z]$, $\zeta=(\beta^\top \ \gamma^\top)^\top$, and
 $$
 \Xi = \Sigma_0 \oplus G \implies \Xi^{-1} = \Sigma_0^{-1}\oplus G^{-1}
@@ -405,12 +405,39 @@ b_{\sigma^2} &= b_0 + \tfrac{1}{2}\left\{\lVert y - C\mu_{q(\zeta)}\rVert^2+\tex
 \end{aligned}
 $$
 
-The new variational densities are those for $\Omega_k$.
+The new variational densities are those for $\Omega_k$. Consider just one $\Omega_k$ where $\gamma_i | \Omega \sim N(0, \Omega), i=1,...,m$ (i.e. a standard random effects model) and where $\Omega \sim \text{Inverse-Wishart}(\xi_0, \Lambda_0)$ then
 $$
 \begin{aligned}
-p(\Omega_k|\text{rest}) &\propto p(\Omega_k|\gamma_k) \\
-&\propto p(\gamma_k|\Omega_k)p(\Omega_k) \\
-\ln p(\Omega_k|\gamma_k) &\simeq 
+p(\Omega|\text{rest}) &\propto p(\Omega|\gamma) \\
+&\propto p(\gamma|\Omega)p(\Omega) \\
+\ln p(\Omega|\gamma) &\simeq -\frac{m}{2} \ln |\Omega| - \frac{1}{2}\sum_{i=1}^m\gamma_i^\mathsf{T}\Omega^{-1}\gamma_i - (\xi_0 + p + 1)/2\ln|\Omega| - \text{tr}(\Lambda_0\Omega^{-1}) \\
+\mathbb {E}_q[\ln p(\Omega|\gamma)] &\simeq - \frac{1}{2}(\xi_0 + p + 1 + m)\ln|\Omega| - \frac{1}{2}\sum_{i=1}^m \mathbb{E}_q[\gamma_i^\mathsf{T}\Omega^{-1}\gamma_i] - \text{tr}(\Lambda_0\Omega^{-1})
+\end{aligned}
+$$
+Note that
+$$
+\begin{aligned}
+\mathbb{E}_q[\gamma_i^\mathsf{T}\Omega^{-1}\gamma_i] &= (\mathbb{E}_q[\gamma_i])^\mathsf{T}\Omega^{-1}\mathbb{E}_q[\gamma_i] + \text{tr}(\mathbb{V}_q[\gamma_i]\Omega^{-1}) \\
+&= \text{tr}\left(\mathbb{E}_q[\gamma_i](\mathbb{E}_q[\gamma_i])^\mathsf{T}\Omega^{-1} + \mathbb{V}_q[\gamma_i]\Omega^{-1}\right) \\
+&= \text{tr}\left(\left(\mathbb{E}_q[\gamma_i](\mathbb{E}_q[\gamma_i])^\mathsf{T} + \mathbb{V}_q[\gamma_i]\right)\Omega^{-1}\right)
+\end{aligned}
+$$
+So the optimal density is also Inverse-Wishart, i.e.
+$$
+q(\Omega) = \text{Inverse-Wishart}(\Omega| \xi_{q(\Omega)}, \Lambda_{q(\Omega)})
+$$
+where
+$$
+\begin{aligned}
+\xi_{q(\Omega)} &= \xi_0 + m \\
+\Lambda_{q(\Omega)} &= \Lambda_0 + \sum_{i=1}^m \left(\mathbb{E}_q[\gamma_i](\mathbb{E}_q[\gamma_i])^\mathsf{T} + \mathbb{V}_q[\gamma_i]\right)
+\end{aligned}
+$$
+and where the required expectations are
+$$
+\begin{aligned}
+\mathbb{E}_q[\Omega^{-1}] &= \xi_{q(\Omega)}\Lambda_{q(\Omega)}^{-1} \\
+\mathbb{E}_q[\ln|\Omega|] &= \ln|\Lambda_{q(\Omega)}/2| - \psi_d(\xi_{q(\Omega)} - d + 1)
 \end{aligned}
 $$
 
