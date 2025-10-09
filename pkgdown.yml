@@ -1,13 +1,12 @@
-pandoc: 2.19.2
-pkgdown: 2.0.7
+pandoc: 3.1.11
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
+  web_only/00-basics: web_only/00-basics.html
+  web_only/01-linear: web_only/01-linear.html
+  web_only/99-distributions: web_only/99-distributions.html
   varapproxr: varapproxr.html
-  00-basics: web_only/00-basics.html
-  01-linear: web_only/01-linear.html
-  99-distributions: web_only/99-distributions.html
-last_built: 2023-07-14T03:42Z
+last_built: 2025-10-09T00:57Z
 urls:
   reference: https://jatotterdell.github.io/varapproxr/reference
   article: https://jatotterdell.github.io/varapproxr/articles
-
