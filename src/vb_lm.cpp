@@ -46,7 +46,7 @@ List vb_lm(
   arma::vec elbo(maxiter);
   
   arma::mat I = arma::eye<arma::mat>(P, P);
-  arma::mat invSigma0 = inv(Sigma0);
+  arma::mat invSigma0 = inv_sympd(Sigma0);
   arma::vec invSigma0_mu0 = invSigma0 * mu0;
   double ldetSigma0 = real(log_det(Sigma0));
   
@@ -71,7 +71,7 @@ List vb_lm(
   for(int i = 0; i < maxiter && !converged; i++) {
     
     // Update variational parameters
-    Sigma = inv(a/b * XtX + invSigma0);
+    Sigma = inv_sympd(a/b * XtX + invSigma0);
     mu = Sigma * (a/b * Xty + invSigma0_mu0);
     E_dot_y_Xb = dot_y_minus_Xb(yty, Xty, XtX, mu, Sigma);
     
